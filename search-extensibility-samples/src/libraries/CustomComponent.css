@@ -1,0 +1,124 @@
+h3 {
+    color: #03787C;
+    font-size: 25px;
+    margin: 0px 0 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sub {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.description {
+    min-height: 90px;
+    margin: 15px 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}
+
+.contact {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.profile {
+    border: 1px solid black;
+    border-radius: 40px;
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    align-content: center;
+}
+
+.profile div {
+    text-align: center;
+    font-size: large;
+}
+
+.info {
+    padding-left: 20px
+}
+
+.info div:first-child {
+    font-weight: bold;
+}
+
+.info div:last-child {
+    font-style: italic;
+}
+
+.jobcard .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Container for the card list */
+.template_defaultList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px; 
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0;
+}
+
+@media (max-width: 1200px) {
+    .template_defaultList {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 900px) {
+    .template_defaultList {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Individual cards */
+.jobcard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+/* Card content area */
+.card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Truncate long text with ellipsis */
+.card-text {
+    font-size: 14px;
+    line-height: 1.4;
+    height: 3em; /* 2 lines of text, adjust as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* For single-line truncation */
+    display: -webkit-box; /* Multi-line truncation */
+    -webkit-line-clamp: 2; /* Number of lines */
+    -webkit-box-orient: vertical;
+}
+
+.bold {
+    font-weight: bold;
+}

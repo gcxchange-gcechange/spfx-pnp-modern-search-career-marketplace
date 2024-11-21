@@ -5,20 +5,19 @@ import { IPropertyPaneField, PropertyPaneTextField } from '@microsoft/sp-propert
  * Custom Layout properties
  */
 export interface ICustomLayoutProperties {
-    myTextProperty: string;
+    selectedLanguage: string;
 }
 
 export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
 
     public getPropertyPaneFieldsConfiguration(availableFields: string[]): IPropertyPaneField<any>[] {
 
-        // Initializes the property if not defined
-        this.properties.myTextProperty = this.properties.myTextProperty !== null ? this.properties.myTextProperty : "Default value";
+        this.properties.selectedLanguage = this.properties.selectedLanguage !== null ? this.properties.selectedLanguage : "en";
  
         return [
-            PropertyPaneTextField('layoutProperties.myTextProperty', {
-                label: 'A custom layout property',
-                placeholder: 'Fill a value'
+            PropertyPaneTextField('layoutProperties.selectedLanguage' , {
+                label: 'Selected language',
+                placeholder: '\'en\' or \'fr\''
             })
         ];
     }

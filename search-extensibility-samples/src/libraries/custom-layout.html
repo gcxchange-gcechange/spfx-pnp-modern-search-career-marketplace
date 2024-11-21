@@ -1,26 +1,64 @@
 <content id="data-content">
     <style>
-        /* Insert your CSS overrides here */
+        
     </style>
 
     <div class="template_root">
-        <div>This is an external custom template with a custom component</div>
 
-        <ul class="template_defaultList">
-            {{#each data.items as |item|}}
-                <li>
-                    <label data-ui-test-id="customHandlebarsHelper">{{myHelper 'custom'}}</label>
-                    <my-custom-component 
-                        data-my-string-param="{{@root.properties.layoutProperties.myTextProperty}}" 
-                        data-my-object-param="{{JSONstringify this 2}}"
-                        data-my-date-param="01/01/2020"
-                        data-my-number-param="{{@index}}"
-                        data-my-boolean-param="true"
-                    >
-                    </my-custom-component>
-                </li>
+        {{#if @root.properties.showResultsCount}}
+           <div class="template--resultCount">
+               <label class="ms-fontWeight-semibold">{{getCountMessage @root.data.totalItemsCount @root.inputQueryText}}</label>
+           </div>
+        {{/if}}
+
+        <ul class="template_defaultList cmresults">
+            {{#each data.items as |item|}} 
+                <my-custom-component 
+                    path="{{item.Path}}"
+                    applicationdeadlinedate="{{item.CM-ApplicationDeadlineDate}}"
+                    approvedstaffing="{{item.CM-ApprovedStaffing}}"
+                    assetskills="{{item.CM-AssetSkills}}"
+                    city="{{item.CM-City}}"
+                    classificationcode="{{item.CM-ClassificationCode}}"
+                    classificationlevel="{{item.CM-ClassificationLevel}}"
+                    contactemail="{{item.CM-ContactEmail}}"
+                    contactname="{{item.CM-ContactName}}"
+                    contactobjectid="{{item.CM-ContactObjectId}}"
+                    duration="{{item.CM-Duration}}"
+                    essentialskills="{{item.CM-EssentialSkills}}"
+                    jobdescriptionen="{{item.CM-JobDescriptionEn}}"
+                    jobdescriptionfr="{{item.CM-JobDescriptionFr}}"
+                    jobtitleen="{{item.CM-JobTitleEn}}"
+                    jobtitlefr="{{item.CM-JobTitleFr}}"
+                    jobtype="{{item.JobType}}"
+                    languagerequirement="{{item.CM-LanguageRequirement}}"
+                    location="{{item.CM-Location}}"
+                    numberofopportunities="{{item.CM-NumberOfOpportunities}}"
+                    programarea="{{item.CM-ProgramArea}}"
+                    securityclearance="{{item.CM-SecurityClearance}}"
+                    workarrangement="{{item.CM-WorkArrangement}}"
+                    workschedule="{{item.CM-WorkSchedule}}"
+                    selectedlanguage="{{@root.properties.layoutProperties.selectedLanguage}}"
+                >
+                </my-custom-component>
             {{/each}}
         </ul>
+
+        {{#if @root.properties.paging.showPaging}}
+            {{#gt @root.data.totalItemsCount @root.properties.paging.itemsCountPerPage}}
+                <pnp-pagination 
+                    data-total-items="{{@root.data.totalItemsCount}}" 
+                    data-hide-first-last-pages="{{@root.properties.paging.hideFirstLastPages}}"
+                    data-hide-disabled="{{@root.properties.paging.hideDisabled}}"
+                    data-hide-navigation="{{@root.properties.paging.hideNavigation}}"
+                    data-range="{{@root.properties.paging.pagingRange}}" 
+                    data-items-count-per-page="{{@root.properties.paging.itemsCountPerPage}}" 
+                    data-current-page-number="{{@root.paging.currentPageNumber}}"
+                    data-theme-variant="{{JSONstringify @root.theme}}"
+                >
+                </pnp-pagination>
+            {{/gt}}
+        {{/if}}
     </div>
 </content>
 
