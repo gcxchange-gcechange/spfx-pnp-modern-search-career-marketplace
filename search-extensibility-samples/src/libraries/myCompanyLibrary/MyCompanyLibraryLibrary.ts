@@ -20,6 +20,8 @@ import { CustomLayout } from "../CustomLayout";
 import { CustomSuggestionProvider } from "../CustomSuggestionProvider";
 import { CustomQueryModifier } from "../CustomQueryModifier";
 import { CustomDataSource } from "../CustomDataSource";
+import { SelectLanguage } from "../SelectLanguage";
+import { Globals } from "../Globals";
 
 export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   
@@ -42,14 +44,15 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   public getCustomLayouts(): ILayoutDefinition[] {
     return [
       {
-        name: 'PnP Custom layout (Handlebars)',
+        name: 'Job Opportunity',
         iconName: 'Color',
         key: 'CustomLayoutHandlebars',
         type: LayoutType.Results,
         renderType: LayoutRenderType.Handlebars,
-        templateContent: require('../custom-layout.html'),
+        templateContent: require('../JobOpportunity.results.html'),
         serviceKey: ServiceKey.create<ILayout>('PnP:CustomLayoutHandlebars', CustomLayout),
       },
+      // TODO: Filter layout
       {
         name: 'PnP Custom layout (Adaptive Cards)',
         iconName: 'Color',
@@ -88,6 +91,26 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     // Usage {{myHelper 'value'}}
     namespace.registerHelper('myHelper', (value: string) => {
       return new namespace.SafeString(value.toUpperCase());
+    });
+
+    namespace.registerHelper('results', (value: any) => {
+      try {
+        console.log(Globals.getLanguage());
+        console.log(SelectLanguage(Globals.getLanguage()));
+        if (value['string'].indexOf('\'') != -1)
+          return new namespace.SafeString(
+            `${value['string'].replace('results for', SelectLanguage(Globals.getLanguage()).resultsFor)}`
+          );
+        else 
+          return new namespace.SafeString(
+            `${value['string'].replace('results', SelectLanguage(Globals.getLanguage()).results)}`
+          );
+      }
+      catch (e) {
+        console.log(e);
+        return value;
+      }
+      
     });
   }
 

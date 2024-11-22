@@ -3,7 +3,7 @@ const english = require("./myCompanyLibrary/loc/en-us.js")
 const french = require("./myCompanyLibrary/loc/fr-fr.js")
 
 export function SelectLanguage(lang: string): IMyCompanyLibraryLibraryStrings  {
-    switch (lang.toLowerCase()) {
+    switch (lang !== undefined ? lang.toLowerCase() : lang) {
         case "en": {
             return english;
         }

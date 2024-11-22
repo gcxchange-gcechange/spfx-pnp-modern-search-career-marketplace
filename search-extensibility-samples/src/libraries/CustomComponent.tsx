@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { PrimaryButton, DefaultButton, useTheme } from '@fluentui/react';
 import { SelectLanguage } from './SelectLanguage';
 import './CustomComponent.css';
+import { Globals } from './Globals';
 
 export interface IObjectParam {
     myProperty: string;
@@ -39,8 +40,10 @@ export interface ICustomComponentProps {
 
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
-    if (props.selectedlanguage)
+    if (props.selectedlanguage) {
         props.selectedlanguage = props.selectedlanguage.toLowerCase();
+        Globals.setLanguage(props.selectedlanguage);
+    }
 
     const theme = useTheme();
     const strings = SelectLanguage(props.selectedlanguage);

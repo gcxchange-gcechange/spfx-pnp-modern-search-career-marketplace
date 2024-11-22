@@ -18,6 +18,8 @@ declare interface IMyCompanyLibraryLibraryStrings {
   deadline: string;
   view: string;
   apply: string;
+  results: string;
+  resultsFor: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {

@@ -18,6 +18,8 @@ define([], function() {
         "location": "Emplacement",
         "deadline": "Date limite",
         "view": "Voir",
-        "apply": "Appliquer"
+        "apply": "Appliquer",
+        "results": "résultats",
+        "resultsFor": "résultats pour"
     }
 });
