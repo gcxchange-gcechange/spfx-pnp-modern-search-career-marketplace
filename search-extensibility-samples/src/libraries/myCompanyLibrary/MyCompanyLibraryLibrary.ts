@@ -95,8 +95,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
 
     namespace.registerHelper('results', (value: any) => {
       try {
-        console.log(Globals.getLanguage());
-        console.log(SelectLanguage(Globals.getLanguage()));
         if (value['string'].indexOf('\'') != -1)
           return new namespace.SafeString(
             `${value['string'].replace('results for', SelectLanguage(Globals.getLanguage()).resultsFor)}`

@@ -8,7 +8,7 @@ export class Globals {
     public static setLanguage(lang: string): void {
         if (lang) {
             lang = lang.toLowerCase();
-            if (lang == 'en' || lang == 'fr') {
+            if (lang === 'en' || lang === 'fr') {
                 this._language = lang;
                 return;
             }

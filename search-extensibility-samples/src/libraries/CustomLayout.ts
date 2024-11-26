@@ -11,16 +11,23 @@ export interface ICustomLayoutProperties {
 
 export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
 
-    public getPropertyPaneFieldsConfiguration(availableFields: string[]): IPropertyPaneField<any>[] {
-
-        this.properties.selectedLanguage = this.properties.selectedLanguage !== null ? this.properties.selectedLanguage : "en";
+    public onInit(): void {
+        this.properties.selectedLanguage = this.properties.selectedLanguage !== null ? this.properties.selectedLanguage : 'en';
         Globals.setLanguage(this.properties.selectedLanguage);
- 
+    }
+
+    public getPropertyPaneFieldsConfiguration(availableFields: string[]): IPropertyPaneField<any>[] {
         return [
             PropertyPaneTextField('layoutProperties.selectedLanguage' , {
                 label: 'Selected language',
-                placeholder: '\'en\' or \'fr\''
+                placeholder: 'en or fr'
             })
         ];
+    }
+
+    public onPropertyUpdate(propertyPath: string, oldValue: any, newValue: any): void {
+        if (propertyPath === 'layoutProperties.selectedLanguage') {
+            Globals.setLanguage(newValue);
+        }
     }
 }
