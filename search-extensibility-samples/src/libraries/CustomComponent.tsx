@@ -12,52 +12,47 @@ export interface IObjectParam {
 
 export interface ICustomComponentProps {
     path?: string;
-    applicationdeadlinedate?: Date;
-    approvedstaffing?: boolean;
-    assetskills?: string;
+    applicationDeadlineDate?: Date;
+    approvedStaffing?: boolean;
+    assetSkills?: string;
     city?: string;
-    classificationcode?: string;
-    classificationlevel?: string;
-    contactemail?: string;
-    contactname?: string;
-    contactobjectid?: string;
+    classificationCode?: string;
+    classificationLevel?: string;
+    contactEmail?: string;
+    contactName?: string;
+    contactObjectId?: string;
     duration?: string;
-    essentialskills?: string;
-    jobdescriptionen?: string;
-    jobdescriptionfr?: string;
-    jobtitleen?: string;
-    jobtitlefr?: string;
-    jobtype?: string;
-    languagerequirement?: string;
+    essentialSkills?: string;
+    jobDescriptionEn?: string;
+    jobDescriptionFr?: string;
+    jobTitleEn?: string;
+    jobTitleFr?: string;
+    jobType?: string;
+    languageRequirement?: string;
     location?: string;
-    numberofopportunities?: string;
-    programarea?: string;
-    securityclearance?: string;
-    workarrangement?: string;
-    workschedule?: string;
-    selectedlanguage?: string;
+    numberOfOpportunities?: string;
+    programArea?: string;
+    securityClearance?: string;
+    workArrangement?: string;
+    workSchedule?: string;
 }
 
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
-    if (props.selectedlanguage) {
-        props.selectedlanguage = props.selectedlanguage.toLowerCase();
-        Globals.setLanguage(props.selectedlanguage);
-    }
-
     const theme = useTheme();
-    const strings = SelectLanguage(props.selectedlanguage);
+    const strings = SelectLanguage(Globals.getLanguage());
+    const lang = Globals.getLanguage();
     
     const getContactNameInitials = () => {
-        if (props.contactname) {
-            let nameSplit = props.contactname.toUpperCase().split(' ');
+        if (props.contactName) {
+            let nameSplit = props.contactName.toUpperCase().split(' ');
             return nameSplit[0] ? nameSplit[0][0] + (nameSplit[1] ? nameSplit[1][0] : '') : 'NA';
         }
         return 'NA';
     };
 
     const getJobType = () => {
-        return props.jobtype ? props.jobtype.replace(';', ', ') : 'N/A';
+        return props.jobType ? props.jobType.replace(';', ', ') : 'N/A';
     };
 
     const handleViewClick = () => {
@@ -66,7 +61,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     };
 
     const handleApplyClick = () => {
-        window.location.href = `mailto:${props.contactemail}?subject=${props.selectedlanguage == 'fr' ? props.jobtitlefr : props.jobtitleen}`;
+        window.location.href = `mailto:${props.contactEmail}?subject=${lang === 'fr' ? props.jobTitleFr : props.jobTitleEn}`;
     };
 
     return (
@@ -81,19 +76,19 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         color: `${theme.palette.themePrimary}`,
                     }}
                 >
-                    {props.selectedlanguage == 'fr' ? props.jobtitlefr : props.jobtitleen}
+                    {lang === 'fr' ? props.jobTitleFr : props.jobTitleEn}
                 </h3>
                 <div className="sub">
-                    <div>{strings.classificationLevel}: {props.classificationlevel}</div>
+                    <div>{strings.classificationLevel}: {props.classificationLevel}</div>
                     <div>{strings.opportunityType}: {getJobType()}</div>
                     <div>{strings.duration}: {props.duration}</div>
                 </div>
                 <div className="description">
-                    {props.selectedlanguage == 'fr' ? props.jobdescriptionfr : props.jobdescriptionen}
+                    {lang === 'fr' ? props.jobDescriptionFr : props.jobDescriptionEn}
                 </div>
                 <div className="sub bold">
                     <div>{strings.location}: {props.location}</div>
-                    <div>{strings.deadline}: {props.applicationdeadlinedate ? props.applicationdeadlinedate : 'None'}</div>
+                    <div>{strings.deadline}: {props.applicationDeadlineDate ? props.applicationDeadlineDate : 'None'}</div>
                 </div>
                 <div className="contact">
                     <div className="profile">
@@ -102,8 +97,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         </div>
                     </div>
                     <div className="info">
-                        <div>{props.contactname}</div>
-                        <div>{props.contactemail}</div>
+                        <div>{props.contactName}</div>
+                        <div>{props.contactEmail}</div>
                     </div>
                 </div>
                 <div className="actions">
