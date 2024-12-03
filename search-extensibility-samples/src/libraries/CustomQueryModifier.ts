@@ -118,22 +118,23 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       this.jobTitle = this.getElementText(this._properties.jobTitleId);
 
     if (this._properties.departmentId)
-      this.department = this.getElementText(this._properties.departmentId);
+      this.department = this.getElementText(this._properties.departmentId).replace('\n', '');
 
     if (this._properties.classificationCodeId)
-      this.classificationCode = this.getElementText(this._properties.classificationCodeId);
+      this.classificationCode = this.getElementText(this._properties.classificationCodeId).replace('\n', '');
     
     if (this._properties.classificationLevelId) 
-      this.classificationLevel = this.getElementText(this._properties.classificationLevelId);
+      this.classificationLevel = this.getElementText(this._properties.classificationLevelId).replace('\n', '');
     
     if (this._properties.languageRequirementId) 
-      this.languageRequirement = this.getElementText(this._properties.languageRequirementId);
+      this.languageRequirement = this.getElementText(this._properties.languageRequirementId).replace('\n', '');
     
     if (this._properties.regionId) 
-      this.region = this.getElementText(this._properties.regionId);
+      this.region = this.getElementText(this._properties.regionId).replace('\n', '');
     
-    if (this._properties.durationId) 
-      this.duration = this.getElementText(this._properties.durationId);
+    if (this._properties.durationId) {
+      this.duration = this.getElementText(this._properties.durationId).replace('\n', '');
+    }
 
     console.log(this);
 
