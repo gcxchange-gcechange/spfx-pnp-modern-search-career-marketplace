@@ -103,6 +103,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     let el = document.getElementById(id);
     if (el) {
       let retVal = el.innerText;
+
+      if (el.nodeName === 'INPUT')
+        retVal = (el as HTMLTextAreaElement).defaultValue
+
       if (retVal == '' || retVal == '')
         retVal = '*';
       return retVal;
@@ -138,11 +142,12 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     console.log(this);
 
+    // TODO: Fix search by job title for french/english
     if (Globals.getLanguage() == Language.French) {
       return `${queryText} path: https://devgcx.sharepoint.com/sites/CM-test/Lists/JobOpportunity/ contentclass: STS_ListItem_GenericList "CM-JobTitleFr":${this.jobTitle} AND "CM-LanguageRequirement":${this.languageRequirement} AND "CM-Department":${this.department} AND "CM-ClassificationCode":${this.classificationCode} AND "CM-ClassificationLevel":${this.classificationLevel} AND "CM-Duration":${this.duration}`;
     }
     else 
-      return `${queryText} path: https://devgcx.sharepoint.com/sites/CM-test/Lists/JobOpportunity/ contentclass: STS_ListItem_GenericList "CM-JobTitleEn":${this.jobTitle} AND "CM-LanguageRequirement":${this.languageRequirement} AND "CM-Department":${this.department} AND "CM-ClassificationCode":${this.classificationCode} AND "CM-ClassificationLevel":${this.classificationLevel} AND "CM-Duration":${this.duration}`;
+      return `${queryText} path: https://devgcx.sharepoint.com/sites/CM-test/Lists/JobOpportunity/ contentclass: STS_ListItem_GenericList "Title":${this.jobTitle} AND "CM-LanguageRequirement":${this.languageRequirement} AND "CM-Department":${this.department} AND "CM-ClassificationCode":${this.classificationCode} AND "CM-ClassificationLevel":${this.classificationLevel} AND "CM-Duration":${this.duration}`;
   }
 
   public onPropertyUpdate(propertyPath: string, oldValue: any, newValue: any): void {
