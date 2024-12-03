@@ -1,5 +1,6 @@
 import { ServiceKey, ServiceScope } from "@microsoft/sp-core-library";
 import { PageContext } from "@microsoft/sp-page-context";
+//import { DynamicProperty } from '@microsoft/sp-component-base';
 import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import {  IExtensibilityLibrary, 
           IComponentDefinition, 
@@ -18,7 +19,7 @@ import * as Handlebars from "handlebars";
 import { MyCustomComponentWebComponent } from "../CustomComponent";
 import { CustomLayout } from "../CustomLayout";
 import { CustomSuggestionProvider } from "../CustomSuggestionProvider";
-import { CustomQueryModifier } from "../CustomQueryModifier";
+import { AdvancedSearchQueryModifier } from "../CustomQueryModifier";
 import { CustomDataSource } from "../CustomDataSource";
 import { SelectLanguage } from "../SelectLanguage";
 import { Globals } from "../Globals";
@@ -45,14 +46,13 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     return [
       {
         name: 'Job Opportunity',
-        iconName: 'Color',
+        iconName: 'Suitcase',
         key: 'CustomLayoutHandlebars',
         type: LayoutType.Results,
         renderType: LayoutRenderType.Handlebars,
         templateContent: require('../JobOpportunity.results.html'),
         serviceKey: ServiceKey.create<ILayout>('PnP:CustomLayoutHandlebars', CustomLayout),
       },
-      // TODO: Filter layout
       {
         name: 'PnP Custom layout (Adaptive Cards)',
         iconName: 'Color',
@@ -68,7 +68,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   public getCustomWebComponents(): IComponentDefinition<any>[] {
     return [
       {
-        componentName: 'my-custom-component',
+        componentName: 'job-opportunity-card',
         componentClass: MyCustomComponentWebComponent
       }
     ];
@@ -103,6 +103,19 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
           return new namespace.SafeString(
             `${value['string'].replace('results', SelectLanguage(Globals.getLanguage()).results)}`
           );
+      }
+      catch (e) {
+        console.log(e);
+        return value;
+      }
+      
+    });
+
+    namespace.registerHelper('resultsNoQueryText', (value: any) => {
+      try {
+        return new namespace.SafeString(
+          `${value['string'].replace(' for ', '').replace('\'<em>[object Object]</em>\'', '').replace('results', SelectLanguage(Globals.getLanguage()).results)}`
+        );
       }
       catch (e) {
         console.log(e);
@@ -149,15 +162,15 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   {
     return [
       {
-        name: 'Word Modifier',
-        key: 'WordModifier',
-        description: 'A demo query modifier from the extensibility library',
-        serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:CustomQueryModifier', CustomQueryModifier)
+        name: 'Advanced Search',
+        key: 'AdvancedSearch',
+        description: 'A query modifier for career marketplace advanced search.',
+        serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:CustomQueryModifier', AdvancedSearchQueryModifier)
 
       }
     ];
-  
-    }
+  }
+
   public getCustomDataSources(): IDataSourceDefinition[] {
     return [
       {
@@ -170,6 +183,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   }
 
   public name(): string {
-    return 'MyCustomLibraryComponent';
+    return 'CareerMarketplaceLibraryComponent';
   }
 }

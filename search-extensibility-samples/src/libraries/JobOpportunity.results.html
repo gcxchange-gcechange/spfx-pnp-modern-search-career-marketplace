@@ -7,13 +7,14 @@
 
         {{#if @root.properties.showResultsCount}}
            <div class="template--resultCount">
-               <label class="ms-fontWeight-semibold">{{results (getCountMessage @root.data.totalItemsCount @root.inputQueryText)}}</label>
+               <label class="ms-fontWeight-semibold">{{resultsNoQueryText (getCountMessage @root.data.totalItemsCount)}}</label>
+               <!-- <label class="ms-fontWeight-semibold">{{results (getCountMessage @root.data.totalItemsCount @root.inputQueryText)}}</label> -->
            </div>
         {{/if}}
 
         <ul class="template_defaultList cmresults">
             {{#each data.items as |item|}} 
-                <my-custom-component 
+                <job-opportunity-card 
                     path="{{item.Path}}"
                     application-deadline-date="{{item.CM-ApplicationDeadlineDate}}"
                     approved-staffing="{{item.CM-ApprovedStaffing}}"
@@ -24,6 +25,7 @@
                     contact-email="{{item.CM-ContactEmail}}"
                     contact-name="{{item.CM-ContactName}}"
                     contact-object-id="{{item.CM-ContactObjectId}}"
+                    department="{{item.CM-Department}}"
                     duration="{{item.CM-Duration}}"
                     essential-skills="{{item.CM-EssentialSkills}}"
                     job-description-en="{{item.CM-JobDescriptionEn}}"
@@ -39,7 +41,7 @@
                     work-arrangement="{{item.CM-WorkArrangement}}"
                     work-schedule="{{item.CM-WorkSchedule}}"
                 >
-                </my-custom-component>
+                </job-opportunity-card>
             {{/each}}
         </ul>
 

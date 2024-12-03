@@ -4,7 +4,7 @@ define([], function() {
         "BasicGroupName": "Group Name",
         "DescriptionFieldLabel": "Description Field",
         "CustomQueryModifier": {
-            "GroupName":"CustomQueryModifier Settings",
+            "GroupName":"Advanced Search Settings Settings",
             "PrefixLabel":"Prefix Text",
             "PrefixDescription":"A string to prepend to each word found in the input query text.",
             "PrefixPlaceholder":"*",

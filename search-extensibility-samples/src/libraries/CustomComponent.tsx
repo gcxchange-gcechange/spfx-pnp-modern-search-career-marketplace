@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { PrimaryButton, DefaultButton, useTheme } from '@fluentui/react';
 import { SelectLanguage } from './SelectLanguage';
 import './CustomComponent.css';
-import { Globals } from './Globals';
+import { Globals, Language } from './Globals';
 
 export interface IObjectParam {
     myProperty: string;
@@ -22,6 +22,7 @@ export interface ICustomComponentProps {
     contactName?: string;
     contactObjectId?: string;
     duration?: string;
+    department?: string;
     essentialSkills?: string;
     jobDescriptionEn?: string;
     jobDescriptionFr?: string;
@@ -61,7 +62,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     };
 
     const handleApplyClick = () => {
-        window.location.href = `mailto:${props.contactEmail}?subject=${lang === 'fr' ? props.jobTitleFr : props.jobTitleEn}`;
+        window.location.href = `mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}`;
     };
 
     return (
@@ -76,7 +77,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         color: `${theme.palette.themePrimary}`,
                     }}
                 >
-                    {lang === 'fr' ? props.jobTitleFr : props.jobTitleEn}
+                    {lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
                 </h3>
                 <div className="sub">
                     <div>{strings.classificationLevel}: {props.classificationLevel}</div>
@@ -84,7 +85,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     <div>{strings.duration}: {props.duration}</div>
                 </div>
                 <div className="description">
-                    {lang === 'fr' ? props.jobDescriptionFr : props.jobDescriptionEn}
+                    {lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn}
                 </div>
                 <div className="sub bold">
                     <div>{strings.location}: {props.location}</div>
@@ -125,8 +126,8 @@ export class MyCustomComponentWebComponent extends BaseWebComponent {
     public async connectedCallback() {
 
         let props = this.resolveAttributes();
-        const customComponent = <JobCardComponent {...props} />;
-        ReactDOM.render(customComponent, this);
+        const JobCard = <JobCardComponent {...props} />;
+        ReactDOM.render(JobCard, this);
     }    
 
     protected onDispose(): void {

@@ -1,6 +1,6 @@
 import { BaseLayout } from "@pnp/modern-search-extensibility";
 import { IPropertyPaneField, PropertyPaneTextField } from '@microsoft/sp-property-pane';
-import { Globals } from "./Globals";
+import { Globals, Language } from "./Globals";
 
 /**
  * Custom Layout properties
@@ -9,25 +9,32 @@ export interface ICustomLayoutProperties {
     selectedLanguage: string;
 }
 
+export enum PropertyPaneProps {
+    SelectedLanguage = 'layoutProperties.selectedLanguage'
+}
+
 export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
 
     public onInit(): void {
-        this.properties.selectedLanguage = this.properties.selectedLanguage !== null ? this.properties.selectedLanguage : 'en';
+        this.properties.selectedLanguage = this.properties.selectedLanguage !== null ? this.properties.selectedLanguage : Language.English;
         Globals.setLanguage(this.properties.selectedLanguage);
     }
 
     public getPropertyPaneFieldsConfiguration(availableFields: string[]): IPropertyPaneField<any>[] {
         return [
-            PropertyPaneTextField('layoutProperties.selectedLanguage' , {
+            PropertyPaneTextField(PropertyPaneProps.SelectedLanguage , {
                 label: 'Selected language',
-                placeholder: 'en or fr'
+                value: Globals.getLanguage(),
+                placeholder: `${Language.English} or ${Language.French}`
             })
         ];
     }
 
     public onPropertyUpdate(propertyPath: string, oldValue: any, newValue: any): void {
-        if (propertyPath === 'layoutProperties.selectedLanguage') {
-            Globals.setLanguage(newValue);
+        switch (propertyPath) {
+            case PropertyPaneProps.SelectedLanguage:
+                Globals.setLanguage(newValue);
+                break;
         }
     }
 }
