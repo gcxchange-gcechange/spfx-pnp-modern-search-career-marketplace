@@ -196,6 +196,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           PropertyPaneTextField('queryModifierProperties.searchBoxSelector', {
             label: 'PnP Search Box Selector',
             description: 'CSS selector for the pnp search input.',
+            placeholder: '[data-sp-feature-tag="pnpSearchBoxWebPart web part (PnP - Search Box)"] input',
           }),
           PropertyPaneTextField('queryModifierProperties.jobTitleId', {
             label: 'JobTitle ID',
@@ -231,15 +232,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             label: 'Duration ID',
             description: 'The ID of the HTML element containing the duration drop down.',
             placeholder: 'ddDuration',
-          }),
-          // PropertyPaneDynamicFieldSet({
-          //   label: 'Advanced Search',
-          //   fields: [
-          //     PropertyPaneDynamicField('queryModifierProperties.advancedSearch', {
-          //       label: 'Advanced Search Web Part',
-          //     })
-          //   ]
-          // }),
+          })
         ],
       },
     ];
