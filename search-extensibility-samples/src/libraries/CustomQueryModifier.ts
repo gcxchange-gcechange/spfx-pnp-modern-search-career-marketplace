@@ -4,25 +4,26 @@ import * as myLibraryStrings from 'MyCompanyLibraryLibraryStrings';
 import { Globals, Language } from "./Globals";
 
 export interface IAdvancedSearchQueryModifierProperties {
-  jobTitleId: string
-  departmentId: string
-  classificationCodeId: string
-  classificationLevelId: string
-  languageRequirementId: string
-  regionId: string
-  durationId: string
+  searchBoxSelector: string;
+  jobTitleId: string;
+  departmentId: string;
+  classificationCodeId: string;
+  classificationLevelId: string;
+  languageRequirementId: string;
+  regionId: string;
+  durationId: string;
 }
 
 //CustomQueryModifier
 export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSearchQueryModifierProperties> {
 
-  private jobTitle: string;
-  private department: string;
-  private classificationCode: string;
-  private classificationLevel: string;
-  private languageRequirement: string;
-  private region: string;
-  private duration: string;
+  private jobTitle: string = '*';
+  private department: string = '*';
+  private classificationCode: string = '*';
+  private classificationLevel: string = '*';
+  private languageRequirement: string = '*';
+  private region: string = '*';
+  private duration: string = '*';
 
   // TODO: Search when prop change
   public async onInit(): Promise<void> {
@@ -35,6 +36,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
         el.addEventListener('change', function(event) {
           let target = event.target as HTMLInputElement;
           context.jobTitle = target.value;
+          context.triggerSearch();
         });
       }
     }
@@ -42,8 +44,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (this._properties.departmentId) {
       let el = document.getElementById(this._properties.departmentId);
       if (el) {
-        el.addEventListener('focusout', (event) => {
+        el.addEventListener('focusin', (event) => {
           context.department = context.getElementText(context._properties.departmentId);
+          if (context.department != '*')
+            context.triggerSearch();
         });
       }
     }
@@ -51,8 +55,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (this._properties.classificationCodeId) {
       let el = document.getElementById(this._properties.classificationCodeId);
       if (el) {
-        el.addEventListener('focusout', (event) => {
+        el.addEventListener('focusin', (event) => {
           context.classificationCode = context.getElementText(context._properties.classificationCodeId);
+          if (context.classificationCode != '*')
+            context.triggerSearch();
         });
       }
     }
@@ -60,8 +66,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (this._properties.classificationLevelId) {
       let el = document.getElementById(this._properties.classificationLevelId);
       if (el) {
-        el.addEventListener('focusout', (event) => {
+        el.addEventListener('focusin', (event) => {
           context.classificationLevel = context.getElementText(context._properties.classificationLevelId);
+          if (context.classificationLevel != '*')
+            context.triggerSearch();
         });
       }
     }
@@ -69,8 +77,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (this._properties.languageRequirementId) {
       let el = document.getElementById(this._properties.languageRequirementId);
       if (el) {
-        el.addEventListener('focusout', (event) => {
+        el.addEventListener('focusin', (event) => {
           context.languageRequirement = context.getElementText(context._properties.languageRequirementId);
+          if (context.languageRequirement != '*')
+            context.triggerSearch();
         });
       }
     }
@@ -78,8 +88,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (this._properties.regionId) {
       let el = document.getElementById(this._properties.regionId);
       if (el) {
-        el.addEventListener('focusout', (event) => {
+        el.addEventListener('focusin', (event) => {
           context.region = context.getElementText(context._properties.regionId);
+          if (context.region != '*')
+            context.triggerSearch();
         });
       }
     }
@@ -87,8 +99,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (this._properties.durationId) {
       let el = document.getElementById(this._properties.durationId);
       if (el) {
-        el.addEventListener('focusout', (event) => {
+        el.addEventListener('focusin', (event) => {
           context.duration = context.getElementText(context._properties.durationId);
+          if (context.duration != '*')
+            context.triggerSearch();
         });
       }
     }
@@ -110,35 +124,40 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     return '*';
   }
 
-  public async modifyQuery(queryText: string): Promise<string> {
-    if (queryText === undefined)
-      queryText = '*';
+  private triggerSearch() {
+    if (this._properties.searchBoxSelector) {
+      let el = document.querySelector(this._properties.searchBoxSelector);
+      if (el) {
+        let searchBox = el as HTMLInputElement;
 
-    if (this._properties.jobTitleId)
-      this.jobTitle = this.getElementText(this._properties.jobTitleId);
+        if (searchBox.defaultValue == "") {
+          searchBox.value = " ";
+          searchBox.dispatchEvent(new Event('input', { bubbles: true }));
+        }
 
-    if (this._properties.departmentId)
-      this.department = this.getElementText(this._properties.departmentId);
-
-    if (this._properties.classificationCodeId)
-      this.classificationCode = this.getElementText(this._properties.classificationCodeId);
-    
-    if (this._properties.classificationLevelId) 
-      this.classificationLevel = this.getElementText(this._properties.classificationLevelId);
-    
-    if (this._properties.languageRequirementId) 
-      this.languageRequirement = this.getElementText(this._properties.languageRequirementId);
-    
-    if (this._properties.regionId) 
-      this.region = this.getElementText(this._properties.regionId);
-    
-    if (this._properties.durationId) {
-      this.duration = this.getElementText(this._properties.durationId);
+        el.dispatchEvent(new KeyboardEvent('keydown', {
+          key: 'Enter',
+          code: 'Enter',
+          keyCode: 13,
+          which: 13,
+          bubbles: true,
+          cancelable: true 
+        }));
+      }
     }
+  }
 
-    console.log(this);
+  public async modifyQuery(queryText: string): Promise<string> {
+    queryText = queryText === undefined ? '*' : queryText;
 
-    // TODO: Fix search by job title for french/english
+    this.jobTitle = this._properties.jobTitleId ? this.getElementText(this._properties.jobTitleId) : '*';
+    this.department = this._properties.departmentId ? this.getElementText(this._properties.departmentId) : '*';
+    this.classificationCode = this._properties.classificationCodeId ? this.getElementText(this._properties.classificationCodeId) : '*';
+    this.classificationLevel = this._properties.classificationLevelId ? this.getElementText(this._properties.classificationLevelId) : '*';
+    this.languageRequirement = this._properties.languageRequirementId ? this.getElementText(this._properties.languageRequirementId) : '*';
+    this.region = this._properties.regionId ? this.getElementText(this._properties.regionId) : '*';
+    this.duration = this._properties.durationId ? this.getElementText(this._properties.durationId) : '*';
+
     if (Globals.getLanguage() == Language.French) {
       return `${queryText} path: https://devgcx.sharepoint.com/sites/CM-test/Lists/JobOpportunity/ contentclass: STS_ListItem_GenericList "CM-JobTitleFr":*${this.jobTitle}* AND "CM-LanguageRequirement":${this.languageRequirement} AND "CM-Department":${this.department} AND "CM-ClassificationCode":${this.classificationCode} AND "CM-ClassificationLevel":${this.classificationLevel} AND "CM-Duration":${this.duration}`;
     }
@@ -146,9 +165,11 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       return `${queryText} path: https://devgcx.sharepoint.com/sites/CM-test/Lists/JobOpportunity/ contentclass: STS_ListItem_GenericList "CM-JobTitleEn":*${this.jobTitle}* AND "CM-LanguageRequirement":${this.languageRequirement} AND "CM-Department":${this.department} AND "CM-ClassificationCode":${this.classificationCode} AND "CM-ClassificationLevel":${this.classificationLevel} AND "CM-Duration":${this.duration}`;
   }
 
-  // TODO
+  // TODO: Update listeners
   public onPropertyUpdate(propertyPath: string, oldValue: any, newValue: any): void {
     switch(propertyPath) {
+      case 'queryModifierProperties.searchBoxSelector':
+        break;
       case 'queryModifierProperties.jobTitleId':
         break;
       case 'queryModifierProperties.departmentId':
@@ -172,40 +193,44 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       {
         groupName: myLibraryStrings.CustomQueryModifier.GroupName,
         groupFields: [
+          PropertyPaneTextField('queryModifierProperties.searchBoxSelector', {
+            label: 'PnP Search Box Selector',
+            description: 'CSS selector for the pnp search input.',
+          }),
           PropertyPaneTextField('queryModifierProperties.jobTitleId', {
             label: 'JobTitle ID',
             description: 'The ID of the HTML element containing the job title text box.',
-            value: 'txtJobTitle',
+            placeholder: 'txtJobTitle',
           }),
           PropertyPaneTextField('queryModifierProperties.departmentId', {
             label: 'Department ID',
             description: 'The ID of the HTML element containing the department drop down.',
-            value: 'ddDepartment',
+            placeholder: 'ddDepartment',
           }),
           PropertyPaneTextField('queryModifierProperties.classificationCodeId', {
             label: 'ClassificationCode ID',
             description: 'The ID of the HTML element containing the classification code drop down.',
-            value: 'ddClassificationCode',
+            placeholder: 'ddClassificationCode',
           }),
           PropertyPaneTextField('queryModifierProperties.classificationLevelId', {
             label: 'ClassificationLevel ID',
             description: 'The ID of the HTML element containing the classification level drop down.',
-            value: 'ddClassificationLevel',
+            placeholder: 'ddClassificationLevel',
           }),
           PropertyPaneTextField('queryModifierProperties.languageRequirementId', {
             label: 'LanguageRequirement ID',
             description: 'The ID of the HTML element containing the language requirement drop down.',
-            value: 'ddLanguageRequirement',
+            placeholder: 'ddLanguageRequirement',
           }),
           PropertyPaneTextField('queryModifierProperties.regionId', {
             label: 'Region ID',
             description: 'The ID of the HTML element containing the region drop down.',
-            value: 'ddRegion',
+            placeholder: 'ddRegion',
           }),
           PropertyPaneTextField('queryModifierProperties.durationId', {
             label: 'Duration ID',
             description: 'The ID of the HTML element containing the duration drop down.',
-            value: 'ddDuration',
+            placeholder: 'ddDuration',
           }),
           // PropertyPaneDynamicFieldSet({
           //   label: 'Advanced Search',
