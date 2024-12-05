@@ -38,7 +38,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     (Object.keys(AdvancedSearchSessionKeys) as (keyof typeof AdvancedSearchSessionKeys)[]).forEach(key => {
       const value = AdvancedSearchSessionKeys[key];
       if (!sessionStorage.getItem(value)) {
-        sessionStorage.setItem(value, AdvancedSearchQueryModifier.DEFAULT_VALUE);
+        sessionStorage.setItem(value, '');
       }
     });
 
@@ -104,20 +104,56 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
   public async modifyQuery(queryText: string): Promise<string> {
     queryText = queryText || AdvancedSearchQueryModifier.DEFAULT_VALUE;
 
-    const jobTitle = sessionStorage.getItem(AdvancedSearchSessionKeys.JobTitle) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
-    const department = sessionStorage.getItem(AdvancedSearchSessionKeys.DepartmentId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
-    const classificationCode = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationCodeId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
-    const classificationLevel = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationLevelId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
-    const languageRequirement = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageRequirementId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
-    // TODO: Figure out how we are doing location/region
-    const region = sessionStorage.getItem(AdvancedSearchSessionKeys.RegionId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
-    const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
+    if (queryText.trim() == '')
+      queryText = '*';
 
-    if (Globals.getLanguage() === Language.French) {
-      return `${queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList "${this._properties.jobTitleFrMP}":*${jobTitle}* AND "${this._properties.languageRequirementMP}":${languageRequirement} AND "${this._properties.departmentMP}":${department} AND "${this._properties.classificationCodeMP}":${classificationCode} AND "${this._properties.classificationLevelMP}":${classificationLevel} AND "${this._properties.durationMP}":${duration}`;
-    } else {
-      return `${queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList "${this._properties.jobTitleEnMP}":*${jobTitle}* AND "${this._properties.languageRequirementMP}":${languageRequirement} AND "${this._properties.departmentMP}":${department} AND "${this._properties.classificationCodeMP}":${classificationCode} AND "${this._properties.classificationLevelMP}":${classificationLevel} AND "${this._properties.durationMP}":${duration}`;
+    let finalQuery = `${queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList `;
+    let propSet = false;
+
+    const jobTitle = sessionStorage.getItem(AdvancedSearchSessionKeys.JobTitle);
+    if (jobTitle && jobTitle.trim() != '') {
+      if (Globals.getLanguage() === Language.French) {
+        finalQuery += `"${this._properties.jobTitleFrMP}":*${jobTitle}* `;
+      } else {
+        finalQuery += `"${this._properties.jobTitleEnMP}":*${jobTitle}* `;
+      }
+      propSet = true;
     }
+
+    const department = sessionStorage.getItem(AdvancedSearchSessionKeys.DepartmentId);
+    if (department && department.trim() != '') {
+      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.departmentMP}":${department} `;
+      propSet = true;
+    }
+
+    const classificationCode = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationCodeId);
+    if (classificationCode && classificationCode.trim() != '') {
+      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.classificationCodeMP}":${classificationCode} `;
+      propSet = true;
+    }
+
+    const classificationLevel = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationLevelId);
+    if (classificationLevel && classificationLevel.trim() != '') {
+      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.classificationLevelMP}":${classificationLevel} `;
+      propSet = true;
+    }
+
+    const languageRequirement = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageRequirementId);
+    if (languageRequirement && languageRequirement.trim() != '') {
+      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.languageRequirementMP}":${languageRequirement} `;
+      propSet = true;
+    }
+
+    const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationId);
+    if (duration && duration.trim() != '') {
+      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.durationMP}":${duration} `;
+      propSet = true;
+    }
+
+    // TODO: Implement region or location
+    const region = sessionStorage.getItem(AdvancedSearchSessionKeys.RegionId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
+
+    return finalQuery;
   }
 
   // TODO: Update listeners
