@@ -105,10 +105,12 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 <div className="actions">
                     <DefaultButton 
                         text={strings.view} 
+                        aria-label={strings.viewAria}
                         onClick={handleViewClick}
                     />
                     <PrimaryButton 
                         text={strings.apply}
+                        aria-label={strings.applyAria}
                         onClick={handleApplyClick} 
                     />
                 </div>

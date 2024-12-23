@@ -20,6 +20,8 @@ declare interface IMyCompanyLibraryLibraryStrings {
   apply: string;
   results: string;
   resultsFor: string;
+  viewAria: string;
+  applyAria: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {

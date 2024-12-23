@@ -20,6 +20,8 @@ define([], function() {
         "view": "Voir",
         "apply": "Appliquer",
         "results": "résultats",
-        "resultsFor": "résultats pour"
+        "resultsFor": "résultats pour",
+        "viewAria": "Cliquez pour voir cette opportunité d'emploi dans son intégralité.",
+        "applyAria": "Cliquez pour postuler à cette opportunité d'emploi."
     }
 });
