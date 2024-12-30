@@ -58,7 +58,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
     const handleViewClick = () => {
         if (props.path && props.path.split('ID=').length == 2) 
-            window.open(`https://devgcx.sharepoint.com/sites/CM-test/SitePages/Job-Opportunity.aspx?JobOpportunityId=${props.path.split('ID=')[1]}`, '_blank');
+            window.open(`${Globals.jobOpportunityPageUrl}${props.path.split('ID=')[1]}`, '_blank');
     };
 
     const handleApplyClick = () => {

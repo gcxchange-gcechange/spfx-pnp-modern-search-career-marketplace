@@ -86,13 +86,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   }
 
   public registerHandlebarsCustomizations(namespace: typeof Handlebars) {
-
-    // Register custom Handlebars helpers
-    // Usage {{myHelper 'value'}}
-    namespace.registerHelper('myHelper', (value: string) => {
-      return new namespace.SafeString(value.toUpperCase());
-    });
-
     namespace.registerHelper('results', (value: any) => {
       try {
         if (value['string'].indexOf('\'') != -1)
@@ -108,7 +101,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         console.log(e);
         return value;
       }
-      
     });
 
     namespace.registerHelper('resultsNoQueryText', (value: any) => {
@@ -121,7 +113,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         console.log(e);
         return value;
       }
-      
     });
   }
 
