@@ -114,6 +114,43 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         return value;
       }
     });
+
+    namespace.registerHelper('term', (value: string) => {
+      try {
+        const matches = value.match(/L0\|#[^|]+\|(.+)/);
+        return matches && matches[1] ? matches[1].trim() : value;
+      }
+      catch (e) {
+        console.log(e);
+        return value;
+      }
+    });
+
+    namespace.registerHelper('terms', (value: string) => {
+      try {
+        let terms = [];
+        let split = value.split('\n\nGTSet');
+        for (let i = 0; i < split.length - (split.length > 1 ? 1 : 0); i++) {
+          const parts = split[i].split('|');
+          terms.push(parts[parts.length - 1]);
+        }
+        return terms.join(', ');
+      }
+      catch (e) {
+        console.log(e);
+        return value;
+      }
+    });
+
+    namespace.registerHelper('location', (value: string) => {
+      try {
+        return value.replace('Province:', '').replace('Region:', '').split(':').join(', ');
+      }
+      catch (e) {
+        console.log(e);
+        return value;
+      }
+    });
   }
 
   public invokeCardAction(action: any): void {
