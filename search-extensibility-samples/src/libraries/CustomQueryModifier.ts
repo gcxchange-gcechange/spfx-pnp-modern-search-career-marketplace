@@ -20,12 +20,12 @@ export interface IAdvancedSearchQueryModifierProperties {
 
 enum AdvancedSearchSessionKeys {
   JobTitle = 'gcx-cm-jobTitle',
-  ClassificationCodeId = 'gcx-cm-classificationCodeId',
-  ClassificationLevelId = 'gcx-cm-classificationLevelId',
-  DepartmentId = 'gcx-cm-departmentId',
-  DurationId = 'gcx-cm-durationId',
-  LanguageRequirementId = 'gcx-cm-languageRequirementId',
-  RegionId = 'gcx-cm-regionId',
+  ClassificationCode = 'gcx-cm-classificationCode',
+  ClassificationLevel = 'gcx-cm-classificationLevel',
+  Department = 'gcx-cm-department',
+  Duration = 'gcx-cm-duration',
+  LanguageRequirement = 'gcx-cm-languageRequirement',
+  Location = 'gcx-cm-location',
 }
 
 //CustomQueryModifier
@@ -120,38 +120,38 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       propSet = true;
     }
 
-    const department = sessionStorage.getItem(AdvancedSearchSessionKeys.DepartmentId);
+    const department = sessionStorage.getItem(AdvancedSearchSessionKeys.Department);
     if (department && department.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.departmentMP}":${department} `;
       propSet = true;
     }
 
-    const classificationCode = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationCodeId);
+    const classificationCode = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationCode);
     if (classificationCode && classificationCode.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.classificationCodeMP}":${classificationCode} `;
       propSet = true;
     }
 
-    const classificationLevel = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationLevelId);
+    const classificationLevel = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationLevel);
     if (classificationLevel && classificationLevel.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.classificationLevelMP}":${classificationLevel} `;
       propSet = true;
     }
 
-    const languageRequirement = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageRequirementId);
+    const languageRequirement = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageRequirement);
     if (languageRequirement && languageRequirement.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.languageRequirementMP}":${languageRequirement} `;
       propSet = true;
     }
 
-    const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationId);
+    const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.Duration);
     if (duration && duration.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.durationMP}":${duration} `;
       propSet = true;
     }
 
-    // TODO: Implement region or location
-    const region = sessionStorage.getItem(AdvancedSearchSessionKeys.RegionId) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
+    // TODO: Implement location
+    const location = sessionStorage.getItem(AdvancedSearchSessionKeys.Location) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
 
     return finalQuery;
   }
@@ -224,7 +224,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             description: 'The managed property name for LanguageRequirement', 
             placeholder: 'CM-LanguageRequirementId',
           }),
-          PropertyPaneTextField('queryModifierProperties.regionMP', {
+          PropertyPaneTextField('queryModifierProperties.regionMP', { // TODO: Update to location
             label: 'Region Managed Property',
             description: 'The managed property name for Region', 
             placeholder: 'CM-RegionId',
