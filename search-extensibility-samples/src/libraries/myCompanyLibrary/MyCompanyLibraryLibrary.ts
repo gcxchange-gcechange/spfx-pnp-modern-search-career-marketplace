@@ -129,22 +129,12 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     namespace.registerHelper('terms', (value: string) => {
       try {
         let terms = [];
-        let split = value.split('\n\nGTSet');
+        let split = value.split(';GTSet');
         for (let i = 0; i < split.length - (split.length > 1 ? 1 : 0); i++) {
           const parts = split[i].split('|');
           terms.push(parts[parts.length - 1]);
         }
         return terms.join(', ');
-      }
-      catch (e) {
-        console.log(e);
-        return value;
-      }
-    });
-
-    namespace.registerHelper('location', (value: string) => {
-      try {
-        return value.replace('Province:', '').replace('Region:', '').split(':').join(', ');
       }
       catch (e) {
         console.log(e);

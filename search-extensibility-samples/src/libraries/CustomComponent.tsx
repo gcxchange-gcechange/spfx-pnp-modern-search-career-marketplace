@@ -13,29 +13,20 @@ export interface IObjectParam {
 export interface ICustomComponentProps {
     path?: string;
     applicationDeadlineDate?: Date;
-    approvedStaffing?: boolean;
-    assetSkills?: string;
-    city?: string;
-    classificationCode?: string;
+    cityEn?: string;
+    cityFr?: string;
     classificationLevel?: string;
     contactEmail?: string;
     contactName?: string;
     contactObjectId?: string;
-    duration?: string;
-    department?: string;
-    essentialSkills?: string;
+    durationEn?: string;
+    durationFr?: string;
     jobDescriptionEn?: string;
     jobDescriptionFr?: string;
     jobTitleEn?: string;
     jobTitleFr?: string;
     jobType?: string;
-    languageRequirement?: string;
-    location?: string;
-    numberOfOpportunities?: string;
-    programArea?: string;
-    securityClearance?: string;
-    workArrangement?: string;
-    workSchedule?: string;
+    durationQuantity?: string;
 }
 
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
@@ -82,14 +73,14 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 <div className="sub">
                     <div>{strings.classificationLevel}: {props.classificationLevel}</div>
                     <div>{strings.opportunityType}: {getJobType()}</div>
-                    <div>{strings.duration}: {props.duration}</div>
+                    <div>{strings.duration}: {props.durationQuantity} {lang === Language.French ? props.durationFr : props.durationEn}</div>
                 </div>
                 <div className="description">
                     {lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn}
                 </div>
                 <div className="sub bold">
-                    <div>{strings.location}: {props.location}</div>
-                    <div>{strings.deadline}: {props.applicationDeadlineDate ? props.applicationDeadlineDate : 'None'}</div>
+                    <div>{strings.location}: {lang === Language.French ? props.cityFr : props.cityEn}</div>
+                    <div>{strings.deadline}: {props.applicationDeadlineDate ? props.applicationDeadlineDate : 'N/A'}</div>
                 </div>
                 <div className="contact">
                     <div className="profile">

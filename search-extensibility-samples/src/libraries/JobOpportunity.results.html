@@ -17,17 +17,20 @@
                 <job-opportunity-card 
                     path="{{item.Path}}"
                     application-deadline-date="{{item.CM-ApplicationDeadlineDate}}"
-                    city="{{item.CM-City}}"
+                    city-en="{{item.CM-City}}"
+                    city-fr="{{item.CM-CityFr}}"
                     classification-level="{{item.CM-ClassificationLevel}}"
                     contact-email="{{item.CM-ContactEmail}}"
                     contact-name="{{item.CM-ContactName}}"
                     contact-object-id="{{item.CM-ContactObjectId}}"
-                    duration="{{item.CM-Duration}}"
+                    duration-en="{{item.CM-Duration}}"
+                    duration-fr="{{item.CM-DurationFr}}"
                     job-description-en="{{item.CM-JobDescriptionEn}}"
                     job-description-fr="{{item.CM-JobDescriptionFr}}"
                     job-title-en="{{item.CM-JobTitleEn}}"
                     job-title-fr="{{item.CM-JobTitleFr}}"
-                    job-type="{{item.CM-JobType}}"
+                    job-type="{{terms item.CM-JobType}}"
+                    duration-quantity="{{item.CM-DurationQuantity}}"
                 >
                 </job-opportunity-card>
             {{/each}}
