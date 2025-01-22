@@ -14,8 +14,10 @@ export interface IAdvancedSearchQueryModifierProperties {
   classificationCodeMP: string;
   classificationLevelMP: string;
   languageRequirementMP: string;
-  regionMP: string;
+  languageComprehensionMP: string;
+  cityMP: string;
   durationMP: string;
+  durationQuantityMP: string;
 }
 
 enum AdvancedSearchSessionKeys {
@@ -24,8 +26,11 @@ enum AdvancedSearchSessionKeys {
   ClassificationLevel = 'gcx-cm-classificationLevel',
   Department = 'gcx-cm-department',
   Duration = 'gcx-cm-duration',
+  DurationQuantity = 'gcx-cm-durationQuantity',
+  DurationOperator = 'gcx-cm-durationOperator',
   LanguageRequirement = 'gcx-cm-languageRequirement',
-  Location = 'gcx-cm-location',
+  LanguageComprehension = 'gcx-cm-languageComprehension',
+  City = 'gcx-cm-city'
 }
 
 //CustomQueryModifier
@@ -119,7 +124,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       }
       propSet = true;
     }
-
+    
     const department = sessionStorage.getItem(AdvancedSearchSessionKeys.Department);
     if (department && department.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.departmentMP}":${department} `;
@@ -142,16 +147,33 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (languageRequirement && languageRequirement.trim() != '') {
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.languageRequirementMP}":${languageRequirement} `;
       propSet = true;
+
+      const languageComprehension = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageComprehension);
+      if (languageComprehension && languageComprehension.trim() != '') {
+        finalQuery += `AND "${this._properties.languageComprehensionMP}":"${languageComprehension}" `;
+      }
     }
 
     const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.Duration);
-    if (duration && duration.trim() != '') {
-      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.durationMP}":${duration} `;
+    const durationQuantity = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationQuantity);
+    const durationOperator = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationOperator);
+    if (duration && duration.trim() != '' &&
+        durationQuantity && durationQuantity.trim() != '' &&
+        durationOperator && durationOperator.trim() != '')  {
+
+      const operator = durationOperator === '0' ? '=' : (durationOperator === '2' ? '<=' : '>=');
+
+      // TODO: Hookup the RefinableString00 to DurationInDays crawled property to query against.
+      finalQuery += `${propSet ? 'AND ' : ''}("${this._properties.durationMP}":${duration} AND ${this._properties.durationQuantityMP}${operator}${durationQuantity}) `;
+
       propSet = true;
     }
 
-    // TODO: Implement location
-    const location = sessionStorage.getItem(AdvancedSearchSessionKeys.Location) || AdvancedSearchQueryModifier.DEFAULT_VALUE;
+    const city = sessionStorage.getItem(AdvancedSearchSessionKeys.City);
+    if (city && city.trim() != '') {
+      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.cityMP}":${city} `;
+      propSet = true;
+    }
 
     return finalQuery;
   }
@@ -224,15 +246,25 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             description: 'The managed property name for LanguageRequirement', 
             placeholder: 'CM-LanguageRequirementId',
           }),
-          PropertyPaneTextField('queryModifierProperties.regionMP', { // TODO: Update to location
-            label: 'Region Managed Property',
-            description: 'The managed property name for Region', 
-            placeholder: 'CM-RegionId',
+          PropertyPaneTextField('queryModifierProperties.languageComprehensionMP', {
+            label: 'Language Comprehension Managed Property',
+            description: 'The managed property name for LanguageComprehension', 
+            placeholder: 'CM-LanguageComprehension',
+          }),
+          PropertyPaneTextField('queryModifierProperties.cityMP', {
+            label: 'City Managed Property',
+            description: 'The managed property name for City', 
+            placeholder: 'CM-City',
           }),
           PropertyPaneTextField('queryModifierProperties.durationMP', {
             label: 'Duration Managed Property',
             description: 'The managed property name for Duration', 
             placeholder: 'CM-DurationId',
+          }),
+          PropertyPaneTextField('queryModifierProperties.durationQuantityMP', {
+            label: 'Duration Quantity Managed Property',
+            description: 'The managed property name for DurationQuantity', 
+            placeholder: 'RefinableInt00',
           })
         ],
       },
