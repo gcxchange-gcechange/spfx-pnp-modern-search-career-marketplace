@@ -160,13 +160,17 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (duration && duration.trim() != '' &&
         durationQuantity && durationQuantity.trim() != '' &&
         durationOperator && durationOperator.trim() != '')  {
+      try {
+        const operator = durationOperator === '0' ? '=' : (durationOperator === '2' ? '<=' : '>=');
+        const durationInDays = duration === '1' ? parseInt(durationQuantity) * 30 : parseInt(durationQuantity) * 360;
 
-      const operator = durationOperator === '0' ? '=' : (durationOperator === '2' ? '<=' : '>=');
+        finalQuery += `${propSet ? 'AND ' : ''}${this._properties.durationQuantityMP}${operator}${durationInDays} `;
 
-      // TODO: Hookup the RefinableString00 to DurationInDays crawled property to query against.
-      finalQuery += `${propSet ? 'AND ' : ''}("${this._properties.durationMP}":${duration} AND ${this._properties.durationQuantityMP}${operator}${durationQuantity}) `;
-
-      propSet = true;
+        propSet = true;
+      } catch(e) {
+        console.error('Couldn\'t performance advanced search on Duration because an error occured.');
+        console.error(e);
+      }
     }
 
     const city = sessionStorage.getItem(AdvancedSearchSessionKeys.City);
