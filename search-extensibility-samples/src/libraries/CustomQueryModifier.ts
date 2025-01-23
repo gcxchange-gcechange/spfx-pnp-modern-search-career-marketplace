@@ -14,7 +14,7 @@ export interface IAdvancedSearchQueryModifierProperties {
   classificationCodeMP: string;
   classificationLevelMP: string;
   languageRequirementMP: string;
-  languageComprehensionMP: string;
+  //languageComprehensionMP: string;
   cityMP: string;
   durationMP: string;
   durationQuantityMP: string;
@@ -29,7 +29,7 @@ enum AdvancedSearchSessionKeys {
   DurationQuantity = 'gcx-cm-durationQuantity',
   DurationOperator = 'gcx-cm-durationOperator',
   LanguageRequirement = 'gcx-cm-languageRequirement',
-  LanguageComprehension = 'gcx-cm-languageComprehension',
+  //LanguageComprehension = 'gcx-cm-languageComprehension',
   City = 'gcx-cm-city'
 }
 
@@ -148,10 +148,15 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.languageRequirementMP}":${languageRequirement} `;
       propSet = true;
 
-      const languageComprehension = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageComprehension);
-      if (languageComprehension && languageComprehension.trim() != '') {
-        finalQuery += `AND "${this._properties.languageComprehensionMP}":"${languageComprehension}" `;
-      }
+      // const languageComprehension = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageComprehension);
+      // if (languageComprehension && languageComprehension.trim() != '') {
+      //   finalQuery += ` AND ("${this._properties.languageComprehensionMP}":`;
+      //   let comprehensions = this.getAllLanguageComprehensions(languageComprehension);
+      //   for (let i = 0; i < comprehensions.length; i++) {
+      //     finalQuery += `${i > 0 ? 'OR ' : ''}"${comprehensions[i]}" `;
+      //   }
+      //   finalQuery += ')';
+      // }
     }
 
     const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.Duration);
@@ -181,6 +186,34 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     return finalQuery;
   }
+
+  // private getAllLanguageComprehensions(languageRequirement: string): string[] {
+  //   const results: string[] = [];
+
+  //   function helper(current: string, index: number) {
+  //       if (index === languageRequirement.length) {
+  //           results.push(current);
+  //           return;
+  //       }
+
+  //       const char = languageRequirement[index];
+  //       if (char === '-') {
+  //           helper(current + '-', index + 1);
+  //       } else if (char === 'A') {
+  //           helper(current + 'A', index + 1);
+  //           helper(current + 'B', index + 1);
+  //           helper(current + 'C', index + 1);
+  //       } else if (char === 'B') {
+  //           helper(current + 'B', index + 1);
+  //           helper(current + 'C', index + 1);
+  //       } else if (char === 'C') {
+  //           helper(current + 'C', index + 1);
+  //       }
+  //   }
+
+  //   helper('', 0);
+  //   return results;
+  // }
 
   // TODO: Update listeners
   public onPropertyUpdate(propertyPath: string, oldValue: any, newValue: any): void {
@@ -250,11 +283,11 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             description: 'The managed property name for LanguageRequirement', 
             placeholder: 'CM-LanguageRequirementId',
           }),
-          PropertyPaneTextField('queryModifierProperties.languageComprehensionMP', {
-            label: 'Language Comprehension Managed Property',
-            description: 'The managed property name for LanguageComprehension', 
-            placeholder: 'CM-LanguageComprehension',
-          }),
+          // PropertyPaneTextField('queryModifierProperties.languageComprehensionMP', {
+          //   label: 'Language Comprehension Managed Property',
+          //   description: 'The managed property name for LanguageComprehension', 
+          //   placeholder: 'CM-LanguageComprehension',
+          // }),
           PropertyPaneTextField('queryModifierProperties.cityMP', {
             label: 'City Managed Property',
             description: 'The managed property name for City', 
