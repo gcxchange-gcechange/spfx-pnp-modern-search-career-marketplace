@@ -186,8 +186,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     }
 
     // Only show results where the ApplicationDeadlineDate is today's date or greater
-    finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.deadlineFilterMP}">=${new Date().toISOString()}`;
-
+    const today = new Date();
+    const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
+    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate} `;
+    
     return finalQuery;
   }
 
@@ -308,8 +310,8 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             placeholder: 'RefinableInt00',
           }),
           PropertyPaneTextField('queryModifierProperties.deadlineFilterMP', {
-            label: 'ApplicationDeadline Filter Managed Property',
-            description: 'The filter managed property name for ApplicationDeadline', 
+            label: 'ApplicationDeadlineDate Filter Managed Property',
+            description: 'The filter managed property name for ApplicationDeadlineDate', 
             placeholder: 'RefinableDateFirst00',
           })
         ],
