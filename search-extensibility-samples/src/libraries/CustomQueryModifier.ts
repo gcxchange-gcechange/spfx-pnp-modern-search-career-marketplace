@@ -297,7 +297,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           PropertyPaneTextField('queryModifierProperties.cityMP', {
             label: 'City Managed Property',
             description: 'The managed property name for City', 
-            placeholder: 'CM-City',
+            placeholder: 'CM-CityId',
           }),
           PropertyPaneTextField('queryModifierProperties.durationMP', {
             label: 'Duration Managed Property',

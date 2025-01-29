@@ -56,6 +56,15 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         window.location.href = `mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}`;
     };
 
+    const getApplicationDeadlineDate = () => {
+        if (props.applicationDeadlineDate) {
+            const utcDate = new Date(`${props.applicationDeadlineDate.toString()} UTC`);
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; 
+            return utcDate.toLocaleString('en-US', { timeZone: userTimeZone });
+        }
+        return 'N/A';
+    }
+
     return (
         <div 
             className="jobcard" 
@@ -80,7 +89,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 </div>
                 <div className="sub bold">
                     <div>{strings.location}: {lang === Language.French ? props.cityFr : props.cityEn}</div>
-                    <div>{strings.deadline}: {props.applicationDeadlineDate ? props.applicationDeadlineDate : 'N/A'}</div>
+                    <div>{strings.deadline}: {getApplicationDeadlineDate()}</div>
                 </div>
                 <div className="contact">
                     <div className="profile">
