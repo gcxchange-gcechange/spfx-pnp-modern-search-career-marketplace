@@ -18,6 +18,7 @@ export interface IAdvancedSearchQueryModifierProperties {
   cityMP: string;
   durationMP: string;
   durationQuantityMP: string;
+  deadlineFilterMP: string;
 }
 
 enum AdvancedSearchSessionKeys {
@@ -184,6 +185,9 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       propSet = true;
     }
 
+    // Only show results where the ApplicationDeadlineDate is today's date or greater
+    finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.deadlineFilterMP}">=${new Date().toISOString()}`;
+
     return finalQuery;
   }
 
@@ -302,6 +306,11 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             label: 'Duration Quantity Managed Property',
             description: 'The managed property name for DurationQuantity', 
             placeholder: 'RefinableInt00',
+          }),
+          PropertyPaneTextField('queryModifierProperties.deadlineFilterMP', {
+            label: 'ApplicationDeadline Filter Managed Property',
+            description: 'The filter managed property name for ApplicationDeadline', 
+            placeholder: 'RefinableDateFirst00',
           })
         ],
       },
