@@ -20,6 +20,7 @@ export interface ICustomLayoutProperties {
     jobTitleFr: string;
     jobType: string;
     durationQuantity: string;
+    jobTypeTermSetGuid: string;
 }
 
 export enum PropertyPaneProps {
@@ -40,6 +41,7 @@ export enum PropertyPaneProps {
     JobTitleFr = 'layoutProperties.jobTitleFr',
     JobType = 'layoutProperties.jobType',
     DurationQuantity = 'layoutProperties.durationQuantity',
+    JobTypeTermSetGuid = 'layoutProperties.jobTypeGuid'
 }
 
 export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
@@ -158,6 +160,12 @@ export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
                 placeholder: 'CM-DurationQuantity',
                 onGetErrorMessage: this.validateRequiredField.bind(this)
             }),
+            PropertyPaneTextField(PropertyPaneProps.JobTypeTermSetGuid, {
+                label: 'JobType term set GUID',
+                value: this.properties.jobTypeTermSetGuid,
+                placeholder: '45f37f08-3ff4-4d84-bf21-4a77ddffcf3e',
+                onGetErrorMessage: this.validateRequiredField.bind(this)
+            })
         ];
     }
 
