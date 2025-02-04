@@ -16,7 +16,7 @@
     },
     "webApiPermissionRequests": [
       {
-        "resource": "SharePoint",
+        "resource": "Office 365 SharePoint Online",
         "scope": "TermStore.Read.All"
       }
     ]

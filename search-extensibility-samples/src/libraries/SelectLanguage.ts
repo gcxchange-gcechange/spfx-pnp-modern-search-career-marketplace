@@ -1,17 +1,17 @@
-import * as strings from 'MyCompanyLibraryLibraryStrings';
+import { Language } from './Globals';
 const english = require("./myCompanyLibrary/loc/en-us.js")
 const french = require("./myCompanyLibrary/loc/fr-fr.js")
 
-export function SelectLanguage(lang: string): IMyCompanyLibraryLibraryStrings  {
-    switch (lang !== undefined ? lang.toLowerCase() : lang) {
-        case "en": {
+export function SelectLanguage(lang: Language): IMyCompanyLibraryLibraryStrings  {
+    switch (lang) {
+        case Language.English: {
             return english;
         }
-        case "fr": {
+        case Language.French: {
             return french;
         }
         default: {
-            return strings;
+            return english;
         }
     }
 }

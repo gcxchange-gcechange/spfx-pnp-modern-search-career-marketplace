@@ -36,48 +36,15 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const strings = SelectLanguage(Globals.getLanguage());
     const lang = Globals.getLanguage();
 
-    async function translateTerm(term: string, termSetGuid: string, elementId: string) {
-        if (term && props.jobTypeTermSetGuid && lang !== Language.English) {
-            const termsSplit = term.split(/;(?=GP0)/g);
-    
-            const fetchPromises = termsSplit.map(async (term) => {
-                const match = term.match(/#([0-9a-fA-F-]+)/);
-                const termId = match ? match[1] : null;
-    
-                if (!termId) return null;
-    
-                try {
-                    const response = await fetch(`/_api/v2.1/termstore/sets/${termSetGuid}/terms/${termId}`, {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json;odata=verbose' }
-                    });
-    
-                    if (!response.ok) throw new Error(`Failed to fetch term: ${termId}`);
-    
-                    const data = await response.json();
-                    const translatedLabel = data.labels.find((label: { languageTag: string; }) => label.languageTag === lang)?.name || null;
-                    
-                    return translatedLabel;
-                } catch (error) {
-                    console.error("Error fetching term:", error);
-                    return null;
-                }
-            });
-    
-            const translatedTerms = await Promise.all(fetchPromises);
-            const finalTranslation = translatedTerms.filter(label => label !== null).join(", ");
-    
-            const template = document.getElementById(elementId);
-            if (template) {
-                template.innerText = finalTranslation;
-            } else {
-                console.error(`Couldn't find element with ID ${elementId}`);
-            }
+    // Translate the JobType terms
+    const jobTypeIds = getTermIds(props.jobType);
+    if (jobTypeIds) {
+        const jobTypeLabels: string[] = [];
+        for (let i = 0; i < jobTypeIds.length; i++) {
+            jobTypeLabels.push(getJobTypeLabel(jobTypeIds[i], lang));
         }
+        props.jobType = jobTypeLabels.join(', ');
     }
-
-    translateTerm(props.jobType, props.jobTypeTermSetGuid, `jobType-${props.path}`);
-
     
     const getContactNameInitials = () => {
         if (props.contactName) {
@@ -105,7 +72,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return 'N/A';
     }
 
-    const termLabel = (value: string) => {
+    // Fallback to default language incase we can't get the translations
+    const termLabelDefaultLanguage = (value: string) => {
         try {
             if (value){
                 let terms = [];
@@ -124,6 +92,42 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         }
     }
 
+    function getTermIds(terms: string): string[] | null {
+        if (terms) {
+            const termIds: string[] = [];
+
+            const termsSplit = terms.split(/;(?=GP0)/g);
+            for (let i = 0; i < termsSplit.length; i++) {
+                const match = termsSplit[i].match(/#([0-9a-fA-F-]+)/);
+                const termId = match ? match[1] : null;
+                if (termId)
+                    termIds.push(termId);
+            }
+
+            return termIds;
+        }
+
+        return null;
+    }
+
+    function getJobTypeLabel(termId: string, language: Language): string {
+        try {
+            const jobTypes: any[] = Globals.getJobTypes();
+            for (let i = 0; i < jobTypes.length; i++) {
+                if (jobTypes[i].id === termId) {
+                    for (let n = 0; n < jobTypes[i].labels.length; n++) {
+                        if (jobTypes[i].labels[n].languageTag === language) {
+                            return jobTypes[i].labels[n].name;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error(`Unable to get JobType label for ${termId} - ${e}`)
+        }
+        return 'N/A';
+    }
+
     return (
         <div 
             className="jobcard" 
@@ -140,7 +144,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 </h3>
                 <div className="sub">
                     <div>{strings.classificationLevel}: {props.classificationLevel}</div>
-                    <div>{strings.opportunityType}: <span id={`jobType-${props.path}`}>{termLabel(props.jobType)}</span></div>
+                    <div>{strings.opportunityType}: {termLabelDefaultLanguage(props.jobType)}</div>
                     <div>{strings.duration}: {props.durationQuantity} {lang === Language.French ? props.durationFr : props.durationEn}</div>
                 </div>
                 <div className="description">

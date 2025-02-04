@@ -41,7 +41,7 @@ export enum PropertyPaneProps {
     JobTitleFr = 'layoutProperties.jobTitleFr',
     JobType = 'layoutProperties.jobType',
     DurationQuantity = 'layoutProperties.durationQuantity',
-    JobTypeTermSetGuid = 'layoutProperties.jobTypeGuid'
+    JobTypeTermSetGuid = 'layoutProperties.jobTypeTermSetGuid'
 }
 
 export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
@@ -50,6 +50,7 @@ export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
         this.properties.selectedLanguage = this.properties.selectedLanguage !== null ? this.properties.selectedLanguage : Language.English;
         Globals.setLanguage(this.properties.selectedLanguage);
         Globals.jobOpportunityPageUrl = this.properties.jobOpportunityPageUrl;
+        this.getJobTypes();
     }
 
     private validateRequiredField(value: string): string {
@@ -177,6 +178,23 @@ export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
             case PropertyPaneProps.JobOpportunityPageUrl:
                 Globals.jobOpportunityPageUrl = newValue;
                 break;
+        }
+    }
+
+    private async getJobTypes() {
+        try {
+            const response = await fetch(`/_api/v2.1/termstore/sets/${this.properties.jobTypeTermSetGuid}/terms/`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json;odata=verbose' }
+            });
+            
+            if (!response.ok) throw new Error(`Failed to fetch term set: ${this.properties.jobTypeTermSetGuid}`);
+            
+            const jobTypes = await response.json();
+
+            Globals.setJobTypes(jobTypes.value)
+        } catch (error) {
+            console.error("Error fetching term set:", error);
         }
     }
 }
