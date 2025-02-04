@@ -113,6 +113,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
             .replace(' »','')
             .replace('<em>[object Object]</em>', '')
             .replace('\'<em>[object Object]</em>\'', '')
+            .replace('\'\'','')
             .replace('results', SelectLanguage(Globals.getLanguage()).results)}`
         );
       }
