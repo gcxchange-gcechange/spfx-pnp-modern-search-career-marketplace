@@ -16,7 +16,7 @@
     },
     "webApiPermissionRequests": [
       {
-        "resource": "Microsoft Graph",
+        "resource": "SharePoint",
         "scope": "TermStore.Read.All"
       }
     ]
