@@ -11,7 +11,7 @@
                <!-- <label class="ms-fontWeight-semibold">{{results (getCountMessage @root.data.totalItemsCount @root.inputQueryText)}}</label> -->
            </div>
         {{/if}}
-
+        
         <ul class="template_defaultList cmresults">
             {{#each data.items as |item|}} 
                 <job-opportunity-card 
@@ -29,8 +29,9 @@
                     job-description-fr="{{ lookup item @root.properties.layoutProperties.jobDescriptionFr }}"
                     job-title-en="{{ lookup item @root.properties.layoutProperties.jobTitleEn }}"
                     job-title-fr="{{ lookup item @root.properties.layoutProperties.jobTitleFr }}"
-                    job-type="{{ terms (lookup item @root.properties.layoutProperties.jobType) }}"
+                    job-type="{{ lookup item @root.properties.layoutProperties.jobType }}"
                     duration-quantity="{{ lookup item @root.properties.layoutProperties.durationQuantity }}"
+                    job-type-term-set-guid="{{ @root.properties.layoutProperties.jobTypeTermSetGuid }}"
                 >
                 </job-opportunity-card>
             {{/each}}

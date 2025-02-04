@@ -106,7 +106,14 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     namespace.registerHelper('resultsNoQueryText', (value: any) => {
       try {
         return new namespace.SafeString(
-          `${value['string'].replace(' for ', '').replace('\'<em>[object Object]</em>\'', '').replace('results', SelectLanguage(Globals.getLanguage()).results)}`
+          `${value['string']
+            .replace(' for ', '')
+            .replace(' de ', '')
+            .replace('« ','')
+            .replace(' »','')
+            .replace('<em>[object Object]</em>', '')
+            .replace('\'<em>[object Object]</em>\'', '')
+            .replace('results', SelectLanguage(Globals.getLanguage()).results)}`
         );
       }
       catch (e) {

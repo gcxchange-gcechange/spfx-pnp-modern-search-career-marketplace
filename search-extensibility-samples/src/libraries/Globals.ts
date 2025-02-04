@@ -1,6 +1,6 @@
 export enum Language {
-    English = 'en',
-    French = 'fr'
+    English = 'en-US',
+    French = 'fr-FR'
 }
 
 export class Globals {
@@ -14,11 +14,15 @@ export class Globals {
     public static setLanguage(lang: string): void {
         if (lang) {
             lang = lang.toLowerCase();
-            if (lang === Language.English || lang === Language.French) {
-                this._language = lang;
-                return;
+            if (lang === 'en') {
+                this._language = Language.English;
             }
-            this._language = 'en';
+            else if (lang === 'fr') {
+                this._language = Language.French;
+            }
+            else {
+                this._language = Language.English;
+            }
         }
     }
 }

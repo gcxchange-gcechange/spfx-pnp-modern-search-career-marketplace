@@ -27,6 +27,7 @@ export interface ICustomComponentProps {
     jobTitleFr?: string;
     jobType?: string;
     durationQuantity?: string;
+    jobTypeTermSetGuid?: string;
 }
 
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
@@ -34,6 +35,49 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const theme = useTheme();
     const strings = SelectLanguage(Globals.getLanguage());
     const lang = Globals.getLanguage();
+
+    async function translateTerm(term: string, termSetGuid: string, elementId: string) {
+        if (term && props.jobTypeTermSetGuid && lang !== Language.English) {
+            const termsSplit = term.split(/;(?=GP0)/g);
+    
+            const fetchPromises = termsSplit.map(async (term) => {
+                const match = term.match(/#([0-9a-fA-F-]+)/);
+                const termId = match ? match[1] : null;
+    
+                if (!termId) return null;
+    
+                try {
+                    const response = await fetch(`/_api/v2.1/termstore/sets/${termSetGuid}/terms/${termId}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json;odata=verbose' }
+                    });
+    
+                    if (!response.ok) throw new Error(`Failed to fetch term: ${termId}`);
+    
+                    const data = await response.json();
+                    const translatedLabel = data.labels.find((label: { languageTag: string; }) => label.languageTag === lang)?.name || null;
+                    
+                    return translatedLabel;
+                } catch (error) {
+                    console.error("Error fetching term:", error);
+                    return null;
+                }
+            });
+    
+            const translatedTerms = await Promise.all(fetchPromises);
+            const finalTranslation = translatedTerms.filter(label => label !== null).join(", ");
+    
+            const template = document.getElementById(elementId);
+            if (template) {
+                template.innerText = finalTranslation;
+            } else {
+                console.error(`Couldn't find element with ID ${elementId}`);
+            }
+        }
+    }
+
+    translateTerm(props.jobType, props.jobTypeTermSetGuid, `jobType-${props.path}`);
+
     
     const getContactNameInitials = () => {
         if (props.contactName) {
@@ -41,10 +85,6 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
             return nameSplit[0] ? nameSplit[0][0] + (nameSplit[1] ? nameSplit[1][0] : '') : 'NA';
         }
         return 'NA';
-    };
-
-    const getJobType = () => {
-        return props.jobType ? props.jobType.replace(';', ', ') : 'N/A';
     };
 
     const handleViewClick = () => {
@@ -65,6 +105,25 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return 'N/A';
     }
 
+    const termLabel = (value: string) => {
+        try {
+            if (value){
+                let terms = [];
+                let split = value.split(';GTSet');
+                for (let i = 0; i < split.length - (split.length > 1 ? 1 : 0); i++) {
+                    const parts = split[i].split('|');
+                    terms.push(parts[parts.length - 1]);
+                }
+                return terms.join(', ');
+            }
+            return value;
+        }
+        catch (e) {
+            console.log(e);
+            return value;
+        }
+    }
+
     return (
         <div 
             className="jobcard" 
@@ -81,7 +140,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 </h3>
                 <div className="sub">
                     <div>{strings.classificationLevel}: {props.classificationLevel}</div>
-                    <div>{strings.opportunityType}: {getJobType()}</div>
+                    <div>{strings.opportunityType}: <span id={`jobType-${props.path}`}>{termLabel(props.jobType)}</span></div>
                     <div>{strings.duration}: {props.durationQuantity} {lang === Language.French ? props.durationFr : props.durationEn}</div>
                 </div>
                 <div className="description">
