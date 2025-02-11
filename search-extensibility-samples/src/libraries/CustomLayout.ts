@@ -62,7 +62,7 @@ export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
             PropertyPaneTextField(PropertyPaneProps.SelectedLanguage , {
                 label: 'Selected language',
                 value: Globals.getLanguage(),
-                placeholder: `${Language.English} or ${Language.French}`
+                placeholder: `en or fr`
             }),
             PropertyPaneTextField(PropertyPaneProps.JobOpportunityPageUrl, {
                 label: 'Job opportunity page URL',

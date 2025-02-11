@@ -37,6 +37,7 @@ enum AdvancedSearchSessionKeys {
 //CustomQueryModifier
 export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSearchQueryModifierProperties> {
   private static readonly DEFAULT_VALUE = '*';
+  private lang = Globals.getLanguage();
 
   public async onInit(): Promise<void> {
 
@@ -187,7 +188,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     // Only show results where the ApplicationDeadlineDate is today's date or greater
     const today = new Date();
-    const formattedUTCDate = `${today.getUTCDate()}/${today.getUTCMonth() + 1}/${today.getUTCFullYear()}`;
+    const formattedUTCDate = this.lang === Language.French ? 
+      `${today.getUTCDate()}/${today.getUTCMonth() + 1}/${today.getUTCFullYear()}` : 
+      `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
+
     finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate} `;
     
     return finalQuery;

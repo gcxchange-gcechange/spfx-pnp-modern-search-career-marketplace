@@ -15,10 +15,10 @@ export class Globals {
     public static setLanguage(lang: string): void {
         if (lang) {
             lang = lang.toLowerCase();
-            if (lang === 'en') {
+            if (lang === Language.English || lang === 'en') {
                 this._language = Language.English;
             }
-            else if (lang === 'fr') {
+            else if (lang === Language.French || lang === 'fr') {
                 this._language = Language.French;
             }
             else {
