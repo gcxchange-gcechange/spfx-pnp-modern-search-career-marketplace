@@ -142,7 +142,10 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         color: `${theme.palette.themePrimary}`,
                     }}
                 >
-                    <a href={`${Globals.jobOpportunityPageUrl}${props.path.split('ID=')[1]}`} rel="noreferrer" target='_blank'>
+                    <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        window.open(`${Globals.jobOpportunityPageUrl}${props.path.split('ID=')[1]}`, '_blank', 'noopener,noreferrer');
+                    }}>
                         {lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
                     </a>
                 </h3>
