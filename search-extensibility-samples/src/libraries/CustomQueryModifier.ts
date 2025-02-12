@@ -188,9 +188,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     // Only show results where the ApplicationDeadlineDate is today's date or greater
     const today = new Date();
-    const formattedUTCDate = this.lang === Language.French ? 
-      `${today.getUTCDate()}/${today.getUTCMonth() + 1}/${today.getUTCFullYear()}` : 
-      `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
+    const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
 
     finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate} `;
     

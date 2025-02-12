@@ -38,12 +38,14 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
-    if (jobTypeIds) {
+    if (jobTypeIds && Globals.getJobTypes()) {
         const jobTypeLabels: string[] = [];
         for (let i = 0; i < jobTypeIds.length; i++) {
             jobTypeLabels.push(getJobTypeLabel(jobTypeIds[i], lang));
         }
         props.jobType = jobTypeLabels.join(', ');
+    } else {
+        console.warn('Unable to translate JobType... defaulting to display language.');
     }
     
     const getContactNameInitials = () => {
@@ -140,19 +142,31 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         color: `${theme.palette.themePrimary}`,
                     }}
                 >
-                    {lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
+                    <a href={`${Globals.jobOpportunityPageUrl}${props.path.split('ID=')[1]}`} rel="noreferrer" target='_blank'>
+                        {lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
+                    </a>
                 </h3>
                 <div className="sub">
-                    <div>{strings.classificationLevel}: {props.classificationLevel}</div>
-                    <div>{strings.opportunityType}: {termLabelDefaultLanguage(props.jobType)}</div>
-                    <div>{strings.duration}: {props.durationQuantity} {lang === Language.French ? props.durationFr : props.durationEn}</div>
+                    <div>
+                        <b>{strings.classificationLevel}</b>: {props.classificationLevel}
+                    </div>
+                    <div>
+                        <b>{strings.opportunityType}</b>: {termLabelDefaultLanguage(props.jobType)}
+                    </div>
+                    <div>
+                        <b>{strings.duration}</b>: {props.durationQuantity} {lang === Language.French ? props.durationFr : props.durationEn}
+                    </div>
                 </div>
                 <div className="description">
-                    {lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn}
+                    <b>{strings.description}</b>: {lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn}
                 </div>
-                <div className="sub bold">
-                    <div>{strings.location}: {lang === Language.French ? props.cityFr : props.cityEn}</div>
-                    <div>{strings.deadline}: {getApplicationDeadlineDate()}</div>
+                <div className="sub">
+                    <div>
+                        <b>{strings.location}</b>: {lang === Language.French ? props.cityFr : props.cityEn}
+                    </div>
+                    <div>
+                        <b>{strings.deadline}</b>: {getApplicationDeadlineDate()}
+                    </div>
                 </div>
                 <div className="contact">
                     <div className="profile">

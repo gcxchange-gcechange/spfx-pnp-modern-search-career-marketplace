@@ -14,6 +14,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   classificationLevel: string;
   opportunityType: string;
   duration: string;
+  description: string;
   location: string;
   deadline: string;
   view: string;

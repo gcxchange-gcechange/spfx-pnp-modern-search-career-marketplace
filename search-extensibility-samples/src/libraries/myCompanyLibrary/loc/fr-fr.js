@@ -15,6 +15,7 @@ define([], function() {
         "classificationLevel": "Niveau de classement",
         "opportunityType": "Type d'opportunité",
         "duration": "Durée",
+        "description": "Description",
         "location": "Emplacement",
         "deadline": "Date limite",
         "view": "Voir",

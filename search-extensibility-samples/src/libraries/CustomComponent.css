@@ -7,6 +7,11 @@ h3 {
     text-overflow: ellipsis;
 }
 
+h3 a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .sub {
     display: flex;
     flex-direction: column;
