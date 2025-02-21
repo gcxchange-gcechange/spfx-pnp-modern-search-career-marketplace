@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BaseWebComponent } from '@pnp/modern-search-extensibility';
 import * as ReactDOM from 'react-dom';
-import { PrimaryButton, DefaultButton, useTheme } from '@fluentui/react';
+import { PrimaryButton, DefaultButton, useTheme, Link } from '@fluentui/react';
 import { SelectLanguage } from './SelectLanguage';
 import './CustomComponent.css';
 import { Globals, Language } from './Globals';
@@ -35,6 +35,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const theme = useTheme();
     const strings = SelectLanguage(Globals.getLanguage());
     const lang = Globals.getLanguage();
+    const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
+    const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
@@ -54,15 +56,6 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
             return nameSplit[0] ? nameSplit[0][0] + (nameSplit[1] ? nameSplit[1][0] : '') : 'NA';
         }
         return 'NA';
-    };
-
-    const handleViewClick = () => {
-        if (props.path && props.path.split('ID=').length == 2) 
-            window.open(`${Globals.jobOpportunityPageUrl}${props.path.split('ID=')[1]}`, '_blank');
-    };
-
-    const handleApplyClick = () => {
-        window.location.href = `mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}`;
     };
 
     const getApplicationDeadlineDate = () => {
@@ -183,16 +176,26 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     </div>
                 </div>
                 <div className="actions">
-                    <DefaultButton 
-                        text={strings.view} 
-                        aria-label={strings.viewAria}
-                        onClick={handleViewClick}
-                    />
-                    <PrimaryButton 
-                        text={strings.apply}
-                        aria-label={strings.applyAria}
-                        onClick={handleApplyClick} 
-                    />
+                    <Link 
+                        href={jobUrl} 
+                        target='_blank'
+                    >
+                        <DefaultButton 
+                            id={'jobView-'+ jobId}
+                            aria-label={strings.viewAria}
+                            text={strings.view}
+                        />
+                    </Link>
+                    <Link 
+                        href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}&JobOpportunityId=${jobId}`}
+                        target='_blank'
+                    >
+                        <PrimaryButton 
+                            id={'jobApply-'+ jobId}
+                            aria-label={strings.applyAria}
+                            text={strings.apply}
+                        />
+                    </Link>
                 </div>
             </div>
         </div>
