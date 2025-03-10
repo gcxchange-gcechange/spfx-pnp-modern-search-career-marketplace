@@ -133,6 +133,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
             <div className="card-content">
                 <h3 style={{
                         color: `${theme.palette.themePrimary}`,
+                        overflow: 'hidden',
+                        maxWidth: '350px'
                     }}
                 >
                     <a href="#" onClick={(e) => {

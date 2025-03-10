@@ -94,6 +94,9 @@ h3 a:focus-visible {
 }
 
 @media (max-width: 900px) {
+    .card-content h3 {
+        max-width: 80vw !important;
+    }
     .template_defaultList {
         grid-template-columns: 1fr;
     }
