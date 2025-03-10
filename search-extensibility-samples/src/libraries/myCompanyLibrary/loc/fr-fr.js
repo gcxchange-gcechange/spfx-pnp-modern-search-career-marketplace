@@ -22,7 +22,7 @@ define([], function() {
         "apply": "Appliquer",
         "results": "résultats",
         "resultsFor": "résultats pour",
-        "viewAria": "Cliquez pour voir le travail: ",
-        "applyAria": "Cliquez pour postuler à l'emploi: "
+        "viewAria": "Voir ",
+        "applyAria": "Postuler à "
     }
 });
