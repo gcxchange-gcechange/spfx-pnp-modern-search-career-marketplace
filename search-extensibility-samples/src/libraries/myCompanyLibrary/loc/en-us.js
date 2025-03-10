@@ -22,7 +22,7 @@ define([], function() {
       "apply": "Apply",
       "results": "results",
       "resultsFor": "results for",
-      "viewAria": "Click to view this job opportunity in full.",
-      "applyAria": "Click to apply for this job opportunity."
+      "viewAria": "Click to view the job: ",
+      "applyAria": "Click to apply for the job: "
   }
 });

@@ -184,7 +184,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     >
                         <DefaultButton 
                             id={'jobView-'+ jobId}
-                            aria-label={strings.viewAria}
+                            aria-label={strings.viewAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
                             text={strings.view}
                         />
                     </Link>
@@ -194,7 +194,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     >
                         <PrimaryButton 
                             id={'jobApply-'+ jobId}
-                            aria-label={strings.applyAria}
+                            aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
                             text={strings.apply}
                         />
                     </Link>
