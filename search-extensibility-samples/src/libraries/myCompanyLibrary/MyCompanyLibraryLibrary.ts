@@ -39,6 +39,8 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       this._spHttpClient = serviceScope.consume(SPHttpClient.serviceKey);
       this._pageContext = serviceScope.consume(PageContext.serviceKey);
       this._currentWebUrl = this._pageContext.web.absoluteUrl;
+
+      Globals.userDisplayName = this._pageContext.user.displayName;
     });
   }
 

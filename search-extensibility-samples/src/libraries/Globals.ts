@@ -4,8 +4,9 @@ export enum Language {
 }
 
 export class Globals {
-    private static _language: Language;
     public static jobOpportunityPageUrl: string;
+    public static userDisplayName: string;
+    private static _language: Language;
     private static _jobTypes: string[];
 
     public static getLanguage(): Language {

@@ -37,6 +37,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const lang = Globals.getLanguage();
     const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
     const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
+    const mailApplyBodyEn = encodeURIComponent(`Hello ${props.contactName},\nI hope this message finds you well. My name is ${Globals.userDisplayName}, and I am interested in the career opportunity you posted on the GCXchange Career Marketplace. Please find my resumé attached for your review.\nI would appreciate the opportunity to discuss how my skills align with your needs.\nThank you for your time and consideration.\nBest regards,\n${Globals.userDisplayName}`);
+    const mailApplyBodyFr = encodeURIComponent(`Bonjour ${props.contactName},\nJ\’espère que vous allez bien. Mon nom est ${Globals.userDisplayName} et l\’offre d\’emploi que vous avez publiée dans le Carrefour d\’emploi sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\nCordialement,\n${Globals.userDisplayName}`);
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
@@ -189,7 +191,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         />
                     </Link>
                     <Link 
-                        href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}&JobOpportunityId=${jobId}`}
+                        href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
                         target='_blank'
                     >
                         <PrimaryButton 
