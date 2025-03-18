@@ -191,7 +191,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         />
                     </Link>
                     <Link 
-                        href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? props.jobTitleFr : props.jobTitleEn}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
+                        href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? `Intérêt pour l'opportunité ${props.jobTitleFr}` : `Interested in the ${props.jobTitleEn} opportunity`}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
                         target='_blank'
                     >
                         <PrimaryButton 

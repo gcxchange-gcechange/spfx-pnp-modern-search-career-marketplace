@@ -56,31 +56,33 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const context = this;
     
-    // Search button
-    if (this._properties.searchButtonId) {
-      let el = document.getElementById(this._properties.searchButtonId);
-      if (el) {
-        el.addEventListener('click', (event) => {
-          event.preventDefault();
-          setTimeout(() => {
-            context.triggerSearch();
-          }, 0);
-        });
-      } else { console.error(`Advanced Search: Couldn't find advanced search button element with the ID \'${this._properties.searchButtonId}\'`); }
-    } else { console.error(`Advanced Search: No ID provided for SearchButton`); }
+    setTimeout(() => {
+      // Search button
+      if (context._properties.searchButtonId) {
+        let el = document.getElementById(this._properties.searchButtonId);
+        if (el) {
+          el.addEventListener('click', (event) => {
+            event.preventDefault();
+            setTimeout(() => {
+              context.triggerSearch();
+            }, 0);
+          });
+        } else { console.error(`Advanced Search: Couldn't find advanced search button element with the ID \'${this._properties.searchButtonId}\'`); }
+      } else { console.error(`Advanced Search: No ID provided for SearchButton`); }
 
-    // Clear button
-    if (this._properties.clearButtonId) {
-      let el = document.getElementById(this._properties.clearButtonId);
-      if (el) {
-        el.addEventListener('click', (event) => {
-          event.preventDefault();
-          setTimeout(() => {
-            context.triggerSearch();
-          }, 0);
-        });
-      } else { console.error(`Advanced Search: Couldn't find advanced clear button element with the ID \'${this._properties.clearButtonId}\'`); }
-    } else { console.error(`Advanced Search: No ID provided for ClearButton`); }
+      // Clear button
+      if (context._properties.clearButtonId) {
+        let el = document.getElementById(this._properties.clearButtonId);
+        if (el) {
+          el.addEventListener('click', (event) => {
+            event.preventDefault();
+            setTimeout(() => {
+              context.triggerSearch();
+            }, 0);
+          });
+        } else { console.error(`Advanced Search: Couldn't find advanced clear button element with the ID \'${this._properties.clearButtonId}\'`); }
+      } else { console.error(`Advanced Search: No ID provided for ClearButton`); }
+    }, 1000);
   }
 
   private triggerSearch(): void {
