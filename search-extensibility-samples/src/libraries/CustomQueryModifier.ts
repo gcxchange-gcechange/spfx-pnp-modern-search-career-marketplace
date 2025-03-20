@@ -55,34 +55,47 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
   private setupListeners(): void {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const context = this;
-    
-    setTimeout(() => {
-      // Search button
-      if (context._properties.searchButtonId) {
-        let el = document.getElementById(this._properties.searchButtonId);
-        if (el) {
-          el.addEventListener('click', (event) => {
-            event.preventDefault();
-            setTimeout(() => {
-              context.triggerSearch();
-            }, 0);
-          });
-        } else { console.error(`Advanced Search: Couldn't find advanced search button element with the ID \'${this._properties.searchButtonId}\'`); }
-      } else { console.error(`Advanced Search: No ID provided for SearchButton`); }
+    let attempts = 0;
+    const maxAttempts = 10;
 
-      // Clear button
-      if (context._properties.clearButtonId) {
-        let el = document.getElementById(this._properties.clearButtonId);
+    const tryGetElement = (id: string, callback: any) => {
+      if (!id) {
+        console.error(`Advanced Search: No ID provided`);
+        return;
+      }
+  
+      const interval = setInterval(() => {
+        let el = document.getElementById(id);
         if (el) {
-          el.addEventListener('click', (event) => {
-            event.preventDefault();
-            setTimeout(() => {
-              context.triggerSearch();
-            }, 0);
-          });
-        } else { console.error(`Advanced Search: Couldn't find advanced clear button element with the ID \'${this._properties.clearButtonId}\'`); }
-      } else { console.error(`Advanced Search: No ID provided for ClearButton`); }
-    }, 1000);
+          clearInterval(interval);
+          callback(el);
+        } else {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            clearInterval(interval);
+            console.error(`Advanced Search: Couldn't find element with the ID '${id}' after ${maxAttempts} attempts.`);
+          }
+        }
+      }, 1000);
+    };
+
+    tryGetElement(this._properties.searchButtonId, (el: HTMLElement) => {
+      el.addEventListener('click', (event) => {
+        event.preventDefault();
+        setTimeout(() => {
+          context.triggerSearch();
+        }, 0);
+      });
+    });
+
+    tryGetElement(this._properties.clearButtonId, (el: HTMLElement) => {
+      el.addEventListener('click', (event) => {
+        event.preventDefault();
+        setTimeout(() => {
+          context.triggerSearch();
+        }, 0);
+      });
+    });
   }
 
   private triggerSearch(): void {
