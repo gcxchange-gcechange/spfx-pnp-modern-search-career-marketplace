@@ -12,7 +12,7 @@ define([], function() {
           "SuffixDescription":"A string to append to each word found in the input query text.",
           "SuffixPlaceholder":"*"
       },
-      "classificationLevel": "Classification level",
+      "classificationLevel": "Classification",
       "opportunityType": "Opportunity type",
       "duration": "Duration",
       "description": "Description",

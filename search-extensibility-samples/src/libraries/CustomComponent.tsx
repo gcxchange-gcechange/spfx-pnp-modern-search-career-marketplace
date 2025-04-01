@@ -16,6 +16,8 @@ export interface ICustomComponentProps {
     cityEn?: string;
     cityFr?: string;
     classificationLevel?: string;
+    classificationCodeEn?: string;
+    classificationCodeFr?: string;
     contactEmail?: string;
     contactName?: string;
     contactObjectId?: string;
@@ -37,8 +39,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const lang = Globals.getLanguage();
     const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
     const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
-    const mailApplyBodyEn = encodeURIComponent(`Hello ${props.contactName},\nI hope this message finds you well. My name is ${Globals.userDisplayName}, and I am interested in the career opportunity you posted on the GCXchange Career Marketplace. Please find my resumé attached for your review.\nI would appreciate the opportunity to discuss how my skills align with your needs.\nThank you for your time and consideration.\nBest regards,\n${Globals.userDisplayName}`);
-    const mailApplyBodyFr = encodeURIComponent(`Bonjour ${props.contactName},\nJ\’espère que vous allez bien. Mon nom est ${Globals.userDisplayName} et l\’offre d\’emploi que vous avez publiée dans le Carrefour d\’emploi sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\nCordialement,\n${Globals.userDisplayName}`);
+    const mailApplyBodyEn = encodeURIComponent(`Hello ${props.contactName},\n\nI hope this message finds you well. My name is ${Globals.userDisplayName}, and I am interested in the career opportunity you posted on the GCXchange Career Marketplace. Please find my resumé attached for your review.\n\nI would appreciate the opportunity to discuss how my skills align with your needs.\nThank you for your time and consideration.\n\nBest regards,\n${Globals.userDisplayName}`);
+    const mailApplyBodyFr = encodeURIComponent(`Bonjour ${props.contactName},\n\nJ\’espère que vous allez bien. Mon nom est ${Globals.userDisplayName} et l\’offre d\’emploi que vous avez publiée dans le Carrefour d\’emploi sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\n\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\n\nCordialement,\n${Globals.userDisplayName}`);
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
@@ -148,7 +150,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 </h3>
                 <div className="sub">
                     <div>
-                        <b>{strings.classificationLevel}</b>: {props.classificationLevel}
+                        <b>{strings.classificationLevel}</b>: {lang === Language.French ? props.classificationCodeFr : props.classificationCodeEn}-{props.classificationLevel}
                     </div>
                     <div>
                         <b>{strings.opportunityType}</b>: {termLabelDefaultLanguage(props.jobType)}

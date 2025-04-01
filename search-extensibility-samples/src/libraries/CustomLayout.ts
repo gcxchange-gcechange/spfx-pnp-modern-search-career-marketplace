@@ -9,6 +9,8 @@ export interface ICustomLayoutProperties {
     cityEn: string;
     cityFr: string;
     classificationLevel: string;
+    classificationCodeEn: string;
+    classificationCodeFr: string;
     contactEmail: string;
     contactName: string;
     contactObjectId: string;
@@ -30,6 +32,8 @@ export enum PropertyPaneProps {
     CityEn = 'layoutProperties.cityEn',
     CityFr = 'layoutProperties.cityFr',
     ClassificationLevel = 'layoutProperties.classificationLevel',
+    classificationCodeEn = 'layoutProperties.classificationCodeEn',
+    classificationCodeFr = 'layoutProperties.classificationCodeFr',
     ContactEmail = 'layoutProperties.contactEmail',
     ContactName = 'layoutProperties.contactName',
     ContactObjectId = 'layoutProperties.contactObjectId',
@@ -93,6 +97,18 @@ export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
                 label: 'ClassificationLevel Managed Property',
                 value: this.properties.classificationLevel,
                 placeholder: 'CM-ClassificationLevel',
+                onGetErrorMessage: this.validateRequiredField.bind(this)
+            }),
+            PropertyPaneTextField(PropertyPaneProps.classificationCodeEn, {
+                label: 'ClassificationCodeEn Managed Property',
+                value: this.properties.classificationCodeEn,
+                placeholder: 'CM-ClassificationCode',
+                onGetErrorMessage: this.validateRequiredField.bind(this)
+            }),
+            PropertyPaneTextField(PropertyPaneProps.classificationCodeFr, {
+                label: 'ClassificationCodeFr Managed Property',
+                value: this.properties.classificationCodeFr,
+                placeholder: 'CM-ClassificationCodeFr',
                 onGetErrorMessage: this.validateRequiredField.bind(this)
             }),
             PropertyPaneTextField(PropertyPaneProps.ContactEmail, {
