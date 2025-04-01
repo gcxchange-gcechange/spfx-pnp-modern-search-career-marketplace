@@ -92,20 +92,21 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       el.addEventListener('click', (event) => {
         event.preventDefault();
         setTimeout(() => {
-          context.triggerSearch();
+          // Clear the pnp search box & retrigger search
+          context.triggerSearch(true);
         }, 0);
       });
     });
   }
 
-  private triggerSearch(): void {
+  private triggerSearch(cleanSearch: boolean = false): void {
     if (this._properties.searchBoxSelector) {
         let el = document.querySelector(this._properties.searchBoxSelector);
         if (el) {
             let searchBox = el as HTMLInputElement;
-
-            // If pnp search box has no value insert a space so the input becomes active
-            if (searchBox.defaultValue === "") {
+            
+            // pnp search box needs a value so the input becomes active
+            if (cleanSearch || searchBox.defaultValue === "") {
                 searchBox.value = " ";
                 searchBox.dispatchEvent(new Event('input', { bubbles: true }));
             }
