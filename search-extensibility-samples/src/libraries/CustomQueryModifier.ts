@@ -104,7 +104,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
         let el = document.querySelector(this._properties.searchBoxSelector);
         if (el) {
             let searchBox = el as HTMLInputElement;
-            
+
             // pnp search box needs a value so the input becomes active
             if (cleanSearch || searchBox.defaultValue === "") {
                 searchBox.value = " ";
@@ -130,7 +130,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (queryText.trim() == '')
       queryText = '*';
 
-    let finalQuery = `${queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList `;
+    let finalQuery = `*${queryText}* path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList `;
     let propSet = false;
 
     const jobTitle = sessionStorage.getItem(AdvancedSearchSessionKeys.JobTitle);
