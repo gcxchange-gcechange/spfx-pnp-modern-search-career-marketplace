@@ -128,7 +128,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     }
 
     return (
-        <li 
+        <div 
             className="jobcard" 
             style={{
                 border: `1px solid ${theme.palette.themePrimary}`,
@@ -204,7 +204,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     </Link>
                 </div>
             </div>
-        </li>
+        </div>
     );
 };
 
