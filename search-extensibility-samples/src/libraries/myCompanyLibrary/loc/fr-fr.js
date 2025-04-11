@@ -23,6 +23,6 @@ define([], function() {
         "results": "résultats",
         "resultsFor": "résultats pour",
         "viewAria": "Voir ",
-        "applyAria": "Postuler à "
+        "applyAria": "Appliquer à "
     }
 });
