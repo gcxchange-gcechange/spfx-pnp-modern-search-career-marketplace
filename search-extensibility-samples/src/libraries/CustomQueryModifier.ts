@@ -272,7 +272,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     const jobTypes = sessionStorage.getItem(FilterSessionKeys.JobType);
     if (jobTypes && jobTypes.trim() != '') {
-      const jobTypeArr = JSON.parse(jobTypes);
+      const jobTypeArr = jobTypes.split(',');
       for (let i = 0; i < jobTypeArr.length; i++) {
 
         if (i == 0)
@@ -290,7 +290,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     const programAreas = sessionStorage.getItem(FilterSessionKeys.ProgramArea);
     if(programAreas && programAreas.trim() != '') {
-      const programAreaArr = JSON.parse(programAreas);
+      const programAreaArr = programAreas.split(',');
       for (let i = 0; i < programAreaArr.length; i++) {
 
         if (i == 0)
