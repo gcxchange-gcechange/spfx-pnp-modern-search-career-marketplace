@@ -170,7 +170,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (queryText.trim() == '')
       queryText = '*';
 
-    let finalQuery = this.applyAdvancedSearch(`*${queryText}* path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
+    let finalQuery = this.applyAdvancedSearch(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
     finalQuery = this.applyFilters(finalQuery);
 
     console.log(finalQuery);
@@ -179,7 +179,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
   }
 
   private applyAdvancedSearch(query: string): string {
-    let finalQuery = `${query} (`;
+    let finalQuery = `${query} `;
     let propSet = false;
 
     const jobTitle = sessionStorage.getItem(AdvancedSearchSessionKeys.JobTitle);
@@ -255,28 +255,38 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     const today = new Date();
     const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
 
-    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate})`;
+    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate}`;
 
     return finalQuery;
   }
 
   private applyFilters(query: string): string {
-    let finalQuery = `${query} AND (`;
-    let propSet = false;
-    
     const applicationDeadline = sessionStorage.getItem(FilterSessionKeys.ApplicationDeadline);
-    if (applicationDeadline && applicationDeadline.trim() != '') {
-      finalQuery += `"${this._properties.deadlineFilterMP}"<=${applicationDeadline} `;
-      propSet = true;
+    const jobTypes = sessionStorage.getItem(FilterSessionKeys.JobType);
+    const programAreas = sessionStorage.getItem(FilterSessionKeys.ProgramArea);
+
+    if ((applicationDeadline === undefined || applicationDeadline.trim() == '')
+     && (jobTypes === undefined || jobTypes.trim() == '')
+     && (programAreas === undefined || programAreas.trim() == '')) {
+      return query;
     }
 
-    const jobTypes = sessionStorage.getItem(FilterSessionKeys.JobType);
+    let finalQuery = `${query} AND (`;
+
+    if (applicationDeadline && applicationDeadline.trim() != '') {
+      finalQuery += `"${this._properties.deadlineFilterMP}"<=${applicationDeadline} `;
+    } else {
+      const today = new Date();
+      const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
+      finalQuery += `"${this._properties.deadlineFilterMP}">=${formattedUTCDate} `;
+    }
+
     if (jobTypes && jobTypes.trim() != '') {
       const jobTypeArr = jobTypes.split(',');
       for (let i = 0; i < jobTypeArr.length; i++) {
 
         if (i == 0)
-          finalQuery += `${propSet ? 'AND ' : ''}(`;
+          finalQuery += `AND (`;
 
         finalQuery += `"${this._properties.jobTypeMP}":${jobTypeArr[i]}`;
 
@@ -285,16 +295,14 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       }
 
       finalQuery += ')';
-      propSet = true;
     }
 
-    const programAreas = sessionStorage.getItem(FilterSessionKeys.ProgramArea);
     if(programAreas && programAreas.trim() != '') {
       const programAreaArr = programAreas.split(',');
       for (let i = 0; i < programAreaArr.length; i++) {
 
         if (i == 0)
-          finalQuery += `${propSet ? 'AND ' : ''}(`;
+          finalQuery += `AND (`;
 
         finalQuery += `"${this._properties.programAreaMP}":${programAreaArr[i]}`;
 
@@ -303,7 +311,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       }
 
       finalQuery += ')';
-      propSet = true;
     }
 
     return `${finalQuery})`;
