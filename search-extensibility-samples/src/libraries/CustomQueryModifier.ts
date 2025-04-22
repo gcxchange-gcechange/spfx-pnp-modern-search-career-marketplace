@@ -173,8 +173,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     let finalQuery = this.applyAdvancedSearch(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
     finalQuery = this.applyFilters(finalQuery);
 
-    console.log(finalQuery);
-
     return finalQuery;
   }
 
