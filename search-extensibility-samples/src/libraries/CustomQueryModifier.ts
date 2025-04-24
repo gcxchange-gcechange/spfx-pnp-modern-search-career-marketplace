@@ -62,9 +62,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     // Initialize the filter session storage items
     (Object.keys(FilterSessionKeys) as (keyof typeof FilterSessionKeys)[]).forEach(key => {
       const value = FilterSessionKeys[key];
-      if (!sessionStorage.getItem(value)) {
-        sessionStorage.setItem(value, '');
-      }
+      sessionStorage.setItem(value, '');
     });
 
     this.setupListeners();
