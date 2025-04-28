@@ -72,7 +72,8 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const context = this;
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 30;
+    const attemptInterval = 1000;
 
     const tryGetElement = (id: string, callback: any) => {
       if (!id) {
@@ -89,10 +90,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           attempts++;
           if (attempts >= maxAttempts) {
             clearInterval(interval);
-            console.error(`Query Modifier: Couldn't find element with the ID '${id}' after ${maxAttempts} attempts.`);
+            console.error(`Query Modifier: Couldn't find element with the ID '${id}' after ${maxAttempts} attempts over ${maxAttempts * attemptInterval / 1000} seconds.`);
           }
         }
-      }, 1000);
+      }, attemptInterval);
     };
 
     // Advanced Search - Search Btn
