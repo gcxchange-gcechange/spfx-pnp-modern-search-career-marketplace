@@ -13,8 +13,8 @@
 
         {{#if @root.properties.showResultsCount}}
            <div class="template--resultCount">
-               <label class="ms-fontWeight-semibold">{{resultsNoQueryText (getCountMessage @root.data.totalItemsCount)}}</label>
-               <!-- <label class="ms-fontWeight-semibold">{{results (getCountMessage @root.data.totalItemsCount @root.inputQueryText)}}</label> -->
+               <span class="ms-fontWeight-semibold" aria-live="polite">{{resultsNoQueryText (getCountMessage @root.data.totalItemsCount)}}</span>
+               <!-- <span class="ms-fontWeight-semibold" aria-live="polite">{{results (getCountMessage @root.data.totalItemsCount @root.inputQueryText)}}</span> -->
            </div>
         {{/if}}
         
