@@ -44,6 +44,10 @@ enum FilterSessionKeys {
   ApplicationDeadline = 'gcx-cm-filter-applicationDeadline'
 }
 
+export enum QueryModifierKeys {
+  AdvancedSearch = 'gcx-cm-advancedSearch'
+}
+
 //CustomQueryModifier
 export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSearchQueryModifierProperties> {
   private static readonly DEFAULT_VALUE = '*';
@@ -171,6 +175,9 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     let finalQuery = this.applyAdvancedSearch(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
     finalQuery = this.applyFilters(finalQuery);
+
+    // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
+    sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
 
     return finalQuery;
   }
