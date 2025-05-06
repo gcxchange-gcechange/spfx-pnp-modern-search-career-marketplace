@@ -18,34 +18,36 @@
            </div>
         {{/if}}
         
-        <ul class="template_defaultList cmresults">
-            {{#each data.items as |item|}} 
-                <li>
-                    <job-opportunity-card 
-                        path="{{item.Path}}"
-                        application-deadline-date="{{ lookup item @root.properties.layoutProperties.applicationDeadlineDate }}"
-                        city-en="{{ lookup item @root.properties.layoutProperties.cityEn }}"
-                        city-fr="{{ lookup item @root.properties.layoutProperties.cityFr }}"
-                        classification-level="{{ lookup item @root.properties.layoutProperties.classificationLevel }}"
-                        classification-code-en="{{ lookup item @root.properties.layoutProperties.classificationCodeEn }}"
-                        classification-code-fr="{{ lookup item @root.properties.layoutProperties.classificationCodeFr }}"
-                        contact-email="{{ lookup item @root.properties.layoutProperties.contactEmail }}"
-                        contact-name="{{ lookup item @root.properties.layoutProperties.contactName }}"
-                        contact-object-id="{{ lookup item @root.properties.layoutProperties.contactObjectId }}"
-                        duration-en="{{ lookup item @root.properties.layoutProperties.durationEn }}"
-                        duration-fr="{{ lookup item @root.properties.layoutProperties.durationFr }}"
-                        job-description-en="{{ lookup item @root.properties.layoutProperties.jobDescriptionEn }}"
-                        job-description-fr="{{ lookup item @root.properties.layoutProperties.jobDescriptionFr }}"
-                        job-title-en="{{ lookup item @root.properties.layoutProperties.jobTitleEn }}"
-                        job-title-fr="{{ lookup item @root.properties.layoutProperties.jobTitleFr }}"
-                        job-type="{{ lookup item @root.properties.layoutProperties.jobType }}"
-                        duration-quantity="{{ lookup item @root.properties.layoutProperties.durationQuantity }}"
-                        job-type-term-set-guid="{{ @root.properties.layoutProperties.jobTypeTermSetGuid }}"
-                    >
-                    </job-opportunity-card>
-                </li>
-            {{/each}}
-        </ul>
+        {{#if data.items.length}}
+            <ul class="template_defaultList cmresults">
+                {{#each data.items as |item|}} 
+                    <li>
+                        <job-opportunity-card 
+                            path="{{item.Path}}"
+                            application-deadline-date="{{ lookup item @root.properties.layoutProperties.applicationDeadlineDate }}"
+                            city-en="{{ lookup item @root.properties.layoutProperties.cityEn }}"
+                            city-fr="{{ lookup item @root.properties.layoutProperties.cityFr }}"
+                            classification-level="{{ lookup item @root.properties.layoutProperties.classificationLevel }}"
+                            classification-code-en="{{ lookup item @root.properties.layoutProperties.classificationCodeEn }}"
+                            classification-code-fr="{{ lookup item @root.properties.layoutProperties.classificationCodeFr }}"
+                            contact-email="{{ lookup item @root.properties.layoutProperties.contactEmail }}"
+                            contact-name="{{ lookup item @root.properties.layoutProperties.contactName }}"
+                            contact-object-id="{{ lookup item @root.properties.layoutProperties.contactObjectId }}"
+                            duration-en="{{ lookup item @root.properties.layoutProperties.durationEn }}"
+                            duration-fr="{{ lookup item @root.properties.layoutProperties.durationFr }}"
+                            job-description-en="{{ lookup item @root.properties.layoutProperties.jobDescriptionEn }}"
+                            job-description-fr="{{ lookup item @root.properties.layoutProperties.jobDescriptionFr }}"
+                            job-title-en="{{ lookup item @root.properties.layoutProperties.jobTitleEn }}"
+                            job-title-fr="{{ lookup item @root.properties.layoutProperties.jobTitleFr }}"
+                            job-type="{{ lookup item @root.properties.layoutProperties.jobType }}"
+                            duration-quantity="{{ lookup item @root.properties.layoutProperties.durationQuantity }}"
+                            job-type-term-set-guid="{{ @root.properties.layoutProperties.jobTypeTermSetGuid }}"
+                        >
+                        </job-opportunity-card>
+                    </li>
+                {{/each}}
+            </ul>
+        {{/if}}
 
         {{#if @root.properties.paging.showPaging}}
             {{#gt @root.data.totalItemsCount @root.properties.paging.itemsCountPerPage}}
