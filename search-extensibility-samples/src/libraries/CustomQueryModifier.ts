@@ -26,26 +26,29 @@ export interface IAdvancedSearchQueryModifierProperties {
 }
 
 enum AdvancedSearchSessionKeys {
-  JobTitle = 'gcx-cm-jobTitle',
-  ClassificationCode = 'gcx-cm-classificationCode',
-  ClassificationLevel = 'gcx-cm-classificationLevel',
-  Department = 'gcx-cm-department',
-  Duration = 'gcx-cm-duration',
-  DurationQuantity = 'gcx-cm-durationQuantity',
-  DurationOperator = 'gcx-cm-durationOperator',
-  LanguageRequirement = 'gcx-cm-languageRequirement',
-  //LanguageComprehension = 'gcx-cm-languageComprehension',
-  City = 'gcx-cm-city'
+  Initialized = 'gcx-cm-adsearch-init',
+  JobTitle = 'gcx-cm-adsearch-jobTitle',
+  ClassificationCode = 'gcx-cm-adsearch-classificationCode',
+  ClassificationLevel = 'gcx-cm-adsearch-classificationLevel',
+  Department = 'gcx-cm-adsearch-department',
+  Duration = 'gcx-cm-adsearch-duration',
+  DurationQuantity = 'gcx-cm-adsearch-durationQuantity',
+  DurationOperator = 'gcx-cm-adsearch-durationOperator',
+  LanguageRequirement = 'gcx-cm-adsearch-languageRequirement',
+  //LanguageComprehension = 'gcx-cm-adsearch-languageComprehension',
+  City = 'gcx-cm-adsearch-city'
 }
 
 enum FilterSessionKeys {
+  Initialized = 'gcx-cm-filter-init',
   JobType = 'gcx-cm-filter-jobType',
   ProgramArea = 'gcx-cm-filter-programArea',
-  ApplicationDeadline = 'gcx-cm-filter-applicationDeadline'
+  ApplicationDeadline = 'gcx-cm-filter-applicationDeadline',
 }
 
 export enum QueryModifierKeys {
-  AdvancedSearch = 'gcx-cm-advancedSearch'
+  AdvancedSearch = 'gcx-cm-querymod-as',
+  MyOpportunities = 'gcx-cm-querymod-myop'
 }
 
 //CustomQueryModifier
@@ -79,6 +82,27 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     const maxAttempts = 30;
     const attemptInterval = 1000;
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    const tryGetSessionStorageItem = (key: string, callback: Function, interval: number = 1000, maxAttempts: number = Number.MAX_VALUE): void => {
+      let attempts: number = 0;
+
+      const getKey = setInterval(() => {
+        const item = sessionStorage.getItem(key);
+
+        if (item) {
+          sessionStorage.removeItem(key);
+          clearInterval(getKey);
+          callback();
+        } else {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            clearInterval(getKey);
+            console.error(`Query Modifier: Couldn't find sessionStorage item with key '${key}' after ${maxAttempts} attempts over ${maxAttempts * interval / 1000} seconds.`);
+          }
+        }
+      }, interval);
+    }
+
     const tryGetElement = (id: string, callback: any) => {
       if (!id) {
         console.error(`Query Modifier: No ID provided`);
@@ -100,44 +124,46 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       }, attemptInterval);
     };
 
-    // Advanced Search - Search Btn
-    tryGetElement(this._properties.searchButtonId, (el: HTMLElement) => {
-      el.addEventListener('click', (event) => {
-        event.preventDefault();
-        setTimeout(() => {
-          context.triggerSearch();
-        }, 0);
+    tryGetSessionStorageItem(AdvancedSearchSessionKeys.Initialized, () => {
+      // Advanced Search - Search Btn
+      tryGetElement(this._properties.searchButtonId, (el: HTMLElement) => {
+        el.addEventListener('click', (event) => {
+          event.preventDefault();
+          setTimeout(() => {
+            context.triggerSearch();
+          }, 0);
+        });
+      });
+      // Advanced Search - Clear Btn
+      tryGetElement(this._properties.clearButtonId, (el: HTMLElement) => {
+        el.addEventListener('click', (event) => {
+          event.preventDefault();
+          setTimeout(() => {
+            // Clear the pnp search box & retrigger search
+            context.triggerSearch(true);
+          }, 0);
+        });
       });
     });
 
-    // Advanced Search - Clear Btn
-    tryGetElement(this._properties.clearButtonId, (el: HTMLElement) => {
-      el.addEventListener('click', (event) => {
-        event.preventDefault();
-        setTimeout(() => {
-          // Clear the pnp search box & retrigger search
-          context.triggerSearch(true);
-        }, 0);
+    tryGetSessionStorageItem(FilterSessionKeys.Initialized, () => {
+      // Filters - Apply Btn
+      tryGetElement(this._properties.filterButtonId, (el: HTMLElement) => {
+        el.addEventListener('click', (event) => {
+          event.preventDefault();
+          setTimeout(() => {
+            context.triggerSearch();
+          }, 0);
+        });
       });
-    });
-
-    // Filters - Apply Btn
-    tryGetElement(this._properties.filterButtonId, (el: HTMLElement) => {
-      el.addEventListener('click', (event) => {
-        event.preventDefault();
-        setTimeout(() => {
-          context.triggerSearch();
-        }, 0);
-      });
-    });
-
-    // Filters - Clear Btn
-    tryGetElement(this._properties.clearFilterButtonId, (el: HTMLElement) => {
-      el.addEventListener('click', (event) => {
-        event.preventDefault();
-        setTimeout(() => {
-          context.triggerSearch();
-        }, 0);
+      // Filters - Clear Btn
+      tryGetElement(this._properties.clearFilterButtonId, (el: HTMLElement) => {
+        el.addEventListener('click', (event) => {
+          event.preventDefault();
+          setTimeout(() => {
+            context.triggerSearch();
+          }, 0);
+        });
       });
     });
   }
