@@ -23,6 +23,7 @@ import { AdvancedSearchQueryModifier } from "../CustomQueryModifier";
 import { CustomDataSource } from "../CustomDataSource";
 import { SelectLanguage } from "../SelectLanguage";
 import { Globals } from "../Globals";
+import { MyOpportunitiesQueryModifier } from "../MyOpportunitiesQueryModifier";
 
 export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   
@@ -198,6 +199,12 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         description: 'A query modifier for career marketplace advanced search.',
         serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:CustomQueryModifier', AdvancedSearchQueryModifier)
 
+      },
+      {
+        name: 'Owner Opportunities',
+        key: 'MyOpportunities',
+        description: 'A query modifier for career marketplace which returns the logged in user\'s job opportunities that they have posted to the system.',
+        serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:MyOpportunitiesQueryModifier', MyOpportunitiesQueryModifier)
       }
     ];
   }

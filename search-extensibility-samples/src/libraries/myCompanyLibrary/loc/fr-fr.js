@@ -12,6 +12,9 @@ define([], function() {
             "SuffixDescription":"A string to append to each word found in the input query text.",
             "SuffixPlaceholder":"*"
         },
+        "MyOpportunitiesQueryModifier": {
+            "GroupName": "Owner Opportunities Settings"
+        },
         "classificationLevel": "Classification",
         "opportunityType": "Type d'opportunité",
         "duration": "Durée",

@@ -11,6 +11,9 @@ declare interface IMyCompanyLibraryLibraryStrings {
     SuffixDescription:string;
     SuffixPlaceholder:string;
   }
+  MyOpportunitiesQueryModifier: {
+    GroupName:string;
+  },
   classificationLevel: string;
   opportunityType: string;
   duration: string;
