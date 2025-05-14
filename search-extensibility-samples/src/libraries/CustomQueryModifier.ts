@@ -64,15 +64,15 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     // Initialize the advanced search session storage items
     (Object.keys(AdvancedSearchSessionKeys) as (keyof typeof AdvancedSearchSessionKeys)[]).forEach(key => {
       const value = AdvancedSearchSessionKeys[key];
-      if (!sessionStorage.getItem(value)) {
+      if (!sessionStorage.getItem(value) && value !== AdvancedSearchSessionKeys.Initialized)
         sessionStorage.setItem(value, '');
-      }
     });
 
     // Initialize the filter session storage items
     (Object.keys(FilterSessionKeys) as (keyof typeof FilterSessionKeys)[]).forEach(key => {
       const value = FilterSessionKeys[key];
-      sessionStorage.setItem(value, '');
+      if (value !== FilterSessionKeys.Initialized)
+        sessionStorage.setItem(value, '');
     });
 
     this.setupListeners();
@@ -92,7 +92,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       const getKey = setInterval(() => {
         const item = sessionStorage.getItem(key);
 
-        if (item) {
+        if (item !== null) {
           sessionStorage.removeItem(key);
           clearInterval(getKey);
           callback();
