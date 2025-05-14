@@ -23,6 +23,9 @@ export interface IAdvancedSearchQueryModifierProperties {
   deadlineFilterMP: string;
   jobTypeMP: string;
   programAreaMP: string;
+  durationYearsId: string;
+  durationMonthsId: string;
+  durationWeeksId: string;
 }
 
 enum AdvancedSearchSessionKeys {
@@ -264,7 +267,29 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
         durationOperator && durationOperator.trim() != '')  {
       try {
         const operator = durationOperator === '0' ? '=' : (durationOperator === '2' ? '<=' : '>=');
-        const durationInDays = duration === '1' ? parseInt(durationQuantity) * 30 : parseInt(durationQuantity) * 360;
+        let durationInDays: number;
+
+        if (this._properties.durationYearsId && this._properties.durationYearsId != '' && 
+          this._properties.durationMonthsId && this._properties.durationMonthsId != '' &&
+          this._properties.durationWeeksId && this._properties.durationWeeksId != '') {
+            
+          switch (duration) {
+          case this._properties.durationYearsId:
+              durationInDays = 365 * parseInt(durationQuantity);
+              break;
+            case this._properties.durationMonthsId:
+              durationInDays = Math.round(365 / 12 * parseInt(durationQuantity));
+              break;
+            case this._properties.durationWeeksId:
+              durationInDays = Math.round(365 / 52 * parseInt(durationQuantity));
+              break;
+            default:
+              throw new Error(`Couldn't map Duration:${duration} to any of the following: [durationYearsId:${this._properties.durationYearsId}, durationMonthsId:${this._properties.durationMonthsId}, durationWeeksId:${this._properties.durationWeeksId}]`);
+          }
+        }
+        else {
+          console.error(`One of the following is not configured: [durationYearsId:${this._properties.durationYearsId}, durationMonthsId:${this._properties.durationMonthsId}, durationWeeksId:${this._properties.durationWeeksId}]`);
+        }
 
         finalQuery += `${propSet ? 'AND ' : ''}${this._properties.durationQuantityMP}${operator}${durationInDays} `;
 
@@ -480,12 +505,24 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           PropertyPaneTextField('queryModifierProperties.jobTypeMP', {
             label: 'JobType Managed Property',
             description: 'The property name for JobType', 
-            placeholder: 'TBD',
+            placeholder: 'CM-JobType',
           }),
           PropertyPaneTextField('queryModifierProperties.programAreaMP', {
             label: 'ProgramArea Managed Property',
             description: 'The managed property name for ProgramArea', 
-            placeholder: 'TBD',
+            placeholder: 'CM-ProgramArea',
+          }),
+          PropertyPaneTextField('queryModifierProperties.durationYearsId', {
+            label: 'Duration Years ID',
+            description: 'The ID in the Duration list for the "year(s)" list item'
+          }),
+          PropertyPaneTextField('queryModifierProperties.durationMonthsId', {
+            label: 'Duration Months ID',
+            description: 'The ID in the Duration list for the "month(s)" list item'
+          }),
+          PropertyPaneTextField('queryModifierProperties.durationWeeksId', {
+            label: 'Duration Weeks ID',
+            description: 'The ID in the Duration list for the "week(s)" list item'
           })
         ],
       },
