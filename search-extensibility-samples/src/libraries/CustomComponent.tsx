@@ -157,7 +157,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         >
             {expired && 
                 <div className='expiredBanner'>
-                    <h3>{strings.jobExpired}</h3>
+                    <p role="status" aria-live="polite">{strings.jobExpired}</p>
                 </div>
             }
             <div className="card-content">

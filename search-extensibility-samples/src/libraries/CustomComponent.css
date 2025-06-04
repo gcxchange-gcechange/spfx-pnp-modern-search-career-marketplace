@@ -127,12 +127,13 @@ h3 a:focus-visible {
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
     color: #741A20;
+    font-weight: bold;
     background-color: #FFF0F1;
     height: 40px;
     align-content: center;
 }
 
-.expiredBanner h3 {
+.expiredBanner p {
     color: #741A20;
     text-align: center;
     font-size: medium;
