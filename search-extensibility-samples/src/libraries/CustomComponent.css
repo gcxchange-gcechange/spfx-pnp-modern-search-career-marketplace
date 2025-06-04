@@ -114,6 +114,32 @@ h3 a:focus-visible {
     background-color: #fff;
 }
 
+.expiredJobCard {
+    padding-top: 0;
+    border-top: unset !important;
+}
+
+.expiredBanner {
+    width: calc(100% + 30px);
+    margin-left: -15px;
+    margin-bottom: 15px;
+    border-top: 8px solid #A1252E;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    color: #741A20;
+    background-color: #FFF0F1;
+    font-weight: bold;
+    height: 40px;
+    align-content: center;
+}
+
+.expiredBanner h3 {
+    color: #741A20;
+    text-align: center;
+    font-size: medium;
+    margin: 0;
+}
+
 /* Card content area */
 .card-content {
     flex-grow: 1;

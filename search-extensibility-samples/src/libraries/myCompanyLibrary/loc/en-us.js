@@ -26,6 +26,8 @@ define([], function() {
       "results": "results",
       "resultsFor": "results for",
       "viewAria": "View ",
-      "applyAria": "Apply to "
+      "applyAria": "Apply to ",
+      "jobExpired": "This opportunity has expired.",
+      "applyExpired": "Applications Closed"
   }
 });

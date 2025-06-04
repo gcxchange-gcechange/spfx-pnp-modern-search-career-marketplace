@@ -26,6 +26,8 @@ declare interface IMyCompanyLibraryLibraryStrings {
   resultsFor: string;
   viewAria: string;
   applyAria: string;
+  jobExpired: string;
+  applyExpired: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {
