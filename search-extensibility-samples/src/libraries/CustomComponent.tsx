@@ -137,13 +137,29 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const mailApplyBodyEn = encodeURIComponent(`Hello ${formatName(props.contactName)},\n\nI hope this message finds you well. My name is ${Globals.userDisplayName}, and I am interested in the career opportunity you posted on the GCXchange Career Marketplace. Please find my resumé attached for your review.\n\nI would appreciate the opportunity to discuss how my skills align with your needs.\nThank you for your time and consideration.\n\nBest regards,\n${formatName(Globals.userDisplayName)}`);
     const mailApplyBodyFr = encodeURIComponent(`Bonjour ${formatName(props.contactName)},\n\nJ\’espère que vous allez bien. Mon nom est ${Globals.userDisplayName} et l\’offre d\’emploi que vous avez publiée dans le Carrefour d\’emploi sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\n\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\n\nCordialement,\n${formatName(Globals.userDisplayName)}`);
 
+    const isExpired = ():boolean => {
+        if (props.applicationDeadlineDate) {
+            if (new Date() >= new Date(`${props.applicationDeadlineDate.toString()} UTC`))
+                return true;
+            else
+                return false;
+        }
+        return true;
+    }
+    const expired = isExpired();
+
     return (
         <div 
-            className="jobcard" 
+            className={expired ? 'jobcard expiredJobCard' : 'jobcard'}
             style={{
                 border: `1px solid ${theme.palette.themePrimary}`,
             }}
         >
+            {expired && 
+                <div className='expiredBanner'>
+                    <p role="status" aria-live="polite">{strings.jobExpired}</p>
+                </div>
+            }
             <div className="card-content">
                 <h3 style={{
                         color: `${theme.palette.themePrimary}`,
@@ -202,16 +218,28 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                             text={strings.view}
                         />
                     </Link>
-                    <Link 
-                        href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? `Intérêt pour l'opportunité ${props.jobTitleFr}` : `Interested in the ${props.jobTitleEn} opportunity`}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
-                        target='_blank'
-                    >
+                    {!expired && 
+                        <Link 
+                            href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? `Intérêt pour l'opportunité ${props.jobTitleFr}` : `Interested in the ${props.jobTitleEn} opportunity`}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
+                            target='_blank'
+                        >
+                            <PrimaryButton 
+                                id={'jobApply-'+ jobId}
+                                aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
+                                text={strings.apply}
+                            />
+                        </Link>
+                    }
+                    {expired && 
                         <PrimaryButton 
                             id={'jobApply-'+ jobId}
                             aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
-                            text={strings.apply}
+                            text={strings.applyExpired}
+                            styles={{rootDisabled: {backgroundColor: '#403F3F', color: '#FFF'}}}
+                            disabled={true}
                         />
-                    </Link>
+                    }
+                    
                 </div>
             </div>
         </div>
