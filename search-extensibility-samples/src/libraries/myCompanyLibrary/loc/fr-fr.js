@@ -28,6 +28,7 @@ define([], function() {
         "viewAria": "Voir ",
         "applyAria": "Appliquer à ",
         "jobExpired": "Cette opportunité a expiré.",
-        "applyExpired": "Candidatures fermées"
+        "applyExpired": "Candidatures fermées",
+        "undetermined": "Indéterminé"
     }
 });

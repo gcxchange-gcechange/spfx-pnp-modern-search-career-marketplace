@@ -182,7 +182,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <b>{strings.opportunityType}</b>: {termLabelDefaultLanguage(props.jobType)}
                     </div>
                     <div>
-                        <b>{strings.duration}</b>: {props.durationQuantity} {lang === Language.French ? props.durationFr : props.durationEn}
+                        <b>{strings.duration}</b>: {!props.durationQuantity ? strings.undetermined : `${props.durationQuantity} ${lang === Language.French ? props.durationFr : props.durationEn}`}
                     </div>
                 </div>
                 <div className="description">

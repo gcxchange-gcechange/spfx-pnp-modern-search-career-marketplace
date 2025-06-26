@@ -291,7 +291,13 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           console.error(`One of the following is not configured: [durationYearsId:${this._properties.durationYearsId}, durationMonthsId:${this._properties.durationMonthsId}, durationWeeksId:${this._properties.durationWeeksId}]`);
         }
 
-        finalQuery += `${propSet ? 'AND ' : ''}${this._properties.durationQuantityMP}${operator}${durationInDays} `;
+        // If we're not searching for an exact duration include results for Deployment job types (they always have 0 DurationInDays)
+        if (operator !== '=') {
+          finalQuery += `${propSet ? 'AND (' : '('}${this._properties.durationQuantityMP}${operator}${durationInDays} OR ${this._properties.durationQuantityMP}=0) `;
+        }
+        else {
+          finalQuery += `${propSet ? 'AND ' : ''}${this._properties.durationQuantityMP}${operator}${durationInDays} `;
+        }
 
         propSet = true;
       } catch(e) {
