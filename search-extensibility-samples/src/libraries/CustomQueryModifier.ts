@@ -147,6 +147,18 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           }, 0);
         });
       });
+      // Advanced Search - Job Title Input
+      tryGetElement('gcx-as-job-title', (el: HTMLElement) => {
+        el.addEventListener('keydown', (event: KeyboardEvent) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            setTimeout(() => {
+              // Clear the pnp search box & retrigger search
+              context.triggerSearch(true);
+            }, 0);
+          }
+        });
+      });
     });
 
     tryGetSessionStorageItem(FilterSessionKeys.Initialized, () => {
