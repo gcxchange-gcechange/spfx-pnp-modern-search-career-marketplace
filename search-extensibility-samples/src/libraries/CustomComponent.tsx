@@ -64,7 +64,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         let formattedName = displayName;
 
         if (displayName) 
-            formattedName = displayName.split(',', 2).reverse().join(' ').replace(',', '');
+            formattedName = displayName.split(',', 2).reverse().join(' ').replace(',', '').trim();
 
         return formattedName;
     }
