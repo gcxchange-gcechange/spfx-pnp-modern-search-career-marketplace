@@ -29,6 +29,7 @@ define([], function() {
       "applyAria": "Apply to ",
       "jobExpired": "This opportunity has expired.",
       "applyExpired": "Applications Closed",
-      "undetermined": "Undetermined"
+      "undetermined": "Undetermined",
+      "opportunities": "Opportunities"
   }
 });

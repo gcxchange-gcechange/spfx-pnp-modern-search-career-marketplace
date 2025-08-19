@@ -29,6 +29,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   jobExpired: string;
   applyExpired: string;
   undetermined: string;
+  opportunities: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {

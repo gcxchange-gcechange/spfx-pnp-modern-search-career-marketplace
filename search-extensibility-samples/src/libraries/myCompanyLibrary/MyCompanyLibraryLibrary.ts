@@ -155,6 +155,17 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         return value;
       }
     });
+
+    namespace.registerHelper('opportunitiesLabel', () => {
+      try {
+        const strings = SelectLanguage(Globals.getLanguage());
+        return strings.opportunities;
+      }
+      catch (e) {
+        console.log(e);
+        return '';
+      }
+    });
   }
 
   public invokeCardAction(action: any): void {
