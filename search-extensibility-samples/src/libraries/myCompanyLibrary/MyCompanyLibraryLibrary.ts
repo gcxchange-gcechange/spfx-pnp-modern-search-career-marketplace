@@ -43,6 +43,8 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
 
       Globals.userDisplayName = this._pageContext.user.displayName;
     });
+
+    this.insertCustomStyles();
   }
 
   public getCustomLayouts(): ILayoutDefinition[] {
@@ -222,5 +224,32 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
 
   public name(): string {
     return 'CareerMarketplaceLibraryComponent';
+  }
+
+  private insertCustomStyles(): void {
+    const styleId = "pnpCustomStyles-CM";
+
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement("style");
+      style.id = styleId;
+
+      style.textContent = `
+        .ms-Fabric--isFocusVisible div[class*="searchButton"] button[class*="root-"]:focus::after {
+          content: "";
+          position: absolute;
+          inset: 2px;
+          border: 1px solid transparent;
+          outline: white solid 1px !important;
+          z-index: 1;
+        }
+
+        [data-sp-feature-tag*="pnpSearchBoxWebPart"] button:hover {
+          background-color: unset;
+          border-radius: 0;
+        }
+      `;
+
+      document.head.appendChild(style);
+    }
   }
 }
