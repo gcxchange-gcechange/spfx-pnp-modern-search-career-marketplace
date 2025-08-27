@@ -220,6 +220,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
 
+    console.log('finalQuery', finalQuery);
     return finalQuery;
   }
 
@@ -330,6 +331,8 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate}`;
 
+    console.log('advancedSearchQuery', finalQuery);
+
     return finalQuery;
   }
 
@@ -385,6 +388,8 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
       finalQuery += ')';
     }
+
+    console.log('filterQuery', finalQuery);
 
     return `${finalQuery})`;
   }

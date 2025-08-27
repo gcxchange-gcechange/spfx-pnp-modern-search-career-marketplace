@@ -80,6 +80,10 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
     // Fallback to default language incase we can't get the translations
     const termLabelDefaultLanguage = (value: string) => {
+
+        console.log(lang === Language.French ? props.jobTitleFr : props.jobTitleEn);
+        console.log('JobTypeTermLabel: ', value);
+
         try {
             if (value){
                 let terms = [];
@@ -147,6 +151,9 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return true;
     }
     const expired = isExpired();
+
+    console.log(lang === Language.French ? props.jobTitleFr : props.jobTitleEn);
+    console.log('props', props);
 
     return (
         <div 
