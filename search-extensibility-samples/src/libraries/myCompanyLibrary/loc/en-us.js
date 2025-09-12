@@ -28,8 +28,8 @@ define([], function() {
       "viewAria": "View ",
       "applyAria": "Apply to ",
       "jobExpired": "This opportunity has expired.",
-      "applyExpired": "Applications Closed",
-      "undetermined": "Undetermined",
       "opportunities": "Opportunities"
+      "applyExpired": "Applications closed",
+      "undetermined": "Undetermined"
   }
 });
