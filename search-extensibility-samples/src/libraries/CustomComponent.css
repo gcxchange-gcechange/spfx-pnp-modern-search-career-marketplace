@@ -47,6 +47,10 @@ h3 a button:hover .ms-Button-label {
 h3 a:hover {
     color: inherit !important;
 }
+
+h3 a {
+    box-shadow: none !important;
+}
 /*  */
 
 
