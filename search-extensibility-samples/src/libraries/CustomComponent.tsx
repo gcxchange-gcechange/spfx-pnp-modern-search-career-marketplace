@@ -167,12 +167,16 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         maxWidth: '350px'
                     }}
                 >
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        window.open(`${Globals.jobOpportunityPageUrl}${props.path.split('ID=')[1]}`, '_blank', 'noopener,noreferrer');
-                    }}>
-                        {lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
-                    </a>
+                    <Link 
+                        href={jobUrl} 
+                        target='_blank'
+                    >
+                        <DefaultButton 
+                            id={'jobView-'+ jobId}
+                            aria-label={strings.viewAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
+                            text={lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
+                        />
+                    </Link>
                 </h3>
                 <div className="sub">
                     <div>
