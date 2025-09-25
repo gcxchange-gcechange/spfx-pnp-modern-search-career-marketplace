@@ -135,7 +135,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     }
 
     const mailApplyBodyEn = encodeURIComponent(`Hello ${formatName(props.contactName)},\n\nI hope this message finds you well. My name is ${formatName(Globals.userDisplayName)}, and I am interested in the career opportunity you posted on the GCXchange Career Marketplace. Please find my resumé attached for your review.\n\nI would appreciate the opportunity to discuss how my skills align with your needs.\nThank you for your time and consideration.\n\nBest regards,\n${formatName(Globals.userDisplayName)}`);
-    const mailApplyBodyFr = encodeURIComponent(`Bonjour ${formatName(props.contactName)},\n\nJ\’espère que vous allez bien. Mon nom est ${formatName(Globals.userDisplayName)} et l\’offre d\’emploi que vous avez publiée dans le Carrefour de carrière sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\n\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\n\nCordialement,\n${formatName(Globals.userDisplayName)}`);
+    const mailApplyBodyFr = encodeURIComponent(`Bonjour ${formatName(props.contactName)},\n\nJ\’espère que vous allez bien. Mon nom est ${formatName(Globals.userDisplayName)} et l\’offre d\’emploi que vous avez publiée dans le marché de carrière sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\n\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\n\nCordialement,\n${formatName(Globals.userDisplayName)}`);
 
     const isExpired = ():boolean => {
         if (props.applicationDeadlineDate) {
