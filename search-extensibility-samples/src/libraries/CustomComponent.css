@@ -1,11 +1,58 @@
 h3 {
     color: #03787C;
     font-size: 25px;
-    margin: 0px 0 10px 0;
+    margin: 0px 0 5px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* job card button overrides */
+h3 a button {
+    width: 100%;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: start !important;
+    font-size: inherit !important;
+    color: inherit !important;
+    background-color: transparent !important;
+}
+
+h3 a button:hover span {
+    text-decoration: underline;
+}
+
+h3 a button:focus-visible  {
+    outline-offset: -1px !important;
+}
+
+h3 a button .ms-Button-flexContainer {
+    display: block;
+}
+
+h3 a button .ms-Button-label {
+    margin: 0;
+    font-weight: bold;
+    line-height: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+h3 a button:hover .ms-Button-label {
+    color: #03787C !important;
+}
+
+h3 a:hover {
+    color: inherit !important;
+}
+
+h3 a {
+    box-shadow: none !important;
+}
+/*  */
+
 
 h3 a {
     text-decoration: none;
