@@ -42,6 +42,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       this._currentWebUrl = this._pageContext.web.absoluteUrl;
 
       Globals.userDisplayName = this._pageContext.user.displayName;
+      Globals.userEmail = this._pageContext.user.email;
     });
 
     this.insertCustomStyles();

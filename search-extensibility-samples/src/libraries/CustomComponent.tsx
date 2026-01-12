@@ -147,6 +147,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return true;
     }
     const expired = isExpired();
+    const disableApply = Globals.userEmail === props.contactEmail;
 
     return (
         <div 
@@ -222,7 +223,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                             text={strings.view}
                         />
                     </Link>
-                    {!expired && 
+                    {!expired && !disableApply &&
                         <Link 
                             href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? `Intérêt pour l'opportunité ${props.jobTitleFr}` : `Interested in the ${props.jobTitleEn} opportunity`}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
                             target='_blank'
@@ -233,6 +234,15 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                                 text={strings.apply}
                             />
                         </Link>
+                    }
+                    {!expired && disableApply &&
+                        <PrimaryButton 
+                            id={'jobApply-'+ jobId}
+                            aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
+                            text={strings.apply}
+                            styles={{rootDisabled: {backgroundColor: '#403F3F', color: '#FFF'}}}
+                            disabled={true}
+                        />
                     }
                     {expired && 
                         <PrimaryButton 
