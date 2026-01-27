@@ -1,5 +1,5 @@
 .jobcard h3 {
-    color: #03787C;
+    color: #044D4D;
     font-size: 25px;
     margin: 0px 0 5px 0;
     white-space: nowrap;
@@ -71,6 +71,10 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+}
+
+.searchTermFound {
+    padding: 5px 0;
 }
 
 .description {
@@ -210,4 +214,8 @@
 
 .bold {
     font-weight: bold;
+}
+
+mark {
+    background-color: #B6D0D1;
 }
