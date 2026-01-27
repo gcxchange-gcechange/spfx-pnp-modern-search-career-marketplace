@@ -269,8 +269,6 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     </div>
                 </div>
 
-                <p>{props.searchQuery}</p>
-
                 <div className="actions">
                     <Link 
                         href={jobUrl} 
