@@ -137,19 +137,19 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return 'N/A';
     }
 
-    function highlightText(origText: string, jobOppProperty: string = ""): string {
+    function highlightText(origText: string): string {
         let retVal = origText;
 
         try {
-            const standardSearchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).filter(Boolean);
+            const searchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).filter(Boolean);
 
-            if (standardSearchhWords.length === 0)
+            if (searchhWords.length === 0)
                 return retVal;
 
             const lowerOrigText = origText.toLowerCase();
             const matchIndices: Array<{ start: number; end: number }> = [];
 
-            standardSearchhWords.forEach(word => {
+            searchhWords.forEach(word => {
                 const lowerWord = word.toLowerCase();
                 let startIndex = 0;
 
@@ -175,7 +175,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
             matchIndices.forEach(({ start, end }) => {
                 retVal = retVal.slice(0, end) + '</mark>' + retVal.slice(end);
-                retVal = retVal.slice(0, start) + '<mark style="font-weight: bold !important;">' + retVal.slice(start);
+                retVal = retVal.slice(0, start) + '<mark>' + retVal.slice(start);
             });
         } catch (e) {
             console.error(e);
