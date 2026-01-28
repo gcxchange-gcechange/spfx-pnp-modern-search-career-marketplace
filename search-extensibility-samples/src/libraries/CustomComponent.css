@@ -224,6 +224,8 @@ mark {
 .noLinkStyle {
   text-decoration: none;
   color: inherit;
+  outline-offset: 4px;
+  border-radius: 5px;
 }
 
 .noLinkStyle,
