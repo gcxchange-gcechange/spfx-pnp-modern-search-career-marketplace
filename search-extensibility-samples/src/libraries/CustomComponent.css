@@ -1,7 +1,7 @@
 .jobcard h3 {
     color: #044D4D;
     font-size: 25px;
-    margin: 0px 0 5px 0;
+    margin: 5px 0 10px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -219,4 +219,43 @@
 mark {
     font-weight: bold !important;
     background-color: #B6D0D1;
+}
+
+.noLinkStyle {
+  text-decoration: none;
+  color: inherit;
+}
+
+.noLinkStyle,
+.noLinkStyle:hover,
+.noLinkStyle:active,
+.noLinkStyle:focus,
+.noLinkStyle:focus-visible,
+.noLinkStyle:visited {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.noLinkStyle:hover .jobcard,
+.noLinkStyle:focus .jobcard,
+.noLinkStyle:focus-visible .jobcard {
+    background-color: #DAE8E8;
+    box-shadow: 0px 10px 24px 0px #00000026;
+}
+
+.noLinkStyle:active .jobcard{
+    background-color: #B6D1D1 !important;
+    box-shadow: 0px 2px 24px -2px #00000026 inset !important;
+}
+
+.noLinkStyle:hover mark,
+.noLinkStyle:focus mark,
+.noLinkStyle:focus-visible mark{
+    background-color: #03787c;
+    color: white;
+}
+
+.noLinkStyle:active mark{
+    background-color: #03787c;
+    color: white;
 }
