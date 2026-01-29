@@ -1,7 +1,8 @@
+/* eslint-disable no-constant-condition */
 import * as React from 'react';
 import { BaseWebComponent } from '@pnp/modern-search-extensibility';
 import * as ReactDOM from 'react-dom';
-import { PrimaryButton, DefaultButton, useTheme, Link } from '@fluentui/react';
+import { useTheme, Link } from '@fluentui/react';
 import { SelectLanguage } from './SelectLanguage';
 import './CustomComponent.css';
 import { Globals, Language } from './Globals';
@@ -30,6 +31,7 @@ export interface ICustomComponentProps {
     jobType?: string;
     durationQuantity?: string;
     jobTypeTermSetGuid?: string;
+    searchQuery?: string;
 }
 
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
@@ -39,6 +41,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const lang = Globals.getLanguage();
     const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
     const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
+    let hightlightMatches = 0;
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
@@ -59,15 +62,6 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         }
         return 'NA';
     };
-
-    const formatName = (displayName: string): string => {
-        let formattedName = displayName;
-
-        if (displayName) 
-            formattedName = displayName.split(',', 2).reverse().join(' ').replace(',', '').trim();
-
-        return formattedName;
-    }
 
     const getApplicationDeadlineDate = () => {
         if (props.applicationDeadlineDate) {
@@ -134,8 +128,52 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return 'N/A';
     }
 
-    const mailApplyBodyEn = encodeURIComponent(`Hello ${formatName(props.contactName)},\n\nI hope this message finds you well. My name is ${formatName(Globals.userDisplayName)}, and I am interested in the career opportunity you posted on the GCXchange Career Marketplace. Please find my resumé attached for your review.\n\nI would appreciate the opportunity to discuss how my skills align with your needs.\nThank you for your time and consideration.\n\nBest regards,\n${formatName(Globals.userDisplayName)}`);
-    const mailApplyBodyFr = encodeURIComponent(`Bonjour ${formatName(props.contactName)},\n\nJ\’espère que vous allez bien. Mon nom est ${formatName(Globals.userDisplayName)} et l\’offre d\’emploi que vous avez publiée dans le marché de carrière sur GCÉchange m\’intéresse. Vous trouverez ci joint mon curriculum vitæ.\n\nMes compétences semblent correspondre à vos besoins et j\’aimerais en discuter avec vous.\nJe vous remercie de prendre le temps de considérer ma candidature.\n\nCordialement,\n${formatName(Globals.userDisplayName)}`);
+    function highlightText(origText: string): string {
+        let retVal = origText;
+
+        try {
+            const searchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).filter(Boolean);
+
+            if (searchhWords.length === 0)
+                return retVal;
+
+            const lowerOrigText = origText.toLowerCase();
+            const matchIndices: Array<{ start: number; end: number }> = [];
+
+            searchhWords.forEach(word => {
+                const lowerWord = word.toLowerCase();
+                let startIndex = 0;
+
+                while (true) {
+                    const index = lowerOrigText.indexOf(lowerWord, startIndex);
+                    if (index === -1) 
+                        break;
+
+                    const isWordStart = index === 0 || !/[a-z0-9]/i.test(lowerOrigText[index - 1]);
+
+                    // Only match when it starts with the word, since that's how our pnp search works.
+                    if (isWordStart) {
+                        matchIndices.push({ start: index, end: index + word.length });
+                        hightlightMatches++;
+                    }
+
+                    startIndex = index + 1;
+                }
+            });
+
+            // Insert tags from right to left to avoid index shift
+            matchIndices.sort((a, b) => b.start - a.start);
+
+            matchIndices.forEach(({ start, end }) => {
+                retVal = retVal.slice(0, end) + '</mark>' + retVal.slice(end);
+                retVal = retVal.slice(0, start) + '<mark>' + retVal.slice(start);
+            });
+        } catch (e) {
+            console.error(e);
+        }
+
+        return retVal;
+    }
 
     const isExpired = ():boolean => {
         if (props.applicationDeadlineDate) {
@@ -147,116 +185,75 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return true;
     }
     const expired = isExpired();
-    const disableApply = Globals.userEmail === props.contactEmail;
 
     return (
-        <div 
-            className={expired ? 'jobcard expiredJobCard' : 'jobcard'}
-            style={{
-                border: `1px solid ${theme.palette.themePrimary}`,
-            }}
+        <Link 
+            href={jobUrl} 
+            target='_blank'
+            className='noLinkStyle'
+            id={'jobView-'+ jobId}
         >
-            {expired && 
-                <div className='expiredBanner'>
-                    <p role="status" aria-live="polite">{strings.jobExpired}</p>
-                </div>
-            }
-            <div className="card-content">
-                <h3 style={{
-                        color: `${theme.palette.themePrimary}`,
-                        overflow: 'hidden',
-                        maxWidth: '350px'
-                    }}
-                >
-                    <Link 
-                        href={jobUrl} 
-                        target='_blank'
+            <div 
+                className={expired ? 'jobcard expiredJobCard' : 'jobcard'}
+                style={{
+                    border: `1px solid ${theme.palette.themePrimary}`,
+                }}
+            >
+                {expired && 
+                    <div className='expiredBanner'>
+                        <p role="status" aria-live="polite">{strings.jobExpired}</p>
+                    </div>
+                }
+                <div className="card-content">
+                    <h3 style={{
+                            color: `${theme.palette.themePrimary}`,
+                            overflow: 'hidden',
+                            maxWidth: '350px'
+                        }}
                     >
-                        <DefaultButton 
-                            id={'jobView-'+ jobId}
-                            aria-label={strings.viewAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
-                            text={lang === Language.French ? props.jobTitleFr : props.jobTitleEn}
-                        />
-                    </Link>
-                </h3>
-                <div className="sub">
-                    <div>
-                        <b>{strings.classificationLevel}</b>: {lang === Language.French ? props.classificationCodeFr : props.classificationCodeEn}-{props.classificationLevel}
-                    </div>
-                    <div>
-                        <b>{strings.opportunityType}</b>: {termLabelDefaultLanguage(props.jobType)}
-                    </div>
-                    <div>
-                        <b>{strings.duration}</b>: {!props.durationQuantity ? strings.undetermined : `${props.durationQuantity} ${lang === Language.French ? props.durationFr : props.durationEn}`}
-                    </div>
-                </div>
-                <div className="description">
-                    <b>{strings.description}</b>: {lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn}
-                </div>
-                <div className="sub">
-                    <div>
-                        <b>{strings.location}</b>: {lang === Language.French ? props.cityFr : props.cityEn}
-                    </div>
-                    <div>
-                        <b>{strings.deadline}</b>: {getApplicationDeadlineDate()}
-                    </div>
-                </div>
-                <div className="contact">
-                    <div className="profile">
+                        <span dangerouslySetInnerHTML={{ __html: lang === Language.French ? highlightText(props.jobTitleFr) : highlightText(props.jobTitleEn) }} />
+                    </h3>
+                    <div className="sub">
+                        { props.searchQuery.indexOf('* path:') !== 0 && hightlightMatches === 0 &&
+                            <div className="searchTermFound">
+                                <mark><b>{strings.searchTermFound}</b></mark>
+                            </div>
+                        }
                         <div>
-                            {getContactNameInitials()}
+                            <b>{strings.classificationLevel}</b>: {lang === Language.French ? props.classificationCodeFr : props.classificationCodeEn}-{props.classificationLevel}
+                        </div>
+                        <div>
+                            <b>{strings.opportunityType}</b>: {termLabelDefaultLanguage(props.jobType)}
+                        </div>
+                        <div>
+                            <b>{strings.duration}</b>: {!props.durationQuantity ? strings.undetermined : `${props.durationQuantity} ${lang === Language.French ? props.durationFr : props.durationEn}`}
                         </div>
                     </div>
-                    <div className="info">
-                        <div>{props.contactName}</div>
-                        <div>{props.contactEmail}</div>
+                    <div className="description">
+                        <b>{strings.description}</b>: <span dangerouslySetInnerHTML={{ __html: lang === Language.French ? highlightText(props.jobDescriptionFr) : highlightText(props.jobDescriptionEn) }} /> 
+                    </div>
+                    <div className="sub">
+                        <div>
+                            <b>{strings.location}</b>: {lang === Language.French ? props.cityFr : props.cityEn}
+                        </div>
+                        <div>
+                            <b>{strings.deadline}</b>: {getApplicationDeadlineDate()}
+                        </div>
+                    </div>
+                    <div className="contact">
+                        <div className="profile">
+                            <div>
+                                {getContactNameInitials()}
+                            </div>
+                        </div>
+                        <div className="info">
+                            <div>{props.contactName}</div>
+                            <div>{props.contactEmail}</div>
+                        </div>
                     </div>
                 </div>
-                <div className="actions">
-                    <Link 
-                        href={jobUrl} 
-                        target='_blank'
-                    >
-                        <DefaultButton 
-                            id={'jobView-'+ jobId}
-                            aria-label={strings.viewAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
-                            text={strings.view}
-                        />
-                    </Link>
-                    {!expired && !disableApply &&
-                        <Link 
-                            href={`mailto:${props.contactEmail}?subject=${lang === Language.French ? `Intérêt pour l'opportunité ${props.jobTitleFr}` : `Interested in the ${props.jobTitleEn} opportunity`}&body=${lang === Language.French ? mailApplyBodyFr : mailApplyBodyEn}&JobOpportunityId=${jobId}`}
-                            target='_blank'
-                        >
-                            <PrimaryButton 
-                                id={'jobApply-'+ jobId}
-                                aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
-                                text={strings.apply}
-                            />
-                        </Link>
-                    }
-                    {!expired && disableApply &&
-                        <PrimaryButton 
-                            id={'jobApply-'+ jobId}
-                            aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
-                            text={strings.apply}
-                            styles={{rootDisabled: {backgroundColor: '#403F3F', color: '#FFF'}}}
-                            disabled={true}
-                        />
-                    }
-                    {expired && 
-                        <PrimaryButton 
-                            id={'jobApply-'+ jobId}
-                            aria-label={strings.applyAria + (lang === Language.French ? props.jobTitleFr : props.jobTitleEn)}
-                            text={strings.applyExpired}
-                            styles={{rootDisabled: {backgroundColor: '#403F3F', color: '#FFF'}}}
-                            disabled={true}
-                        />
-                    }
-                    
-                </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

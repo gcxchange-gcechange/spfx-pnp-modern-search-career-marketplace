@@ -30,6 +30,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   applyExpired: string;
   undetermined: string;
   opportunities: string;
+  searchTermFound: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {

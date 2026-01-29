@@ -30,6 +30,7 @@ define([], function() {
       "jobExpired": "This opportunity has expired.",
       "opportunities": "Opportunities",
       "applyExpired": "Applications closed",
-      "undetermined": "Undetermined"
+      "undetermined": "Undetermined",
+      "searchTermFound": "Search terms found in full post"
   }
 });

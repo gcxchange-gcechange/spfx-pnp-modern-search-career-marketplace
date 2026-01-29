@@ -30,6 +30,7 @@ define([], function() {
         "jobExpired": "Cette opportunité a expiré.",
         "applyExpired": "Candidatures fermées",
         "undetermined": "Indéterminé",
-        "opportunities": "Opportunités"
+        "opportunities": "Opportunités",
+        "searchTermFound": "Mots-clés trouvés dans l'opportunité complete"
     }
 });
