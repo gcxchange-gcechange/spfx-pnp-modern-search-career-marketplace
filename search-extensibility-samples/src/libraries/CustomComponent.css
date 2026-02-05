@@ -261,3 +261,13 @@ mark {
     background-color: #03787c;
     color: white;
 }
+
+.noLinkStyle:hover .expiredBanner,
+.noLinkStyle:focus .expiredBanner,
+.noLinkStyle:focus-visible .expiredBanner {
+    background-color: #fde3e5;
+}
+
+.noLinkStyle:active .expiredBanner {
+    background-color: #ffcfd2;
+}

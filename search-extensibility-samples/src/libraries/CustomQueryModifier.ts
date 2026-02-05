@@ -324,11 +324,9 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       propSet = true;
     }
 
-    // Only show results where the ApplicationDeadlineDate is today's date or greater
-    const today = new Date();
-    const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
-
-    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate}`;
+    // Only show results where the ApplicationDeadlineDate has not expired
+    const now = new Date().toISOString();
+    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${now}`;
 
     return finalQuery;
   }
@@ -349,9 +347,8 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (applicationDeadline && applicationDeadline.trim() != '') {
       finalQuery += `"${this._properties.deadlineFilterMP}"<=${applicationDeadline} `;
     } else {
-      const today = new Date();
-      const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
-      finalQuery += `"${this._properties.deadlineFilterMP}">=${formattedUTCDate} `;
+      const now = new Date().toISOString();
+      finalQuery += `"${this._properties.deadlineFilterMP}">=${now} `;
     }
 
     if (jobTypes && jobTypes.trim() != '') {
