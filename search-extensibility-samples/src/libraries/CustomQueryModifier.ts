@@ -58,6 +58,7 @@ export enum QueryModifierKeys {
 export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSearchQueryModifierProperties> {
   private static readonly DEFAULT_VALUE = '*';
   private lang = Globals.getLanguage();
+  private todayIso: string;
 
   public async onInit(): Promise<void> {
 
@@ -76,6 +77,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     });
 
     this.setupListeners();
+
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0); 
+    this.todayIso = today.toISOString();
   }
 
   private setupListeners(): void {
@@ -324,9 +329,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       propSet = true;
     }
 
-    // Only show results where the ApplicationDeadlineDate has not expired
-    const now = new Date().toISOString();
-    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${now}`;
+    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${this.todayIso}`;
 
     return finalQuery;
   }
