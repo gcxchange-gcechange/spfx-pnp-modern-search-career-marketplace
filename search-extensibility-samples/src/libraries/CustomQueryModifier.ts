@@ -350,8 +350,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (applicationDeadline && applicationDeadline.trim() != '') {
       finalQuery += `"${this._properties.deadlineFilterMP}"<=${applicationDeadline} `;
     } else {
-      const now = new Date().toISOString();
-      finalQuery += `"${this._properties.deadlineFilterMP}">=${now} `;
+      finalQuery += `"${this._properties.deadlineFilterMP}">=${this.todayIso} `;
     }
 
     if (jobTypes && jobTypes.trim() != '') {
