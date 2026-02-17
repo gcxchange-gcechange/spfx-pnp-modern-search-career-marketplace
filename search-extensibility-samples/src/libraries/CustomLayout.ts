@@ -23,6 +23,7 @@ export interface ICustomLayoutProperties {
     jobType: string;
     durationQuantity: string;
     jobTypeTermSetGuid: string;
+    applyEmail: string;
 }
 
 export enum PropertyPaneProps {
@@ -45,7 +46,8 @@ export enum PropertyPaneProps {
     JobTitleFr = 'layoutProperties.jobTitleFr',
     JobType = 'layoutProperties.jobType',
     DurationQuantity = 'layoutProperties.durationQuantity',
-    JobTypeTermSetGuid = 'layoutProperties.jobTypeTermSetGuid'
+    JobTypeTermSetGuid = 'layoutProperties.jobTypeTermSetGuid',
+    ApplyEmail = 'layoutProperties.applyEmail'
 }
 
 export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
@@ -115,6 +117,12 @@ export class CustomLayout extends BaseLayout<ICustomLayoutProperties> {
                 label: 'ContactEmail Managed Property',
                 value: this.properties.contactEmail,
                 placeholder: 'CM-ContactEmail',
+                onGetErrorMessage: this.validateRequiredField.bind(this)
+            }),
+            PropertyPaneTextField(PropertyPaneProps.ApplyEmail, {
+                label: 'ApplyEmail Managed Property',
+                value: this.properties.applyEmail,
+                placeholder: 'CM-ApplyEmail',
                 onGetErrorMessage: this.validateRequiredField.bind(this)
             }),
             PropertyPaneTextField(PropertyPaneProps.ContactName, {

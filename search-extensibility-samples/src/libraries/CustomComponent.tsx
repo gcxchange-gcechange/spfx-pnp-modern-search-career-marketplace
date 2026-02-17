@@ -32,6 +32,7 @@ export interface ICustomComponentProps {
     durationQuantity?: string;
     jobTypeTermSetGuid?: string;
     searchQuery?: string;
+    applyEmail?: string;
 }
 
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
@@ -248,7 +249,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         </div>
                         <div className="info">
                             <div>{props.contactName}</div>
-                            <div>{props.contactEmail}</div>
+                            <div>{props.applyEmail? props.applyEmail : props.contactEmail}</div>
                         </div>
                     </div>
                 </div>
