@@ -58,6 +58,7 @@ export enum QueryModifierKeys {
 export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSearchQueryModifierProperties> {
   private static readonly DEFAULT_VALUE = '*';
   private lang = Globals.getLanguage();
+  private todayIso: string;
 
   public async onInit(): Promise<void> {
 
@@ -76,6 +77,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     });
 
     this.setupListeners();
+
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0); 
+    this.todayIso = today.toISOString();
   }
 
   private setupListeners(): void {
@@ -324,11 +329,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       propSet = true;
     }
 
-    // Only show results where the ApplicationDeadlineDate is today's date or greater
-    const today = new Date();
-    const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
-
-    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${formattedUTCDate}`;
+    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${this.todayIso}`;
 
     return finalQuery;
   }
@@ -349,9 +350,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (applicationDeadline && applicationDeadline.trim() != '') {
       finalQuery += `"${this._properties.deadlineFilterMP}"<=${applicationDeadline} `;
     } else {
-      const today = new Date();
-      const formattedUTCDate = `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
-      finalQuery += `"${this._properties.deadlineFilterMP}">=${formattedUTCDate} `;
+      finalQuery += `"${this._properties.deadlineFilterMP}">=${this.todayIso} `;
     }
 
     if (jobTypes && jobTypes.trim() != '') {

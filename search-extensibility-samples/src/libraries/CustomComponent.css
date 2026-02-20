@@ -71,6 +71,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    word-break: break-word;
 }
 
 .searchTermFound {
@@ -92,6 +93,7 @@
     padding-bottom: 20px;
     display: flex;
     align-items: center;
+    word-break: break-word;
 }
 
 .profile {
@@ -110,7 +112,7 @@
 }
 
 .info {
-    padding-left: 20px
+    padding-left: 20px;
 }
 
 .info div:first-child {
@@ -261,5 +263,14 @@ mark {
 .noLinkStyle:active mark{
     background-color: #03787c;
     color: white;
+}
 
+.noLinkStyle:hover .expiredBanner,
+.noLinkStyle:focus .expiredBanner,
+.noLinkStyle:focus-visible .expiredBanner {
+    background-color: #fde3e5;
+}
+
+.noLinkStyle:active .expiredBanner {
+    background-color: #ffcfd2;
 }

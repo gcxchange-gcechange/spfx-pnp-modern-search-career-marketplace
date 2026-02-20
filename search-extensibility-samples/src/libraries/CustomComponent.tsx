@@ -6,6 +6,7 @@ import { useTheme, Link } from '@fluentui/react';
 import { SelectLanguage } from './SelectLanguage';
 import './CustomComponent.css';
 import { Globals, Language } from './Globals';
+import * as DOMPurify from 'dompurify';
 
 export interface IObjectParam {
     myProperty: string;
@@ -185,7 +186,10 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         }
         return true;
     }
+
     const expired = isExpired();
+    const transformedTitle = highlightText(lang === Language.French ? props.jobTitleFr : props.jobTitleEn);
+    const transformedDescription = highlightText(lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn);
 
     return (
         <Link 
@@ -212,7 +216,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                             maxWidth: '350px'
                         }}
                     >
-                        <span dangerouslySetInnerHTML={{ __html: lang === Language.French ? highlightText(props.jobTitleFr) : highlightText(props.jobTitleEn) }} />
+                        <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle) }} />
                     </h3>
                     <div className="sub">
                         { props.searchQuery.indexOf('* path:') !== 0 && hightlightMatches === 0 &&
@@ -231,7 +235,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         </div>
                     </div>
                     <div className="description">
-                        <b>{strings.description}</b>: <span dangerouslySetInnerHTML={{ __html: lang === Language.French ? highlightText(props.jobDescriptionFr) : highlightText(props.jobDescriptionEn) }} /> 
+                        <b>{strings.description}</b>: <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedDescription) }} /> 
                     </div>
                     <div className="sub">
                         <div>
