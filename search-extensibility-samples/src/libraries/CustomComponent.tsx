@@ -239,7 +239,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     </div>
                     <div className="sub">
                         <div>
-                            <b>{strings.location}</b>: {lang === Language.French ? props.cityFr : props.cityEn}
+                            <b>{strings.location}</b>: {lang === Language.French ? (props.cityFr ? props.cityFr : strings.remote) : (props.cityEn ? props.cityEn : strings.remote)}
                         </div>
                         <div>
                             <b>{strings.deadline}</b>: {getApplicationDeadlineDate()}
