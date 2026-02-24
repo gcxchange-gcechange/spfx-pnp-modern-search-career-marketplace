@@ -1,0 +1,38 @@
+.gcx-news-card {
+    border: 1px solid #d3cece;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.gcx-news-card .news-card-header {
+    display: flex;
+}
+
+.gcx-news-card .news-card-header img {
+    height: 150px;
+    width: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.gcx-news-card .news-card-header .header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.gcx-news-card .news-card-content {
+    display: inline-block;
+    padding: 10px 0;
+}
+
+.gcx-news-card .news-card-author {
+    display: flex;
+    justify-content: space-between;
+}
+
+.news-card-author span:last-child {
+    color: #858585;
+}
