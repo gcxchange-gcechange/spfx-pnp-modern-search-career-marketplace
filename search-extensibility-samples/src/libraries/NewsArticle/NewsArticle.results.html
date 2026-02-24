@@ -1,0 +1,92 @@
+<content id="data-content">
+    <style>
+        pnp-pagination >div:first-child {
+            padding-top: 25px;
+        }
+
+        .cmresults {
+            list-style-type: none;
+        }
+
+        .cm-results-header {
+            padding: 0 0 10px 0;
+        }
+
+        .cm-results-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+    </style>
+
+    <div class="template_root">
+
+        {{#if @root.properties.showResultsCount}}
+           <div class="cm-results-header">
+                <h2>{{newsArticlesLabel}}</h2>
+               <span class="ms-fontWeight-semibold" aria-live="polite">{{resultsNoQueryText (getCountMessage @root.data.totalItemsCount)}}</span>
+           </div>
+        {{/if}}
+        
+        {{#if data.items.length}}
+            <ul class="template_defaultList cmresults">
+                {{#each data.items as |item|}} 
+                    <li>
+                        <news-article-card
+                            path="{{item.Path}}"
+                        >
+                        </news-article-card>
+                    </li>
+                {{/each}}
+            </ul>
+        {{/if}}
+
+        {{#if @root.properties.paging.showPaging}}
+            {{#gt @root.data.totalItemsCount @root.properties.paging.itemsCountPerPage}}
+                <pnp-pagination 
+                    data-total-items="{{@root.data.totalItemsCount}}" 
+                    data-hide-first-last-pages="{{@root.properties.paging.hideFirstLastPages}}"
+                    data-hide-disabled="{{@root.properties.paging.hideDisabled}}"
+                    data-hide-navigation="{{@root.properties.paging.hideNavigation}}"
+                    data-range="{{@root.properties.paging.pagingRange}}" 
+                    data-items-count-per-page="{{@root.properties.paging.itemsCountPerPage}}" 
+                    data-current-page-number="{{@root.paging.currentPageNumber}}"
+                    data-theme-variant="{{JSONstringify @root.theme}}"
+                >
+                </pnp-pagination>
+            {{/gt}}
+        {{/if}}
+    </div>
+</content>
+
+<content id="placeholder-content">
+    <style>
+        /* Insert your CSS overrides here */
+    </style>
+
+    <div class="placeholder_root">
+        <ul class="template_defaultList">
+            {{#times 3}}   
+                <li class="template_listItem" tabindex="0">
+                    <div class="template_result">
+                            <div class="template_icon shimmer"></div>
+                            <div class="template_contentContainer">
+                                <span class="shimmer line" style="width: 60%"></span>
+                                <span class="shimmer line" style="width: 100%"></span>
+                                <span class="shimmer line" style="width: 100%"></span>
+                                <span class="shimmer line" style="width: 35%"></span>
+                                <span class="shimmer line" style="width: 20%"></span>                       
+                            </div>
+                    </div>
+                    <div class="template_previewContainer ms-hiddenSm">
+                        <div class="doc-container">
+                            <div class="img-container">
+                                <div class="shimmer img-preview" style="width: 120px;height: 70px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {{/times}}
+        </ul>
+    </div>
+</content>

@@ -24,6 +24,8 @@ import { CustomDataSource } from "../CustomDataSource";
 import { SelectLanguage } from "../SelectLanguage";
 import { Globals } from "../Globals";
 import { MyOpportunitiesQueryModifier } from "../MyOpportunitiesQueryModifier";
+import { NewsArticleWebComponent } from "../NewsArticle/NewsArticle";
+import { NewsArticleLayout } from "../NewsArticle/NewsArticleLayout";
 
 export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   
@@ -67,6 +69,15 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         renderType: LayoutRenderType.AdaptiveCards,
         templateContent: JSON.stringify(require('../custom-layout.json'), null, "\t"),
         serviceKey: ServiceKey.create<ILayout>('PnP:CustomLayoutAdaptive', CustomLayout),
+      },
+      {
+        name: 'News Article',
+        iconName: 'News',
+        key: 'CustomLayoutNewsArticle',
+        type: LayoutType.Results,
+        renderType: LayoutRenderType.Handlebars,
+        templateContent: require('../NewsArticle/NewsArticle.results.html'),
+        serviceKey: ServiceKey.create<ILayout>('PnP:NewsArticleHandlebars', NewsArticleLayout)
       }
     ];
   }
@@ -76,6 +87,10 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       {
         componentName: 'job-opportunity-card',
         componentClass: MyCustomComponentWebComponent
+      },
+      {
+        componentName: 'news-article-card',
+        componentClass: NewsArticleWebComponent
       }
     ];
   }
@@ -163,6 +178,17 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       try {
         const strings = SelectLanguage(Globals.getLanguage());
         return strings.opportunities;
+      }
+      catch (e) {
+        console.log(e);
+        return '';
+      }
+    });
+
+    namespace.registerHelper('newsArticlesLabel', () => {
+      try {
+        const strings = SelectLanguage(Globals.getLanguage());
+        return strings.articles;
       }
       catch (e) {
         console.log(e);
