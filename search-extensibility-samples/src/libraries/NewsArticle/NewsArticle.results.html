@@ -4,36 +4,49 @@
             padding-top: 25px;
         }
 
-        .cmresults {
+        .newsresults {
             list-style-type: none;
         }
 
-        .cm-results-header {
+        .news-results-header {
             padding: 0 0 10px 0;
         }
 
-        .cm-results-header h2 {
+        .news-results-header h2 {
             font-size: 20px;
             font-weight: 600;
             margin: 0 0 10px 0;
+        }
+
+        ul.template_newslist {
+            margin: 0;
+            padding: 0;
         }
     </style>
 
     <div class="template_root">
 
         {{#if @root.properties.showResultsCount}}
-           <div class="cm-results-header">
+           <div class="news-results-header">
                 <h2>{{newsArticlesLabel}}</h2>
                <span class="ms-fontWeight-semibold" aria-live="polite">{{resultsNoQueryText (getCountMessage @root.data.totalItemsCount)}}</span>
            </div>
         {{/if}}
         
         {{#if data.items.length}}
-            <ul class="template_defaultList cmresults">
+            <ul class="template_newslist newsresults">
                 {{#each data.items as |item|}} 
                     <li>
                         <news-article-card
                             path="{{item.Path}}"
+                            title="{{item.Title}}"
+                            hit-highlighted-summary="{{item.HitHighlightedSummary}}"
+                            picture-thumbnail-url="{{item.PictureThumbnailURL}}"
+                            site-title="{{item.SiteTitle}}"
+                            site-logo="{{item.SiteLogo}}"
+                            site-url="{{item.SPWebUrl}}"
+                            created-by="{{item.CreatedBy}}"
+                            created="{{item.Created}}"
                         >
                         </news-article-card>
                     </li>
@@ -65,7 +78,7 @@
     </style>
 
     <div class="placeholder_root">
-        <ul class="template_defaultList">
+        <ul class="template_newslist">
             {{#times 3}}   
                 <li class="template_listItem" tabindex="0">
                     <div class="template_result">

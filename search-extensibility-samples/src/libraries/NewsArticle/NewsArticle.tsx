@@ -5,21 +5,54 @@ import * as ReactDOM from 'react-dom';
 //import { useTheme } from '@fluentui/react';
 //import { SelectLanguage } from '../SelectLanguage';
 import './NewsArticle.css';
-import { Globals, Language } from '../Globals';
+import { Link } from '@fluentui/react';
+//import { Globals, Language } from '../Globals';
 
 export interface INewsArticleProps {
-    path?: string;
+    path?: string;                      // Link to the news post
+    title?: string;                     // Title
+    hitHighlightedSummary?: string;     // Summarry
+    pictureThumbnailUrl?: string;       // Article picture (thumbnail)
+    siteTitle?: string;                 // Title of the site 
+    siteLogo?: string;                  // Logo of the site
+    siteUrl?: string;                   // Url of the site
+    createdBy?: string;                 // Author
+    created?: string;                   // Creation date string (UTC)
 }
 
 const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
 
     //const theme = useTheme();
     //const strings = SelectLanguage(Globals.getLanguage());
-    const lang = Globals.getLanguage();
+    //const lang = Globals.getLanguage();
+
+    const date = new Date(props.created);
+    const createdDate = props.created ? (`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`) : 'N/A';
 
     return (
-        <div>
-            {lang === Language.French ? '' : 'TODO: Add the HTML for the job card here.'}
+        <div className='gcx-news-card'>
+            <div className='news-card-header'>
+                <img className='thumbnail' src={props.pictureThumbnailUrl} />
+                <div className='header-text'>
+                    <div>
+                        <Link href={props.siteUrl}>
+                            {props.siteTitle}
+                        </Link>
+                    </div>
+                    <div>
+                        <Link href={props.path}>
+                            {props.title}
+                        </Link>
+                    </div>
+                </div>
+            </div>
+            <div className='news-card-content'>
+                <span>{props.hitHighlightedSummary}</span>
+            </div>
+            <div className='news-card-author'>
+                <span>{props.createdBy}</span>
+                <span>{createdDate}</span>
+            </div>
         </div>
     );
 };
