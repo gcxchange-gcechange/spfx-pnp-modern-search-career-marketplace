@@ -31,6 +31,7 @@ define([], function() {
       "opportunities": "Opportunities",
       "applyExpired": "Applications closed",
       "undetermined": "Undetermined",
-      "searchTermFound": "Search terms found in full post"
+      "searchTermFound": "Search terms found in full post",
+      "remote": "Remote"
   }
 });

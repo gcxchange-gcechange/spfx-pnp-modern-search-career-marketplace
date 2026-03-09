@@ -31,6 +31,7 @@ define([], function() {
         "applyExpired": "Candidatures fermées",
         "undetermined": "Indéterminé",
         "opportunities": "Opportunités",
-        "searchTermFound": "Mots-clés trouvés dans l'opportunité complete"
+        "searchTermFound": "Mots-clés trouvés dans l'opportunité complete",
+        "remote": "À distance"
     }
 });

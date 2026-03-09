@@ -31,6 +31,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   undetermined: string;
   opportunities: string;
   searchTermFound: string;
+  remote: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {
