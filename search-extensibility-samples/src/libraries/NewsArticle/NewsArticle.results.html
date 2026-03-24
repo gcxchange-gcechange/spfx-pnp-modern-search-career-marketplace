@@ -47,6 +47,13 @@
                             site-url="{{item.SPWebUrl}}"
                             created-by="{{item.CreatedBy}}"
                             created="{{item.Created}}"
+                            view-count="{{item.ViewCount}}"
+                            view-count-lifetime="{{item.ViewCountLifetime}}"
+                            last-modified-time="{{item.LastModifiedTime}}"
+                            friendly-last-modified-time="{{relativeDate item.LastModifiedTime}}"
+                            picture-url="{{item.PictureURL}}"
+                            author="{{item.Author}}"
+                            author-owsuser="{{item.AuthorOWSUSER}}"
                         >
                         </news-article-card>
                     </li>

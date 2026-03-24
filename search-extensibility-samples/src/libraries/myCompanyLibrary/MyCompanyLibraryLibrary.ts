@@ -195,7 +195,21 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         return '';
       }
     });
-  }
+
+    namespace.registerHelper('logObj', (value: any)  => {
+      console.log('item: ', JSON.stringify(value));
+      return value;
+    });
+
+    // Register a helper for relative time
+    namespace.registerHelper('relativeDate', function(dateString) {
+      const moment = require('moment'); // Install with: npm install moment
+      if (!dateString) return '';
+      const date = moment(dateString);
+      if (!date.isValid()) return 'Invalid date';
+      return date.fromNow(); // e.g., "3 days ago"
+    });
+}
 
   public invokeCardAction(action: any): void {
     
