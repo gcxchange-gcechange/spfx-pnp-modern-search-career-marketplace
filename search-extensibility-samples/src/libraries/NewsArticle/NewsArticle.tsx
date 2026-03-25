@@ -53,18 +53,38 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
     //     return 'NA';
     // };
 
+    // Unable to get the elipsis using CSS was giving <ddd/> insted of ...
+    const stripHtml = (html: string) => {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    return temp.textContent || temp.innerText || '';
+    };
+
+    const truncateText = (text: string, maxLength: number) => {
+    const cleanText = stripHtml(text);
+
+    if (cleanText.length <= maxLength) return cleanText;
+
+    const trimmed = cleanText.substring(0, maxLength);
+    return trimmed.substring(0, trimmed.lastIndexOf(' '));
+    };
+
     return ( 
         <div className='gcx-news-card'>
             <div className='newsArticle-cardImage'>
-                <img src={props.pictureThumbnailUrl} />
+                {props.pictureThumbnailUrl ? (
+                    <img src={props.pictureThumbnailUrl} alt="thumbnail" />
+                    ) : (
+                <div className="newsArticle-cardImage-Default" />
+                )}
             </div>
             <div className='newsArticle-cardContent'>
                 <div className='newsArticle-cardTitle'>
                     <Link style={{fontSize: 'smaller', fontWeight: '500' }} href={props.siteUrl}>{props.siteTitle}</Link>
                     <h3><Link style={{color: 'black'}}  href={props.path}>{props.title}</Link></h3>
                 </div>
-                <p className='newsArticle-description'>
-                    {props.hitHighlightedSummary}
+                <p >
+                    {truncateText(props.hitHighlightedSummary,266)} ...
                 </p>
 
                 <div className='newsArticle-cardAuthor'>
