@@ -33,8 +33,8 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
     //const strings = SelectLanguage(Globals.getLanguage());
     //const lang = Globals.getLanguage();
 
-    const date = new Date(props.created);
-    const createdDate = props.created ? (`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`) : 'N/A';
+    //const date = new Date(props.created);
+    //const createdDate = props.created ? (`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`) : 'N/A';
     const email = props.authorOwsuser.substring(0, props.authorOwsuser.indexOf('|')).trim();
 
     console.log("props.pictureURL: ", props.pictureURL);
@@ -53,34 +53,30 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
     //     return 'NA';
     // };
 
-    return (
+    return ( 
         <div className='gcx-news-card'>
-            <div className='oliver-test'>
-                <div className='picture-test'>
-                    <img className='thumbnail' src={props.pictureThumbnailUrl} />
+            <div className='newsArticle-cardImage'>
+                <img src={props.pictureThumbnailUrl} />
+            </div>
+            <div className='newsArticle-cardContent'>
+                <div className='newsArticle-cardTitle'>
+                    <Link style={{fontSize: 'smaller', fontWeight: '500' }} href={props.siteUrl}>{props.siteTitle}</Link>
+                    <h3><Link style={{color: 'black'}}  href={props.path}>{props.title}</Link></h3>
                 </div>
-                <div className='details-test'>
-                    <Link href={props.siteUrl}>{props.siteTitle}</Link><br />
-                    <h3><Link href={props.path}>{props.title}</Link></h3>
-                    
-                    <div className='ellipsis-text'>
-                        {props.hitHighlightedSummary}
-                    </div>
+                <p className='newsArticle-description'>
+                    {props.hitHighlightedSummary}
+                </p>
 
-                    <div className='news-card-author'>
-                        <div className='user-icon'>
-                            <img className='profile' src={String.prototype.concat("https://devgcx.sharepoint.com/_layouts/15/userphoto.aspx?size=S&accountname=", email)} />
-                        </div>
-
-                        <div className='news-meta-info'>
-                            {props.author}&nbsp;{props.friendlyLastModifiedTime}<br />
-                            {props.viewCount ? props.viewCount : "0"} Views
-                        </div>
-                    </div>
+                <div className='newsArticle-cardAuthor'>
+                    <img className='profile' src={String.prototype.concat("https://devgcx.sharepoint.com/_layouts/15/userphoto.aspx?size=S&accountname=", email)} />
+                    <p>{props.author}&nbsp;{props.friendlyLastModifiedTime} <br/>
+                    {props.viewCount ? props.viewCount : "0"} Views</p>
                 </div>
             </div>
         </div>
     );
+
+    
 };
 
 export class NewsArticleWebComponent extends BaseWebComponent {

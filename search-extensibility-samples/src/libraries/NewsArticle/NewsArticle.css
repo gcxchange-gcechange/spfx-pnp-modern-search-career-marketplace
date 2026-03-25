@@ -1,9 +1,3 @@
-.gcx-news-card {
-    border: 1px solid #d3cece;
-    border-radius: 10px;
-    padding: 5px;
-    margin-bottom: 10px;
-}
 
 .gcx-news-card .news-card-header {
     display: flex;
@@ -95,16 +89,6 @@
     color: #858585;
 }
 
-.profile {
-    border: 0px solid black;
-    border-radius: 40px;
-    height: 40px;
-    width: 40px;
-    min-width: 40px;
-    min-height: 40px;
-    align-content: center;
-    text-align: center;
-}
 
 .details-test a:link,
 .details-test a:visited,
@@ -121,4 +105,79 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+
+/* Styles created for the new NewsArticle component */
+.gcx-news-card {
+    border: 1px solid #d3cece;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.newsArticle-cardContent {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    flex: 1;
+}
+.newsArticle-cardImage {
+    width:200px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.newsArticle-cardImage img {
+    width: 200px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.newsArticle-cardTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.newsArticle-description {
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile {
+    border: 0px solid black;
+    border-radius: 40px;
+    /* height: 40px;
+    width: 40px; */
+    min-width: 32px;
+    min-height: 32px;
+    align-content: center;
+    text-align: center;
+}
+
+
+.newsArticle-cardAuthor{
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    gap: 10px;
+}
+
+.newsArticle-cardAuthor img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.newsArticle-cardAuthor p {
+    font-size: 12px;
+    color: #858585;
 }
