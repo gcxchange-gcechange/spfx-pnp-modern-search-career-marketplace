@@ -121,15 +121,15 @@
     flex: 1;
 }
 .newsArticle-cardImage {
-    width:200px;
-    height: 220px;
+    width: 180px;
+    height: 160px;
     object-fit: cover;
     border-radius: 8px;
     padding: 10px;
 }
 
 .newsArticle-cardImage img {
-    width: 200px;
+    width: 180px;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
