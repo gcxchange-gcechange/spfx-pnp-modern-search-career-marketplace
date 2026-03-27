@@ -32,6 +32,10 @@ define([], function() {
       "applyExpired": "Applications closed",
       "undetermined": "Undetermined",
       "searchTermFound": "Search terms found in full post",
-      "remote": "Remote"
+      "remote": "Remote",
+      "sortbyDateDescending": "Sort by date posted (newest)",
+      "sortByDateAscending": "Sort by date posted (oldest)",
+      "sortByDeadlineDescending": "Sort by application deadline (soonest)",
+      "sortbyDeadlineAscending": "Sort by application deadline (latest)"
   }
 });

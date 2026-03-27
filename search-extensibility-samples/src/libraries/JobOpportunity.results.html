@@ -27,6 +27,8 @@
                <span class="ms-fontWeight-semibold" aria-live="polite">{{resultsNoQueryText (getCountMessage @root.data.totalItemsCount)}}</span>
                <!-- <span class="ms-fontWeight-semibold" aria-live="polite">{{results (getCountMessage @root.data.totalItemsCount @root.inputQueryText)}}</span> -->
            </div>
+
+           <job-card-sort></job-card-sort>
         {{/if}}
         
         {{#if data.items.length}}

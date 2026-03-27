@@ -32,6 +32,10 @@ declare interface IMyCompanyLibraryLibraryStrings {
   opportunities: string;
   searchTermFound: string;
   remote: string;
+  sortbyDateDescending: string;
+  sortByDateAscending: string;
+  sortByDeadlineDescending: string;
+  sortbyDeadlineAscending: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {

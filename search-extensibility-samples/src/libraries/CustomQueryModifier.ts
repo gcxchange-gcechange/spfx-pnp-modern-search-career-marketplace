@@ -2,6 +2,7 @@ import { BaseQueryModifier } from "@pnp/modern-search-extensibility";
 import { IPropertyPaneGroup, PropertyPaneTextField } from '@microsoft/sp-property-pane';
 import * as myLibraryStrings from 'MyCompanyLibraryLibraryStrings';
 import { Globals, Language } from "./Globals";
+import { JobSortSessionKeys } from "./JobCardSortComponent";
 
 export interface IAdvancedSearchQueryModifierProperties {
   listPath: string;
@@ -73,6 +74,13 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     (Object.keys(FilterSessionKeys) as (keyof typeof FilterSessionKeys)[]).forEach(key => {
       const value = FilterSessionKeys[key];
       if (value !== FilterSessionKeys.Initialized)
+        sessionStorage.setItem(value, '');
+    });
+
+    // Initialize the job sort session storage items
+    (Object.keys(JobSortSessionKeys) as (keyof typeof JobSortSessionKeys)[]).forEach(key => {
+      const value = JobSortSessionKeys[key];
+      if (value !== JobSortSessionKeys.Initialized)
         sessionStorage.setItem(value, '');
     });
 
@@ -186,6 +194,19 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
         });
       });
     });
+
+
+    // Sort
+    tryGetSessionStorageItem(JobSortSessionKeys.Initialized, () => {
+      tryGetElement("cm-sortDropdown", (el: HTMLElement) => {
+        el.addEventListener('change', (event) => {
+          //event.preventDefault();
+          setTimeout(() => {
+            context.triggerSearch();
+          }, 0);
+        });
+      });
+    });
   }
 
   private triggerSearch(cleanSearch: boolean = false): void {
@@ -221,6 +242,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     let finalQuery = this.applyAdvancedSearch(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
     finalQuery = this.applyFilters(finalQuery);
+    finalQuery = this.applySort(finalQuery);
 
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
@@ -386,6 +408,15 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     }
 
     return `${finalQuery})`;
+  }
+
+  private applySort(query: string): string {
+    const sortFunc = sessionStorage.getItem(JobSortSessionKeys.Value);
+
+    if (sortFunc === undefined || sortFunc.trim() == '')
+      return query += " sortlist:'Created:descending'";
+    
+    return query += ` ${sortFunc.replace('CM-ApplicationDeadlineDate', this._properties.deadlineFilterMP)}`;
   }
 
   // private getAllLanguageComprehensions(languageRequirement: string): string[] {

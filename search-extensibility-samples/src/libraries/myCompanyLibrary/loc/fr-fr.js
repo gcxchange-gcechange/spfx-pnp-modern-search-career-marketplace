@@ -32,6 +32,10 @@ define([], function() {
         "undetermined": "Indéterminé",
         "opportunities": "Opportunités",
         "searchTermFound": "Mots-clés trouvés dans l'opportunité complete",
-        "remote": "À distance"
+        "remote": "À distance",
+        "sortbyDateDescending": "Trier par date de publication (la plus récente)",
+        "sortByDateAscending": "Trier par date de publication (la plus ancienne)",
+        "sortByDeadlineDescending": "Trier par date limite de candidature (la plus proche)",
+        "sortbyDeadlineAscending": "Trier par date limite de candidature (la plus récente)"
     }
 });

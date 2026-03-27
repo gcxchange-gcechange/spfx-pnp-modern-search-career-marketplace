@@ -17,6 +17,7 @@ import {  IExtensibilityLibrary,
 } from "@pnp/modern-search-extensibility";
 import * as Handlebars from "handlebars";
 import { MyCustomComponentWebComponent } from "../CustomComponent";
+import { JobCardSortComponent } from "../JobCardSortComponent";
 import { CustomLayout } from "../CustomLayout";
 import { CustomSuggestionProvider } from "../CustomSuggestionProvider";
 import { AdvancedSearchQueryModifier } from "../CustomQueryModifier";
@@ -76,7 +77,11 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       {
         componentName: 'job-opportunity-card',
         componentClass: MyCustomComponentWebComponent
-      }
+      },
+      {
+        componentName: 'job-card-sort',
+        componentClass: JobCardSortComponent
+      },
     ];
   }
 
