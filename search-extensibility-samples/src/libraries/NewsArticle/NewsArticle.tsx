@@ -7,6 +7,8 @@ import * as ReactDOM from 'react-dom';
 import './NewsArticle.css';
 import { Link } from '@fluentui/react';
 //import { Globals, Language } from '../Globals';
+import { Globals, Language } from "../Globals";
+import { SelectLanguage } from "./../SelectLanguage";
 
 export interface INewsArticleProps {
     path?: string;                      // Link to the news post
@@ -27,7 +29,14 @@ export interface INewsArticleProps {
     friendlyLastModifiedTime?: string;
 }
 
+
 const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
+    const strings = SelectLanguage(Globals.getLanguage());
+
+    //const strings = SelectLanguage(Language.French);
+    //console.log("Globals.getLanguage()", Globals.getLanguage());
+
+    console.log("strings.views", strings.views);
 
     //const theme = useTheme();
     //const strings = SelectLanguage(Globals.getLanguage());
@@ -88,9 +97,9 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
                 </p>
 
                 <div className='newsArticle-cardAuthor'>
-                    <img className='profile' src={String.prototype.concat("https://devgcx.sharepoint.com/_layouts/15/userphoto.aspx?size=S&accountname=", email)} />
+                    <img className='news-article-profile' src={String.prototype.concat("https://devgcx.sharepoint.com/_layouts/15/userphoto.aspx?size=S&accountname=", email)} />
                     <p>{props.author}&nbsp;{props.friendlyLastModifiedTime} <br/>
-                    {props.viewCount ? props.viewCount : "0"} Views</p>
+                    {props.viewCount ? props.viewCount : "0"} {strings.views}</p>
                 </div>
             </div>
         </div>

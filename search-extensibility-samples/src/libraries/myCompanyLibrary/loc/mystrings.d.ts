@@ -32,6 +32,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   opportunities: string;
   searchTermFound: string;
   articles: string;
+  views: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {

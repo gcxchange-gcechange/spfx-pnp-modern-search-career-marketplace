@@ -22,7 +22,7 @@ import { CustomSuggestionProvider } from "../CustomSuggestionProvider";
 import { AdvancedSearchQueryModifier } from "../CustomQueryModifier";
 import { CustomDataSource } from "../CustomDataSource";
 import { SelectLanguage } from "../SelectLanguage";
-import { Globals } from "../Globals";
+import { Globals, Language } from "../Globals";
 import { MyOpportunitiesQueryModifier } from "../MyOpportunitiesQueryModifier";
 import { NewsArticleWebComponent } from "../NewsArticle/NewsArticle";
 import { NewsArticleLayout } from "../NewsArticle/NewsArticleLayout";
@@ -204,6 +204,14 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     // Register a helper for relative time
     namespace.registerHelper('relativeDate', function(dateString) {
       const moment = require('moment'); // Install with: npm install moment
+
+      if (Globals.getLanguage() == Language.French) {
+        moment.locale('fr');
+      }
+
+      // console.log("Globals.getPrimaryLanguage.toString()", Globals.getPrimaryLanguage.toString());
+      // moment.locale('fr');
+
       if (!dateString) return '';
       const date = moment(dateString);
       if (!date.isValid()) return 'Invalid date';

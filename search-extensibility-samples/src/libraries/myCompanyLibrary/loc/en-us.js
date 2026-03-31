@@ -32,6 +32,7 @@ define([], function() {
       "applyExpired": "Applications closed",
       "undetermined": "Undetermined",
       "searchTermFound": "Search terms found in full post",
-      "articles": "Articles"
+      "articles": "Browse news & articles",
+      "views": "Views"
   }
 });
