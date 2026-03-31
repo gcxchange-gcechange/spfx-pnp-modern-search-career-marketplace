@@ -31,7 +31,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   undetermined: string;
   opportunities: string;
   searchTermFound: string;
-  articles: string;
+  articlesTitle: string;
   views: string;
 }
 
