@@ -32,7 +32,7 @@ define([], function() {
       "applyExpired": "Applications closed",
       "undetermined": "Undetermined",
       "searchTermFound": "Search terms found in full post",
-      "articlesTitle": "Browse news & articles",
+      "articlesTitle": "News and articles",
       "views": "Views"
   }
 });

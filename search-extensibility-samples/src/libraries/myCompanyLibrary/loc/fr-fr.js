@@ -32,7 +32,7 @@ define([], function() {
         "undetermined": "Indéterminé",
         "opportunities": "Opportunités",
         "searchTermFound": "Mots-clés trouvés dans l'opportunité complete",
-        "articlesTitle": "Parcourir les actualités et articles",
+        "articlesTitle": "Actualités et articles",
         "views": "vues"
     }
 });
