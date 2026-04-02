@@ -14,11 +14,6 @@ export class Globals {
         return this._language;
     }
 
-    public static getPrimaryLanguage(): string {
-        //return this._language.toString().substring(0, 1);
-        return this._language.toString();
-    }
-
     public static setLanguage(lang: string): void {
         if (lang) {
             lang = lang.toLowerCase();

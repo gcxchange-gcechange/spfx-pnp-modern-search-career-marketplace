@@ -108,16 +108,16 @@
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    border-bottom: 2px solid #d3cece;
+    border-bottom: 1px solid #d3cece;
     /* border-radius: 10px; */
-    padding: 5px;
+    padding: 5px 5px 10px 0px;
     margin-bottom: 10px;
 }
 
 .newsArticle-cardContent {
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 0px 10px;
     flex: 1;
 }
 .newsArticle-cardImage {
@@ -125,7 +125,7 @@
     height: 160px;
     object-fit: cover;
     border-radius: 8px;
-    padding: 10px;
+    padding: 10px 10px 10px 0px;
 }
 
 .newsArticle-cardImage img {
