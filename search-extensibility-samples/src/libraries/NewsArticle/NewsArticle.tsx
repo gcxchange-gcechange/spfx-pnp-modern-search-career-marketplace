@@ -26,28 +26,19 @@ export interface INewsArticleProps {
     friendlyLastModifiedTime?: string;
 }
 
-
 const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
     const strings = SelectLanguage(Globals.getLanguage());
     const email = props.authorOwsuser.substring(0, props.authorOwsuser.indexOf('|')).trim();
 
-    console.log("props.pictureURL: ", props.pictureURL);
-    console.log("props.author: ", props.author);
-    console.log("props.createdBy: ", props.createdBy);
-    console.log("props.AuthorOWSUSER: ", props.authorOwsuser);
-    console.log("email: ", email);
-    console.log("props.lastModifiedTime", props.lastModifiedTime);
-    console.log("props.friendlyLastModifiedTime", props.friendlyLastModifiedTime);
+    // console.log("props.pictureURL: ", props.pictureURL);
+    // console.log("props.author: ", props.author);
+    // console.log("props.createdBy: ", props.createdBy);
+    // console.log("props.AuthorOWSUSER: ", props.authorOwsuser);
+    // console.log("email: ", email);
+    // console.log("props.lastModifiedTime", props.lastModifiedTime);
+    // console.log("props.friendlyLastModifiedTime", props.friendlyLastModifiedTime);
 
-    // const getContactNameInitials = () => {
-    //     if (props.author) {
-    //         let nameSplit = props.author.toUpperCase().split(' ');
-    //         return nameSplit[0] ? nameSplit[0][0] + (nameSplit[1] ? nameSplit[1][0] : '') : 'NA';
-    //     }
-    //     return 'NA';
-    // };
-
-    // Unable to get the elipsis using CSS was giving <ddd/> insted of ...
+    // Unable to get the elipsis using CSS was giving <ddd/> instead of ...
     const stripHtml = (html: string) => {
         const temp = document.createElement('div');
         temp.innerHTML = html;

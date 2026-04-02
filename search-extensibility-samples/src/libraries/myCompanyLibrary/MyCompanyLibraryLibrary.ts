@@ -201,37 +201,87 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     });
 
     namespace.registerHelper('removeDuplicates', (items: any)  => {
-      console.log("HERE I AM!!");
-      console.log('items.length', items.length);
 
-      // sample set
-      //
-      // https://devgcx.sharepoint.com/teams/10001705/SitePages/Language-Test.aspx
-      // https://devgcx.sharepoint.com/teams/10001393/SitePages/fr/Highlights-and-plans.aspx
-      // https://devgcx.sharepoint.com/teams/10001393/SitePages/Highlights-and-plans.aspx
-      // https://devgcx.sharepoint.com/teams/b10001584/SitePages/Test-Article.aspx
 
-      let newItems: any[] = [];
 
-      items.forEach((item: any) => {
-        console.log("item.Path", item.Path);
-        
-        if (Globals.getLanguage() == Language.English) {
-          console.log("English language detected");
-          if (item.Path.indexOf("/SitePages/fr/") === -1) {
-            newItems.push(item);
-          }
-        } else {
-          console.log("French language detected");
-          newItems.push(item);
-        }
+      // working better but need to weed out duplicates
+      // and find a different way to ensure 4 articles are returned
 
+
+      items.sort((a: { createdDate: string | number; }, b: { createdDate: string | number; }) => {
+	      return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
       });
-      
-      console.log('newItems.length', newItems.length);
 
-      return newItems;
-    });
+      console.log("items.length", items.length);
+
+      if (items.length > 0) {
+	      let finalList: any[] = [];
+ 
+	      for (let i: number = 0; i < 4; i++) {
+          console.log("i = ", i);
+
+          const item = items[i];
+          let otherLanguagePath: string;
+
+          console.log("item.Path", item.Path);
+
+          if (item.Path.indexOf("/SitePages/fr/") === -1) {
+            otherLanguagePath = item.Path.replace("/SitePages/", "/SitePages/fr/");
+
+            console.log("article is considered English");
+            console.log("otherLanguagePath", otherLanguagePath);
+
+            if (Globals.getLanguage() === Language.French) {
+              console.log("page language is French");
+
+              // look for otherLanguagePath in original list of items
+              const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
+
+              if (otherLanguageItem !== null) {
+                console.log("Found the French!");
+                finalList.push(otherLanguageItem);
+              } else {
+                console.log("Not found the French!");
+                finalList.push(item);
+              }
+            } else {
+              console.log("page language is English");
+              console.log("Happy Path!");
+              finalList.push(item);
+            }
+          } else {  // article is considered French
+            otherLanguagePath = item.Path.replace("/SitePages/fr/", "/SitePages/");
+
+            console.log("article is considered French");
+            console.log("otherLanguagePath", otherLanguagePath);
+
+            if (Globals.getLanguage() === Language.English) {
+              console.log("page language is English");
+
+              // look for otherLanguagePath in original list of items
+              const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
+
+              if (otherLanguageItem !== null) {
+                console.log("Found the English!");
+                finalList.push(otherLanguageItem);
+              } else {
+                console.log("Not found the English!");
+                finalList.push(item);
+              }
+            } else {
+              console.log("page language is French");
+              console.log("Happy Path!");
+              finalList.push(item);
+            }
+          }
+
+        } 
+
+        return finalList;
+    }
+
+    return null;
+  });
 
     // Register a helper for relative time
     namespace.registerHelper('relativeDate', function(dateString) {
