@@ -2,12 +2,9 @@
 import * as React from 'react';
 import { BaseWebComponent } from '@pnp/modern-search-extensibility';
 import * as ReactDOM from 'react-dom';
-//import { useTheme } from '@fluentui/react';
-//import { SelectLanguage } from '../SelectLanguage';
 import './NewsArticle.css';
 import { Link } from '@fluentui/react';
-//import { Globals, Language } from '../Globals';
-import { Globals, Language } from "../Globals";
+import { Globals } from "../Globals";
 import { SelectLanguage } from "./../SelectLanguage";
 
 export interface INewsArticleProps {
@@ -32,18 +29,6 @@ export interface INewsArticleProps {
 
 const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
     const strings = SelectLanguage(Globals.getLanguage());
-
-    //const strings = SelectLanguage(Language.French);
-    //console.log("Globals.getLanguage()", Globals.getLanguage());
-
-    console.log("strings.views", strings.views);
-
-    //const theme = useTheme();
-    //const strings = SelectLanguage(Globals.getLanguage());
-    //const lang = Globals.getLanguage();
-
-    //const date = new Date(props.created);
-    //const createdDate = props.created ? (`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`) : 'N/A';
     const email = props.authorOwsuser.substring(0, props.authorOwsuser.indexOf('|')).trim();
 
     console.log("props.pictureURL: ", props.pictureURL);
@@ -64,18 +49,16 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
 
     // Unable to get the elipsis using CSS was giving <ddd/> insted of ...
     const stripHtml = (html: string) => {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    return temp.textContent || temp.innerText || '';
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return temp.textContent || temp.innerText || '';
     };
 
     const truncateText = (text: string, maxLength: number) => {
-    const cleanText = stripHtml(text);
-
-    if (cleanText.length <= maxLength) return cleanText;
-
-    const trimmed = cleanText.substring(0, maxLength);
-    return trimmed.substring(0, trimmed.lastIndexOf(' '));
+        const cleanText = stripHtml(text);
+        if (cleanText.length <= maxLength) return cleanText;
+        const trimmed = cleanText.substring(0, maxLength);
+        return trimmed.substring(0, trimmed.lastIndexOf(' '));
     };
 
     return ( 

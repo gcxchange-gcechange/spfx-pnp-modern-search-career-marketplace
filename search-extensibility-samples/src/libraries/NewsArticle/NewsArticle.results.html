@@ -35,7 +35,7 @@
         
         {{#if data.items.length}}
             <ul class="template_newslist newsresults">
-                {{#each data.items as |item|}} 
+                {{#each (removeDuplicates data.items) as |item|}} 
                     <li>
                         <news-article-card
                             path="{{item.Path}}"

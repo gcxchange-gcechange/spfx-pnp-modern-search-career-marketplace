@@ -201,6 +201,39 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       return value;
     });
 
+    namespace.registerHelper('removeDuplicates', (items: any)  => {
+      console.log("HERE I AM!!");
+      console.log('items.length', items.length);
+
+      // sample set
+      //
+      // https://devgcx.sharepoint.com/teams/10001705/SitePages/Language-Test.aspx
+      // https://devgcx.sharepoint.com/teams/10001393/SitePages/fr/Highlights-and-plans.aspx
+      // https://devgcx.sharepoint.com/teams/10001393/SitePages/Highlights-and-plans.aspx
+      // https://devgcx.sharepoint.com/teams/b10001584/SitePages/Test-Article.aspx
+
+      let newItems: any[] = [];
+
+      items.forEach((item: any) => {
+        console.log("item.Path", item.Path);
+        
+        if (Globals.getLanguage() == Language.English) {
+          console.log("English language detected");
+          if (item.Path.indexOf("/SitePages/fr/") === -1) {
+            newItems.push(item);
+          }
+        } else {
+          console.log("French language detected");
+          newItems.push(item);
+        }
+
+      });
+      
+      console.log('newItems.length', newItems.length);
+
+      return newItems;
+    });
+
     // Register a helper for relative time
     namespace.registerHelper('relativeDate', function(dateString) {
       const moment = require('moment'); // Install with: npm install moment
