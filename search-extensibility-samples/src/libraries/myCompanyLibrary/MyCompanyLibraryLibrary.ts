@@ -201,13 +201,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     });
 
     namespace.registerHelper('removeDuplicates', (items: any)  => {
-
-
-
-      // working better but need to weed out duplicates
-      // and find a different way to ensure 4 articles are returned
-
-
       items.sort((a: { createdDate: string | number; }, b: { createdDate: string | number; }) => {
 	      return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
       });
@@ -216,12 +209,19 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
 
       if (items.length > 0) {
 	      let finalList: any[] = [];
+        let itemCount: number = 0;
  
-	      for (let i: number = 0; i < 4; i++) {
+	      for (let i: number = 0; i < (items.length - 1); i++) {
           console.log("i = ", i);
+
+
+          if (itemCount === 4)  {
+            break;
+          }
 
           const item = items[i];
           let otherLanguagePath: string;
+          let itemToPush: any;
 
           console.log("item.Path", item.Path);
 
@@ -237,17 +237,23 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
               // look for otherLanguagePath in original list of items
               const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
 
-              if (otherLanguageItem !== null) {
+              console.log("otherLanguageItem", otherLanguageItem);
+
+
+              if (otherLanguageItem !== undefined) {
                 console.log("Found the French!");
-                finalList.push(otherLanguageItem);
+                //finalList.push(otherLanguageItem);
+                itemToPush = otherLanguageItem;
               } else {
                 console.log("Not found the French!");
-                finalList.push(item);
+                //finalList.push(item);
+                itemToPush = item;
               }
             } else {
               console.log("page language is English");
               console.log("Happy Path!");
-              finalList.push(item);
+              itemToPush = item;
+              //finalList.push(item);
             }
           } else {  // article is considered French
             otherLanguagePath = item.Path.replace("/SitePages/fr/", "/SitePages/");
@@ -261,19 +267,30 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
               // look for otherLanguagePath in original list of items
               const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
 
-              if (otherLanguageItem !== null) {
+              if (otherLanguageItem !== undefined) {
                 console.log("Found the English!");
-                finalList.push(otherLanguageItem);
+                itemToPush = otherLanguageItem;
+                //finalList.push(otherLanguageItem);
               } else {
                 console.log("Not found the English!");
-                finalList.push(item);
+                itemToPush = item;
+                //finalList.push(item);
               }
             } else {
               console.log("page language is French");
               console.log("Happy Path!");
-              finalList.push(item);
+              itemToPush = item;
+              //finalList.push(item);
             }
           }
+
+
+          if (finalList.indexOf(item) === -1) {
+            finalList.push(itemToPush);
+            itemCount = itemCount + 1;            
+          }
+
+          
 
         } 
 
