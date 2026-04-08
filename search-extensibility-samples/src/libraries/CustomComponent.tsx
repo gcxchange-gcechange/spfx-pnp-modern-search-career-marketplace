@@ -36,6 +36,10 @@ export interface ICustomComponentProps {
     applyEmail?: string;
 }
 
+interface ISearchMatch {
+    startIndex: number;
+}
+
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
     const theme = useTheme();
@@ -43,7 +47,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const lang = Globals.getLanguage();
     const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
     const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
-    let hightlightMatches = 0;
+    let hightlightMatchesTitle: ISearchMatch[] = [];
+    let hightlightMatchesDesc: ISearchMatch[] = [];
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
@@ -130,7 +135,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return 'N/A';
     }
 
-    function highlightText(origText: string): string {
+    function highlightText(origText: string, matches: ISearchMatch[]): string {
         let retVal = origText;
 
         try {
@@ -156,7 +161,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                     // Only match when it starts with the word, since that's how our pnp search works.
                     if (isWordStart) {
                         matchIndices.push({ start: index, end: index + word.length });
-                        hightlightMatches++;
+                        matches.push({startIndex: index});
                     }
 
                     startIndex = index + 1;
@@ -188,8 +193,12 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     }
 
     const expired = isExpired();
-    const transformedTitle = highlightText(lang === Language.French ? props.jobTitleFr : props.jobTitleEn);
-    const transformedDescription = highlightText(lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn);
+
+    const transformedTitle = highlightText(lang === Language.French ? props.jobTitleFr : props.jobTitleEn, hightlightMatchesTitle);
+    hightlightMatchesTitle = hightlightMatchesTitle.filter(match => match.startIndex <= 25);
+
+    const transformedDescription = highlightText(lang === Language.French ? props.jobDescriptionFr : props.jobDescriptionEn, hightlightMatchesDesc);
+    hightlightMatchesDesc = hightlightMatchesDesc.filter(match => match.startIndex <= 199);
 
     return (
         <Link 
@@ -219,7 +228,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle) }} />
                     </h3>
                     <div className="sub">
-                        { props.searchQuery.indexOf('* path:') !== 0 && hightlightMatches === 0 &&
+                        { props.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
                             <div className="searchTermFound">
                                 <mark><b>{strings.searchTermFound}</b></mark>
                             </div>
