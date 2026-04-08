@@ -16,37 +16,21 @@ export interface IAdvancedSearchQueryModifierProperties {
   classificationCodeMP: string;
   classificationLevelMP: string;
   languageRequirementMP: string;
-  //languageComprehensionMP: string;
   cityMP: string;
-  durationMP: string;
-  durationQuantityMP: string;
   deadlineFilterMP: string;
   jobTypeMP: string;
-  programAreaMP: string;
-  durationYearsId: string;
-  durationMonthsId: string;
-  durationWeeksId: string;
+  workArrangementMP: string;
 }
 
-enum AdvancedSearchSessionKeys {
-  Initialized = 'gcx-cm-adsearch-init',
-  JobTitle = 'gcx-cm-adsearch-jobTitle',
-  ClassificationCode = 'gcx-cm-adsearch-classificationCode',
-  ClassificationLevel = 'gcx-cm-adsearch-classificationLevel',
-  Department = 'gcx-cm-adsearch-department',
-  Duration = 'gcx-cm-adsearch-duration',
-  DurationQuantity = 'gcx-cm-adsearch-durationQuantity',
-  DurationOperator = 'gcx-cm-adsearch-durationOperator',
-  LanguageRequirement = 'gcx-cm-adsearch-languageRequirement',
-  //LanguageComprehension = 'gcx-cm-adsearch-languageComprehension',
-  City = 'gcx-cm-adsearch-city'
-}
-
-enum FilterSessionKeys {
+export enum FilterSessionKeys {
   Initialized = 'gcx-cm-filter-init',
   JobType = 'gcx-cm-filter-jobType',
-  ProgramArea = 'gcx-cm-filter-programArea',
-  ApplicationDeadline = 'gcx-cm-filter-applicationDeadline',
+  ClassificationCode = 'gcx-cm-filter-classificationCode',
+  ClassificationLevel = 'gcx-cm-filter-clasificationLevel',
+  Department = 'gcx-cm-filter-department',
+  WorkArrangement = 'gcx-cm-filter-workArrangement',
+  City = 'gcx-cm-filter-city',
+  LanguageRequirement = 'gcx-cm-filter-languageRequirement'
 }
 
 export enum QueryModifierKeys {
@@ -61,13 +45,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
   private todayIso: string;
 
   public async onInit(): Promise<void> {
-
-    // Initialize the advanced search session storage items
-    (Object.keys(AdvancedSearchSessionKeys) as (keyof typeof AdvancedSearchSessionKeys)[]).forEach(key => {
-      const value = AdvancedSearchSessionKeys[key];
-      if (!sessionStorage.getItem(value) && value !== AdvancedSearchSessionKeys.Initialized)
-        sessionStorage.setItem(value, '');
-    });
 
     // Initialize the filter session storage items
     (Object.keys(FilterSessionKeys) as (keyof typeof FilterSessionKeys)[]).forEach(key => {
@@ -132,40 +109,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       }, attemptInterval);
     };
 
-    tryGetSessionStorageItem(AdvancedSearchSessionKeys.Initialized, () => {
-      // Advanced Search - Search Btn
-      tryGetElement(this._properties.searchButtonId, (el: HTMLElement) => {
-        el.addEventListener('click', (event) => {
-          event.preventDefault();
-          setTimeout(() => {
-            context.triggerSearch();
-          }, 0);
-        });
-      });
-      // Advanced Search - Clear Btn
-      tryGetElement(this._properties.clearButtonId, (el: HTMLElement) => {
-        el.addEventListener('click', (event) => {
-          event.preventDefault();
-          setTimeout(() => {
-            // Clear the pnp search box & retrigger search
-            context.triggerSearch(true);
-          }, 0);
-        });
-      });
-      // Advanced Search - Job Title Input
-      tryGetElement('gcx-as-job-title', (el: HTMLElement) => {
-        el.addEventListener('keydown', (event: KeyboardEvent) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            setTimeout(() => {
-              // Clear the pnp search box & retrigger search
-              context.triggerSearch(true);
-            }, 0);
-          }
-        });
-      });
-    });
-
     tryGetSessionStorageItem(FilterSessionKeys.Initialized, () => {
       // Filters - Apply Btn
       tryGetElement(this._properties.filterButtonId, (el: HTMLElement) => {
@@ -219,8 +162,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     if (queryText.trim() == '')
       queryText = '*';
 
-    let finalQuery = this.applyAdvancedSearch(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
-    finalQuery = this.applyFilters(finalQuery);
+    let finalQuery = this.applyFilters(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
 
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
@@ -228,164 +170,54 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     return finalQuery;
   }
 
-  private applyAdvancedSearch(query: string): string {
-    let finalQuery = `${query} `;
-    let propSet = false;
-
-    const jobTitle = sessionStorage.getItem(AdvancedSearchSessionKeys.JobTitle);
-    if (jobTitle && jobTitle.trim() != '') {
-      if (Globals.getLanguage() === Language.French) {
-        finalQuery += `"${this._properties.jobTitleFrMP}":*${jobTitle}* `;
-      } else {
-        finalQuery += `"${this._properties.jobTitleEnMP}":*${jobTitle}* `;
-      }
-      propSet = true;
-    }
-    
-    const department = sessionStorage.getItem(AdvancedSearchSessionKeys.Department);
-    if (department && department.trim() != '') {
-      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.departmentMP}":${department} `;
-      propSet = true;
-    }
-
-    const classificationCode = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationCode);
-    if (classificationCode && classificationCode.trim() != '') {
-      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.classificationCodeMP}":${classificationCode} `;
-      propSet = true;
-    }
-
-    const classificationLevel = sessionStorage.getItem(AdvancedSearchSessionKeys.ClassificationLevel);
-    if (classificationLevel && classificationLevel.trim() != '') {
-      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.classificationLevelMP}":${classificationLevel} `;
-      propSet = true;
-    }
-
-    const languageRequirement = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageRequirement);
-    if (languageRequirement && languageRequirement.trim() != '') {
-      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.languageRequirementMP}":${languageRequirement} `;
-      propSet = true;
-
-      // const languageComprehension = sessionStorage.getItem(AdvancedSearchSessionKeys.LanguageComprehension);
-      // if (languageComprehension && languageComprehension.trim() != '') {
-      //   finalQuery += ` AND ("${this._properties.languageComprehensionMP}":`;
-      //   let comprehensions = this.getAllLanguageComprehensions(languageComprehension);
-      //   for (let i = 0; i < comprehensions.length; i++) {
-      //     finalQuery += `${i > 0 ? 'OR ' : ''}"${comprehensions[i]}" `;
-      //   }
-      //   finalQuery += ')';
-      // }
-    }
-
-    const duration = sessionStorage.getItem(AdvancedSearchSessionKeys.Duration);
-    const durationQuantity = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationQuantity);
-    const durationOperator = sessionStorage.getItem(AdvancedSearchSessionKeys.DurationOperator);
-    if (duration && duration.trim() != '' &&
-        durationQuantity && durationQuantity.trim() != '' &&
-        durationOperator && durationOperator.trim() != '')  {
-      try {
-        const operator = durationOperator === '0' ? '=' : (durationOperator === '2' ? '<=' : '>=');
-        let durationInDays: number;
-
-        if (this._properties.durationYearsId && this._properties.durationYearsId != '' && 
-          this._properties.durationMonthsId && this._properties.durationMonthsId != '' &&
-          this._properties.durationWeeksId && this._properties.durationWeeksId != '') {
-            
-          switch (duration) {
-          case this._properties.durationYearsId:
-              durationInDays = 365 * parseInt(durationQuantity);
-              break;
-            case this._properties.durationMonthsId:
-              durationInDays = Math.round(365 / 12 * parseInt(durationQuantity));
-              break;
-            case this._properties.durationWeeksId:
-              durationInDays = Math.round(365 / 52 * parseInt(durationQuantity));
-              break;
-            default:
-              throw new Error(`Couldn't map Duration:${duration} to any of the following: [durationYearsId:${this._properties.durationYearsId}, durationMonthsId:${this._properties.durationMonthsId}, durationWeeksId:${this._properties.durationWeeksId}]`);
-          }
-        }
-        else {
-          console.error(`One of the following is not configured: [durationYearsId:${this._properties.durationYearsId}, durationMonthsId:${this._properties.durationMonthsId}, durationWeeksId:${this._properties.durationWeeksId}]`);
-        }
-
-        // If we're not searching for an exact duration include results for Deployment job types (they always have 0 DurationInDays)
-        if (operator !== '=') {
-          finalQuery += `${propSet ? 'AND (' : '('}${this._properties.durationQuantityMP}${operator}${durationInDays} OR ${this._properties.durationQuantityMP}=0) `;
-        }
-        else {
-          finalQuery += `${propSet ? 'AND ' : ''}${this._properties.durationQuantityMP}${operator}${durationInDays} `;
-        }
-
-        propSet = true;
-      } catch(e) {
-        console.error('Couldn\'t performance advanced search on Duration because an error occured.');
-        console.error(e);
-      }
-    }
-
-    const city = sessionStorage.getItem(AdvancedSearchSessionKeys.City);
-    if (city && city.trim() != '') {
-      finalQuery += `${propSet ? 'AND ' : ''}"${this._properties.cityMP}":${city} `;
-      propSet = true;
-    }
-
-    finalQuery += `AND "${this._properties.deadlineFilterMP}">=${this.todayIso}`;
-
-    return finalQuery;
-  }
-
   private applyFilters(query: string): string {
-    const applicationDeadline = sessionStorage.getItem(FilterSessionKeys.ApplicationDeadline);
     const jobTypes = sessionStorage.getItem(FilterSessionKeys.JobType);
-    const programAreas = sessionStorage.getItem(FilterSessionKeys.ProgramArea);
+    const classCodes = sessionStorage.getItem(FilterSessionKeys.ClassificationCode);
+    const classLevels = sessionStorage.getItem(FilterSessionKeys.ClassificationLevel);
+    const departments = sessionStorage.getItem(FilterSessionKeys.Department);
+    const workArrangements = sessionStorage.getItem(FilterSessionKeys.WorkArrangement);
+    const cities = sessionStorage.getItem(FilterSessionKeys.City);
+    const languageRequirements = sessionStorage.getItem(FilterSessionKeys.LanguageRequirement);
 
-    if ((applicationDeadline === undefined || applicationDeadline.trim() == '')
-     && (jobTypes === undefined || jobTypes.trim() == '')
-     && (programAreas === undefined || programAreas.trim() == '')) {
+    if ((jobTypes === undefined || jobTypes.trim() == '') && (classCodes === undefined || classCodes.trim() == '')
+     && (classLevels === undefined || classLevels.trim() == '') && (departments === undefined || departments.trim() == '')
+     && (workArrangements === undefined || workArrangements.trim() == '') && (cities === undefined || cities.trim() == '')
+     && (languageRequirements === undefined || languageRequirements.trim() == '')
+    ) {
       return query;
     }
 
     let finalQuery = `${query} AND (`;
 
-    if (applicationDeadline && applicationDeadline.trim() != '') {
-      finalQuery += `"${this._properties.deadlineFilterMP}"<=${applicationDeadline} `;
-    } else {
-      finalQuery += `"${this._properties.deadlineFilterMP}">=${this.todayIso} `;
-    }
+    finalQuery += `"${this._properties.deadlineFilterMP}">=${this.todayIso} `;
 
-    if (jobTypes && jobTypes.trim() != '') {
-      const jobTypeArr = jobTypes.split(',');
-      for (let i = 0; i < jobTypeArr.length; i++) {
-
-        if (i == 0)
-          finalQuery += `AND (`;
-
-        finalQuery += `"${this._properties.jobTypeMP}":${jobTypeArr[i]}`;
-
-        if (i != jobTypeArr.length - 1)
-          finalQuery += ' OR ';
-      }
-
-      finalQuery += ')';
-    }
-
-    if(programAreas && programAreas.trim() != '') {
-      const programAreaArr = programAreas.split(',');
-      for (let i = 0; i < programAreaArr.length; i++) {
-
-        if (i == 0)
-          finalQuery += `AND (`;
-
-        finalQuery += `"${this._properties.programAreaMP}":${programAreaArr[i]}`;
-
-        if (i != programAreaArr.length - 1)
-          finalQuery += ' OR ';
-      }
-
-      finalQuery += ')';
-    }
+    this.AddFilterQuery(jobTypes, this._properties.jobTypeMP, finalQuery);
+    this.AddFilterQuery(classCodes, this._properties.classificationCodeMP, finalQuery);
+    this.AddFilterQuery(classLevels, this._properties.classificationLevelMP, finalQuery);
+    this.AddFilterQuery(departments, this._properties.deadlineFilterMP, finalQuery);
+    this.AddFilterQuery(workArrangements, this._properties.workArrangementMP, finalQuery);
+    this.AddFilterQuery(cities, this._properties.cityMP, finalQuery);
+    this.AddFilterQuery(languageRequirements, this._properties.languageRequirementMP, finalQuery);
 
     return `${finalQuery})`;
+  }
+
+  private AddFilterQuery(selections: string, managedProperty: string, query: string): void {
+    if (selections && selections.trim() != '') {
+      const selectionArr = selections.split(',');
+      for (let i = 0; i < selectionArr.length; i++) {
+
+        if (i == 0)
+          query += `AND (`;
+
+        query += `"${managedProperty}":${selectionArr[i]}`;
+
+        if (i != selectionArr.length - 1)
+          query += ' OR ';
+      }
+
+      query += ')';
+    }
   }
 
   // private getAllLanguageComprehensions(languageRequirement: string): string[] {
@@ -444,16 +276,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             description: 'CSS selector for the pnp search input.',
             placeholder: '[data-sp-feature-tag="pnpSearchBoxWebPart web part (PnP - Search Box)"] input',
           }),
-          PropertyPaneTextField('queryModifierProperties.searchButtonId', {
-            label: 'Advanced Search - Search Button ID',
-            description: 'The ID of the advanced search\'s search button.',
-            placeholder: 'advancedSearch-Search',
-          }),
-          PropertyPaneTextField('queryModifierProperties.clearButtonId', {
-            label: 'Advanced Search - Clear Button ID',
-            description: 'The ID of the advanced search\'s clear button.', 
-            placeholder: 'advancedSearch-Clear',
-          }),
           PropertyPaneTextField('queryModifierProperties.filterButtonId', {
             label: 'Filter - Apply Button ID',
             description: 'The ID of the button that applies the filters.',
@@ -504,16 +326,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             description: 'The managed property name for City', 
             placeholder: 'CM-CityId',
           }),
-          PropertyPaneTextField('queryModifierProperties.durationMP', {
-            label: 'Duration Managed Property',
-            description: 'The managed property name for Duration', 
-            placeholder: 'CM-DurationId',
-          }),
-          PropertyPaneTextField('queryModifierProperties.durationQuantityMP', {
-            label: 'Duration Quantity Managed Property',
-            description: 'The managed property name for DurationQuantity', 
-            placeholder: 'RefinableInt00',
-          }),
           PropertyPaneTextField('queryModifierProperties.deadlineFilterMP', {
             label: 'ApplicationDeadlineDate Filter Managed Property',
             description: 'The filter managed property name for ApplicationDeadlineDate', 
@@ -524,22 +336,10 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
             description: 'The property name for JobType', 
             placeholder: 'CM-JobType',
           }),
-          PropertyPaneTextField('queryModifierProperties.programAreaMP', {
-            label: 'ProgramArea Managed Property',
-            description: 'The managed property name for ProgramArea', 
-            placeholder: 'CM-ProgramArea',
-          }),
-          PropertyPaneTextField('queryModifierProperties.durationYearsId', {
-            label: 'Duration Years ID',
-            description: 'The ID in the Duration list for the "year(s)" list item'
-          }),
-          PropertyPaneTextField('queryModifierProperties.durationMonthsId', {
-            label: 'Duration Months ID',
-            description: 'The ID in the Duration list for the "month(s)" list item'
-          }),
-          PropertyPaneTextField('queryModifierProperties.durationWeeksId', {
-            label: 'Duration Weeks ID',
-            description: 'The ID in the Duration list for the "week(s)" list item'
+          PropertyPaneTextField('queryModifierProperties.workArrangementMP', {
+            label: 'WorkArrangement Managed Property',
+            description: 'The managed property name for WorkArrangement', 
+            placeholder: 'CM-WorkArrangement',
           })
         ],
       },
