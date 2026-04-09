@@ -214,7 +214,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
 	      for (let i: number = 0; i < (items.length - 1); i++) {
           console.log("i = ", i);
 
-
           if (itemCount === 4)  {
             break;
           }
@@ -222,8 +221,6 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
           const item = items[i];
           let otherLanguagePath: string;
           let itemToPush: any;
-
-          console.log("item.Path", item.Path);
 
           if (item.Path.indexOf("/SitePages/fr/") === -1) {
             otherLanguagePath = item.Path.replace("/SitePages/", "/SitePages/fr/");
@@ -237,30 +234,23 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
               // look for otherLanguagePath in original list of items
               const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
 
-              console.log("otherLanguageItem", otherLanguageItem);
-
-
               if (otherLanguageItem !== undefined) {
                 console.log("Found the French!");
-                //finalList.push(otherLanguageItem);
                 itemToPush = otherLanguageItem;
               } else {
-                console.log("Not found the French!");
-                //finalList.push(item);
+                console.log("Did not find the French!");
                 itemToPush = item;
               }
             } else {
               console.log("page language is English");
-              console.log("Happy Path!");
               itemToPush = item;
-              //finalList.push(item);
             }
           } else {  // article is considered French
             otherLanguagePath = item.Path.replace("/SitePages/fr/", "/SitePages/");
 
             console.log("article is considered French");
             console.log("otherLanguagePath", otherLanguagePath);
-
+            
             if (Globals.getLanguage() === Language.English) {
               console.log("page language is English");
 
@@ -270,28 +260,26 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
               if (otherLanguageItem !== undefined) {
                 console.log("Found the English!");
                 itemToPush = otherLanguageItem;
-                //finalList.push(otherLanguageItem);
               } else {
-                console.log("Not found the English!");
+                console.log("Did not find the English!");
                 itemToPush = item;
-                //finalList.push(item);
               }
             } else {
               console.log("page language is French");
-              console.log("Happy Path!");
               itemToPush = item;
-              //finalList.push(item);
             }
           }
 
+          console.log("==> itemToPush.Path", itemToPush.Path);
+          console.log("==> indexOf", finalList.indexOf(itemToPush));
 
-          if (finalList.indexOf(item) === -1) {
+          if (finalList.indexOf(itemToPush) === -1) {
+            console.log("PUSH");
             finalList.push(itemToPush);
             itemCount = itemCount + 1;            
+          } else {
+            console.log("NO PUSH");
           }
-
-          
-
         } 
 
         return finalList;
