@@ -191,33 +191,35 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     finalQuery += `"${this._properties.deadlineFilterMP}">=${this.todayIso} `;
 
-    this.AddFilterQuery(jobTypes, this._properties.jobTypeMP, finalQuery);
-    this.AddFilterQuery(classCodes, this._properties.classificationCodeMP, finalQuery);
-    this.AddFilterQuery(classLevels, this._properties.classificationLevelMP, finalQuery);
-    this.AddFilterQuery(departments, this._properties.deadlineFilterMP, finalQuery);
-    this.AddFilterQuery(workArrangements, this._properties.workArrangementMP, finalQuery);
-    this.AddFilterQuery(cities, this._properties.cityMP, finalQuery);
-    this.AddFilterQuery(languageRequirements, this._properties.languageRequirementMP, finalQuery);
+    finalQuery = this.AddFilterQuery(jobTypes, this._properties.jobTypeMP, finalQuery);
+    finalQuery = this.AddFilterQuery(classCodes, this._properties.classificationCodeMP, finalQuery);
+    finalQuery = this.AddFilterQuery(classLevels, this._properties.classificationLevelMP, finalQuery);
+    finalQuery = this.AddFilterQuery(departments, this._properties.deadlineFilterMP, finalQuery);
+    finalQuery = this.AddFilterQuery(workArrangements, this._properties.workArrangementMP, finalQuery);
+    finalQuery = this.AddFilterQuery(cities, this._properties.cityMP, finalQuery);
+    finalQuery = this.AddFilterQuery(languageRequirements, this._properties.languageRequirementMP, finalQuery);
 
     return `${finalQuery})`;
   }
 
-  private AddFilterQuery(selections: string, managedProperty: string, query: string): void {
+  private AddFilterQuery(selections: string, managedProperty: string, query: string): string {
+    let retVal = query;
     if (selections && selections.trim() != '') {
       const selectionArr = selections.split(',');
       for (let i = 0; i < selectionArr.length; i++) {
 
         if (i == 0)
-          query += `AND (`;
+          retVal += `AND (`;
 
-        query += `"${managedProperty}":${selectionArr[i]}`;
+        retVal += `"${managedProperty}":${selectionArr[i]}`;
 
         if (i != selectionArr.length - 1)
-          query += ' OR ';
+          retVal += ' OR ';
       }
 
-      query += ')';
+      retVal += ')';
     }
+    return retVal;
   }
 
   // private getAllLanguageComprehensions(languageRequirement: string): string[] {
