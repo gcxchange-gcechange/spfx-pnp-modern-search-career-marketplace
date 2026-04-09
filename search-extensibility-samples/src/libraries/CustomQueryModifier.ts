@@ -164,6 +164,8 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     let finalQuery = this.applyFilters(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
 
+    console.log(finalQuery);
+
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
 
@@ -191,18 +193,18 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     finalQuery += `"${this._properties.deadlineFilterMP}">=${this.todayIso} `;
 
-    finalQuery = this.AddFilterQuery(jobTypes, this._properties.jobTypeMP, finalQuery);
-    finalQuery = this.AddFilterQuery(classCodes, this._properties.classificationCodeMP, finalQuery);
-    finalQuery = this.AddFilterQuery(classLevels, this._properties.classificationLevelMP, finalQuery);
-    finalQuery = this.AddFilterQuery(departments, this._properties.deadlineFilterMP, finalQuery);
-    finalQuery = this.AddFilterQuery(workArrangements, this._properties.workArrangementMP, finalQuery);
-    finalQuery = this.AddFilterQuery(cities, this._properties.cityMP, finalQuery);
-    finalQuery = this.AddFilterQuery(languageRequirements, this._properties.languageRequirementMP, finalQuery);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.jobTypeMP, jobTypes);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.classificationCodeMP, classCodes);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.classificationLevelMP, classLevels);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.departmentMP, departments);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.workArrangementMP, workArrangements);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.cityMP, cities);
+    finalQuery = this.AddFilterQuery(finalQuery, this._properties.languageRequirementMP, languageRequirements);
 
     return `${finalQuery})`;
   }
 
-  private AddFilterQuery(selections: string, managedProperty: string, query: string): string {
+  private AddFilterQuery(query: string, managedProperty: string, selections: string, ): string {
     let retVal = query;
     if (selections && selections.trim() != '') {
       const selectionArr = selections.split(',');
@@ -341,7 +343,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           PropertyPaneTextField('queryModifierProperties.workArrangementMP', {
             label: 'WorkArrangement Managed Property',
             description: 'The managed property name for WorkArrangement', 
-            placeholder: 'CM-WorkArrangement',
+            placeholder: 'CM-WorkArrangementId',
           })
         ],
       },
