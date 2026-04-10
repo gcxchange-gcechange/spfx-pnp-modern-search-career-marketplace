@@ -164,8 +164,6 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
 
     let finalQuery = this.applyFilters(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
 
-    console.log(finalQuery);
-
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
 
@@ -186,7 +184,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
      && (workArrangements === undefined || workArrangements.trim() == '') && (cities === undefined || cities.trim() == '')
      && (languageRequirements === undefined || languageRequirements.trim() == '')
     ) {
-      return query;
+      return `${query} AND "${this._properties.deadlineFilterMP}">=${this.todayIso}`;
     }
 
     let finalQuery = `${query} AND (`;
@@ -343,7 +341,7 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           PropertyPaneTextField('queryModifierProperties.workArrangementMP', {
             label: 'WorkArrangement Managed Property',
             description: 'The managed property name for WorkArrangement', 
-            placeholder: 'CM-WorkArrangementId',
+            placeholder: 'CM-WorkArrangement',
           })
         ],
       },
