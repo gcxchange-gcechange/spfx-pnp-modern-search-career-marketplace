@@ -34,5 +34,6 @@ define([], function() {
         "searchTermFound": "Mots-clés trouvés dans l'opportunité complete",
         "articlesTitle": "Actualités et articles",
         "views": "vues"
+        "remote": "À distance"
     }
 });

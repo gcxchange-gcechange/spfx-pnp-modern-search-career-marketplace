@@ -34,5 +34,6 @@ define([], function() {
       "searchTermFound": "Search terms found in full post",
       "articlesTitle": "News and articles",
       "views": "Views"
+      "remote": "Remote"
   }
 });

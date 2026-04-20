@@ -33,6 +33,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   searchTermFound: string;
   articlesTitle: string;
   views: string;
+  remote: string;
 }
 
 declare module 'MyCompanyLibraryLibraryStrings' {
