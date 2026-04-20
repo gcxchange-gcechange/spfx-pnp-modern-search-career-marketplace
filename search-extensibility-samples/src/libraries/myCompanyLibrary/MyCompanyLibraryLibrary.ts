@@ -22,8 +22,10 @@ import { CustomSuggestionProvider } from "../CustomSuggestionProvider";
 import { AdvancedSearchQueryModifier } from "../CustomQueryModifier";
 import { CustomDataSource } from "../CustomDataSource";
 import { SelectLanguage } from "../SelectLanguage";
-import { Globals } from "../Globals";
+import { Globals, Language } from "../Globals";
 import { MyOpportunitiesQueryModifier } from "../MyOpportunitiesQueryModifier";
+import { NewsArticleWebComponent } from "../NewsArticle/NewsArticle";
+import { NewsArticleLayout } from "../NewsArticle/NewsArticleLayout";
 
 export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   
@@ -67,6 +69,15 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         renderType: LayoutRenderType.AdaptiveCards,
         templateContent: JSON.stringify(require('../custom-layout.json'), null, "\t"),
         serviceKey: ServiceKey.create<ILayout>('PnP:CustomLayoutAdaptive', CustomLayout),
+      },
+      {
+        name: 'News Article',
+        iconName: 'News',
+        key: 'CustomLayoutNewsArticle',
+        type: LayoutType.Results,
+        renderType: LayoutRenderType.Handlebars,
+        templateContent: require('../NewsArticle/NewsArticle.results.html'),
+        serviceKey: ServiceKey.create<ILayout>('PnP:NewsArticleHandlebars', NewsArticleLayout)
       }
     ];
   }
@@ -76,6 +87,10 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       {
         componentName: 'job-opportunity-card',
         componentClass: MyCustomComponentWebComponent
+      },
+      {
+        componentName: 'news-article-card',
+        componentClass: NewsArticleWebComponent
       }
     ];
   }
@@ -169,7 +184,127 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         return '';
       }
     });
-  }
+
+    namespace.registerHelper('newsArticlesLabel', () => {
+      try {
+        const strings = SelectLanguage(Globals.getLanguage());
+        return strings.articlesTitle;
+      } catch (e) {
+        console.log(e);
+        return '';
+      }
+    });
+
+    namespace.registerHelper('logObj', (value: any)  => {
+      console.log('item: ', JSON.stringify(value));
+      return value;
+    });
+
+    namespace.registerHelper('removeDuplicates', (items: any)  => {
+      items.sort((a: { createdDate: string | number; }, b: { createdDate: string | number; }) => {
+	      return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+      });
+
+      console.log("items.length", items.length);
+
+      if (items.length > 0) {
+	      let finalList: any[] = [];
+        let itemCount: number = 0;
+ 
+	      for (let i: number = 0; i < (items.length - 1); i++) {
+          console.log("i = ", i);
+
+          if (itemCount === 4)  {
+            break;
+          }
+
+          const item = items[i];
+          let otherLanguagePath: string;
+          let itemToPush: any;
+
+          if (item.Path.indexOf("/SitePages/fr/") === -1) {
+            otherLanguagePath = item.Path.replace("/SitePages/", "/SitePages/fr/");
+
+            console.log("article is considered English");
+            console.log("otherLanguagePath", otherLanguagePath);
+
+            if (Globals.getLanguage() === Language.French) {
+              console.log("page language is French");
+
+              // look for otherLanguagePath in original list of items
+              const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
+
+              if (otherLanguageItem !== undefined) {
+                console.log("Found the French!");
+                itemToPush = otherLanguageItem;
+              } else {
+                console.log("Did not find the French!");
+                itemToPush = item;
+              }
+            } else {
+              console.log("page language is English");
+              itemToPush = item;
+            }
+          } else {  // article is considered French
+            otherLanguagePath = item.Path.replace("/SitePages/fr/", "/SitePages/");
+
+            console.log("article is considered French");
+            console.log("otherLanguagePath", otherLanguagePath);
+            
+            if (Globals.getLanguage() === Language.English) {
+              console.log("page language is English");
+
+              // look for otherLanguagePath in original list of items
+              const otherLanguageItem = items.find((item: { Path: string; }) => item.Path === otherLanguagePath);
+
+              if (otherLanguageItem !== undefined) {
+                console.log("Found the English!");
+                itemToPush = otherLanguageItem;
+              } else {
+                console.log("Did not find the English!");
+                itemToPush = item;
+              }
+            } else {
+              console.log("page language is French");
+              itemToPush = item;
+            }
+          }
+
+          console.log("==> itemToPush.Path", itemToPush.Path);
+          console.log("==> indexOf", finalList.indexOf(itemToPush));
+
+          if (finalList.indexOf(itemToPush) === -1) {
+            console.log("PUSH");
+            finalList.push(itemToPush);
+            itemCount = itemCount + 1;            
+          } else {
+            console.log("NO PUSH");
+          }
+        } 
+
+        return finalList;
+    }
+
+    return null;
+  });
+
+    // Register a helper for relative time
+    namespace.registerHelper('relativeDate', function(dateString) {
+      const moment = require('moment'); // Install with: npm install moment
+
+      if (Globals.getLanguage() == Language.French) {
+        moment.locale('fr');
+      }
+
+      // console.log("Globals.getPrimaryLanguage.toString()", Globals.getPrimaryLanguage.toString());
+      // moment.locale('fr');
+
+      if (!dateString) return '';
+      const date = moment(dateString);
+      if (!date.isValid()) return 'Invalid date';
+      return date.fromNow(); // e.g., "3 days ago"
+    });
+}
 
   public invokeCardAction(action: any): void {
     
