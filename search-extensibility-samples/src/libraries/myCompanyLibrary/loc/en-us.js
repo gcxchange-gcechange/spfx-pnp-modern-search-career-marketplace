@@ -33,7 +33,7 @@ define([], function() {
       "undetermined": "Undetermined",
       "searchTermFound": "Search terms found in full post",
       "articlesTitle": "News and articles",
-      "views": "Views"
+      "views": "Views",
       "remote": "Remote"
   }
 });

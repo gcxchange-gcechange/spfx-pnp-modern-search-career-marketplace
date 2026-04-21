@@ -33,7 +33,7 @@ define([], function() {
         "opportunities": "Opportunités",
         "searchTermFound": "Mots-clés trouvés dans l'opportunité complete",
         "articlesTitle": "Actualités et articles",
-        "views": "vues"
+        "views": "vues",
         "remote": "À distance"
     }
 });
