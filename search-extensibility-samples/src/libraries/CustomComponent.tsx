@@ -14,7 +14,7 @@ export interface IObjectParam {
 
 export interface ICustomComponentProps {
     path?: string;
-    applicationDeadlineDate?: Date;
+    applicationDeadlineDate?: string;
     cityEn?: string;
     cityFr?: string;
     classificationLevel?: string;
@@ -71,12 +71,12 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     };
 
     const getApplicationDeadlineDate = () => {
-        if (props.applicationDeadlineDate) {
-            const utcDate = new Date(`${props.applicationDeadlineDate.toString()} UTC`);
-            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; 
-            return utcDate.toLocaleString('en-US', { timeZone: userTimeZone });
-        }
-        return 'N/A';
+        if (!props.applicationDeadlineDate) return 'N/A';
+
+        const utcDate = new Date(props.applicationDeadlineDate);
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        return utcDate.toLocaleString('en-US', { timeZone: userTimeZone });
     }
 
     // Fallback to default language incase we can't get the translations
@@ -233,7 +233,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle.text) }} />
                     </h3>
                     <div className="sub">
-                        { props.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
+                        { props.searchQuery && props.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
                             <div className="searchTermFound">
                                 <mark><b>{strings.searchTermFound}</b></mark>
                             </div>
@@ -283,8 +283,37 @@ export class MyCustomComponentWebComponent extends BaseWebComponent {
     }
 
     public async connectedCallback() {
+        let props = {} as any;
 
-        let props = this.resolveAttributes();
+        const getAttr = (name: string) => this.getAttribute(name) ?? undefined;
+
+        props.path = getAttr("path") || "";
+        props.applicationDeadlineDate = getAttr("application-deadline-date");
+        props.cityEn = getAttr("city-en");
+        props.cityFr = getAttr("city-fr");
+        props.classificationLevel = getAttr("classification-level");
+        props.classificationCodeEn = getAttr("classification-code-en");
+        props.classificationCodeFr = getAttr("classification-code-fr");
+        props.contactEmail = getAttr("contact-email");
+        props.contactName = getAttr("contact-name");
+        props.contactObjectId = getAttr("contact-object-id");
+        props.durationEn = getAttr("duration-en");
+        props.durationFr = getAttr("duration-fr");
+        props.jobDescriptionEn = getAttr("job-description-en");
+        props.jobDescriptionFr = getAttr("job-description-fr");
+        props.jobTitleEn = getAttr("job-title-en");
+        props.jobTitleFr = getAttr("job-title-fr");
+        props.jobType = getAttr("job-type");
+        props.durationQuantity = getAttr("duration-quantity");
+        props.jobTypeTermSetGuid = getAttr("job-type-term-set-guid");
+        props.searchQuery = getAttr("search-query");
+        props.applyEmail = getAttr("apply-email");
+
+        if (props.applicationDeadlineDate) {
+            const d = new Date(props.applicationDeadlineDate);
+            props.applicationDeadlineDate = isNaN(d.getTime()) ? undefined : d.toISOString();
+        }
+
         const JobCard = <JobCardComponent {...props} />;
         ReactDOM.render(JobCard, this);
     }    

@@ -195,23 +195,23 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
       }
     });
 
-    namespace.registerHelper('logObj', (value: any)  => {
-      console.log('item: ', JSON.stringify(value));
-      return value;
+    namespace.registerHelper('logObj', (value: any) => {
+      console.log('item:', value);
+      return ''; 
     });
 
     namespace.registerHelper('removeDuplicates', (items: any)  => {
       items.sort((a: { createdDate: string | number; }, b: { createdDate: string | number; }) => {
-	      return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+        return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
       });
 
       console.log("items.length", items.length);
 
       if (items.length > 0) {
-	      let finalList: any[] = [];
+        let finalList: any[] = [];
         let itemCount: number = 0;
  
-	      for (let i: number = 0; i < (items.length - 1); i++) {
+      for (let i: number = 0; i < (items.length - 1); i++) {
           console.log("i = ", i);
 
           if (itemCount === 4)  {
