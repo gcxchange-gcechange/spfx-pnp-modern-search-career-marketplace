@@ -1,7 +1,7 @@
 import { BaseQueryModifier } from "@pnp/modern-search-extensibility";
 import { IPropertyPaneGroup, PropertyPaneTextField } from '@microsoft/sp-property-pane';
 import * as myLibraryStrings from 'MyCompanyLibraryLibraryStrings';
-import { Globals, Language } from "./Globals";
+import { Globals } from "./Globals";
 
 export interface IAdvancedSearchQueryModifierProperties {
   listPath: string;
@@ -41,7 +41,6 @@ export enum QueryModifierKeys {
 //CustomQueryModifier
 export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSearchQueryModifierProperties> {
   private static readonly DEFAULT_VALUE = '*';
-  private lang = Globals.getLanguage();
   private todayIso: string;
 
   public async onInit(): Promise<void> {
