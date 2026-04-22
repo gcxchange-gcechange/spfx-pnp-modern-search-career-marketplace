@@ -311,7 +311,7 @@ export class MyCustomComponentWebComponent extends BaseWebComponent {
 
         if (props.applicationDeadlineDate) {
             const d = new Date(props.applicationDeadlineDate);
-            props.applicationDeadlineDate = isNaN(d.getTime()) ? undefined : d.toISOString();
+            props.applicationDeadlineDate = isNaN(d.getTime()) ? undefined : d;
         }
 
         const JobCard = <JobCardComponent {...props} />;
