@@ -26,6 +26,7 @@ import { Globals, Language } from "../Globals";
 import { MyOpportunitiesQueryModifier } from "../MyOpportunitiesQueryModifier";
 import { NewsArticleWebComponent } from "../NewsArticle/NewsArticle";
 import { NewsArticleLayout } from "../NewsArticle/NewsArticleLayout";
+import { TestQueryModifier } from "../TestQueryModifier";
 
 export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   
@@ -53,7 +54,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   public getCustomLayouts(): ILayoutDefinition[] {
     return [
       {
-        name: 'Job Opportunity',
+        name: 'Job Opportunity Test',
         iconName: 'Suitcase',
         key: 'CustomLayoutHandlebars',
         type: LayoutType.Results,
@@ -354,6 +355,12 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         key: 'MyOpportunities',
         description: 'A query modifier for career marketplace which returns the logged in user\'s job opportunities that they have posted to the system.',
         serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:MyOpportunitiesQueryModifier', MyOpportunitiesQueryModifier)
+      },
+      {
+        name: 'Test Query Modifier',
+        key: 'TestQueryModifier',
+        description: 'A test query modifier',
+        serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:TestQueryModifier', TestQueryModifier)
       }
     ];
   }
