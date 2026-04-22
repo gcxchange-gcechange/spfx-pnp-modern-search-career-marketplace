@@ -14,7 +14,7 @@ export interface IObjectParam {
 
 export interface ICustomComponentProps {
     path?: string;
-    applicationDeadlineDate?: string;
+    applicationDeadlineDate?: Date;
     cityEn?: string;
     cityFr?: string;
     classificationLevel?: string;
@@ -72,11 +72,10 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
     const getApplicationDeadlineDate = () => {
         if (!props.applicationDeadlineDate) return 'N/A';
-
-        const utcDate = new Date(props.applicationDeadlineDate);
+        
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-        return utcDate.toLocaleString('en-US', { timeZone: userTimeZone });
+        return props.applicationDeadlineDate.toLocaleString('en-US', { timeZone: userTimeZone });
     }
 
     // Fallback to default language incase we can't get the translations
@@ -187,15 +186,10 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return retVal;
     }
 
-    const isExpired = ():boolean => {
-        if (props.applicationDeadlineDate) {
-            if (new Date() >= new Date(`${props.applicationDeadlineDate.toString()} UTC`))
-                return true;
-            else
-                return false;
-        }
-        return true;
-    }
+    const isExpired = (): boolean => {
+    if (!props.applicationDeadlineDate) return true;
+     return new Date() >= props.applicationDeadlineDate;
+    };
 
     const expired = isExpired();
 
@@ -310,7 +304,7 @@ export class MyCustomComponentWebComponent extends BaseWebComponent {
         props.applyEmail = getAttr("apply-email");
 
         if (props.applicationDeadlineDate) {
-            const d = new Date(props.applicationDeadlineDate);
+            const d = new Date(props.applicationDeadlineDate + ' UTC');
             props.applicationDeadlineDate = isNaN(d.getTime()) ? undefined : d;
         }
 
