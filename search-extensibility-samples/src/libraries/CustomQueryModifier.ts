@@ -1,7 +1,6 @@
 import { BaseQueryModifier } from "@pnp/modern-search-extensibility";
 import { IPropertyPaneGroup, PropertyPaneTextField } from '@microsoft/sp-property-pane';
 import * as myLibraryStrings from 'MyCompanyLibraryLibraryStrings';
-import { Globals } from "./Globals";
 
 export interface IAdvancedSearchQueryModifierProperties {
   listPath: string;
@@ -158,15 +157,37 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
   public async modifyQuery(queryText: string): Promise<string> {
     queryText = queryText || AdvancedSearchQueryModifier.DEFAULT_VALUE;
 
-    if (queryText.trim() == '')
+    if (queryText.trim() === '')
       queryText = '*';
 
-    let finalQuery = this.applyFilters(`${queryText !== '*' ? '*' + queryText + '*' : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
+    let finalQuery = this.applyFilters(`${queryText !== '*' ? this.cleanUserInput(queryText) : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
 
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
 
     return finalQuery;
+  }
+
+  private cleanUserInput(query: string): string {
+    const words = query.split(' ').filter(w => w.length > 0);
+    const result: string[] = [];
+
+    words.forEach(word => {
+      // Treat a dash like a space
+      const dashParts = word.split('-').filter(p => p.length > 0);
+      dashParts.forEach(dashPart => {
+        // Split letters from numbers
+        const splitLettersFromNums = dashPart.split(/(?<=\D)(?=\d)|(?<=\d)(?=\D)/);
+        
+        splitLettersFromNums.forEach(part => {
+          // Escape backslash and double quotes
+          const cleaned = part.replace(/"/g, '\\"').replace(/\\/g, '\\\\');
+          result.push(`"${cleaned}*"`);
+        });
+      });
+    });
+
+    return result.join(' ');
   }
 
   private applyFilters(query: string): string {

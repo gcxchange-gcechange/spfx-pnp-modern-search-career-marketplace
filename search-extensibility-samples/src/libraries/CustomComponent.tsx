@@ -143,7 +143,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         let retVal: IHighlightText = { text: origText, startIndicies: [] };
 
         try {
-            const searchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).filter(Boolean);
+            const searchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).map(w => w.replace(/^["']|["']$/g, "")).filter(Boolean);
 
             if (searchhWords.length === 0)
                 return retVal;
@@ -164,7 +164,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
                     // Only match when it starts with the word, since that's how our pnp search works.
                     if (isWordStart) {
-                        matchIndices.push({ start: index, end: index + word.length });
+                        matchIndices.push({ start: index, end: index + lowerWord.length });
                         retVal.startIndicies.push(index);
                     }
 
@@ -172,10 +172,28 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 }
             });
 
-            // Insert tags from right to left to avoid index shift
-            matchIndices.sort((a, b) => b.start - a.start);
+            const uniqueMap = new Map<string, { start: number; end: number }>();
+            matchIndices.forEach(m => {
+                uniqueMap.set(`${m.start}-${m.end}`, m);
+            });
 
-            matchIndices.forEach(({ start, end }) => {
+            const deduped: Array<{ start: number; end: number }> = [];
+            uniqueMap.forEach(v => deduped.push(v));
+
+            // Sort and remove overlapping matches
+            deduped.sort((a, b) => a.start - b.start);
+
+            const filtered: Array<{ start: number; end: number }> = [];
+            for (const match of deduped) {
+                const last = filtered[filtered.length - 1];
+                if (!last || match.start >= last.end)
+                    filtered.push(match);
+            }
+
+            // Insert tags from right to left to avoid index shift
+            filtered.sort((a, b) => b.start - a.start);
+
+            filtered.forEach(({ start, end }) => {
                 retVal.text = retVal.text.slice(0, end) + '</mark>' + retVal.text.slice(end);
                 retVal.text = retVal.text.slice(0, start) + '<mark>' + retVal.text.slice(start);
             });
