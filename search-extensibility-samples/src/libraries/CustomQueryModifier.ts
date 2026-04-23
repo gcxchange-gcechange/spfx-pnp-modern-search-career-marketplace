@@ -178,12 +178,24 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
       dashParts.forEach(dashPart => {
         // Split letters from numbers
         const splitLettersFromNums = dashPart.split(/(?<=\D)(?=\d)|(?<=\d)(?=\D)/);
-        
+        const orGroup: string[] = [];
+
+         // Always include search term first
+        const original = dashPart .replace(/"/g, '\\"').replace(/\\/g, '\\\\');
+        orGroup.push(`"${original}*"`);
+
+        // Add split parts
         splitLettersFromNums.forEach(part => {
-          // Escape backslash and double quotes
-          const cleaned = part.replace(/"/g, '\\"').replace(/\\/g, '\\\\');
-          result.push(`"${cleaned}*"`);
+          const cleaned = part.replace(/"/g, '\\"') .replace(/\\/g, '\\\\');
+          orGroup.push(`"${cleaned}*"`);
         });
+
+        // If we actually split into multiple parts, wrap as OR group
+        if (splitLettersFromNums.length > 1) {
+            result.push(`(${orGroup.join(' OR ')})`);
+        } else {
+            result.push(orGroup[0]);
+        }
       });
     });
 
