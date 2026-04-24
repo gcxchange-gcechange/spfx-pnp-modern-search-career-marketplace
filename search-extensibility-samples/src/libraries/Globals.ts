@@ -3,11 +3,6 @@ export enum Language {
     French = 'fr-FR'
 }
 
-export enum GlobalsEnvironment {
-    Careermarketplace = 'cm',
-    News = 'news'
-}
-
 export class Globals {
     public static jobOpportunityPageUrl: string;
     public static userDisplayName: string;
