@@ -32,7 +32,6 @@ export interface ICustomComponentProps {
     jobType?: string;
     durationQuantity?: string;
     jobTypeTermSetGuid?: string;
-    searchQuery?: string;
     applyEmail?: string;
 }
 
@@ -143,7 +142,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         let retVal: IHighlightText = { text: origText, startIndicies: [] };
 
         try {
-            const searchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).map(w => w.replace(/^["']|["']$/g, "")).filter(Boolean);
+            const searchhWords = Globals.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).map(w => w.replace(/^["']|["']$/g, "")).filter(Boolean);
 
             if (searchhWords.length === 0)
                 return retVal;
@@ -245,7 +244,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle.text) }} />
                     </h3>
                     <div className="sub">
-                        { props.searchQuery && props.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
+                        { Globals.searchQuery && Globals.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
                             <div className="searchTermFound">
                                 <mark><b>{strings.searchTermFound}</b></mark>
                             </div>
@@ -318,7 +317,6 @@ export class MyCustomComponentWebComponent extends BaseWebComponent {
         props.jobType = getAttr("job-type");
         props.durationQuantity = getAttr("duration-quantity");
         props.jobTypeTermSetGuid = getAttr("job-type-term-set-guid");
-        props.searchQuery = getAttr("search-query");
         props.applyEmail = getAttr("apply-email");
 
         if (props.applicationDeadlineDate) {

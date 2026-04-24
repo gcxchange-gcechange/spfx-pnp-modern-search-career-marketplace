@@ -1,6 +1,7 @@
 import { BaseQueryModifier } from "@pnp/modern-search-extensibility";
 import { IPropertyPaneGroup, PropertyPaneTextField } from '@microsoft/sp-property-pane';
 import * as myLibraryStrings from 'MyCompanyLibraryLibraryStrings';
+import { Globals } from "./Globals";
 
 export interface IAdvancedSearchQueryModifierProperties {
   listPath: string;
@@ -150,17 +151,19 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
                 bubbles: true,
                 cancelable: true,
             }));
-        } else { console.error(`QUery Modifier: Couldn't find PnP Search Box Input via selector \'${this._properties.clearButtonId}\'`); }
+        } else { console.error(`Query Modifier: Couldn't find PnP Search Box Input via selector \'${this._properties.clearButtonId}\'`); }
     }
   }
 
   public async modifyQuery(queryText: string): Promise<string> {
+    Globals.searchQuery = queryText;
+
     queryText = queryText || AdvancedSearchQueryModifier.DEFAULT_VALUE;
 
     if (queryText.trim() === '')
       queryText = '*';
 
-    let finalQuery = this.applyFilters(`${queryText !== '*' ? this.cleanUserInput(queryText) : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
+    let finalQuery = this.applyFilters(`${queryText !== '*' ? this.formatUserInput(queryText) : queryText} path: ${this._properties.listPath} contentclass: STS_ListItem_GenericList`);
 
     // Set this item so the other custom queries know we've already performed an advanced search/filter on the original query
     sessionStorage.setItem(QueryModifierKeys.AdvancedSearch, 'true');
@@ -168,14 +171,19 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
     return finalQuery;
   }
 
-  private cleanUserInput(query: string): string {
+  // Formats user input so each space/dash is treated like a seperate query with an AND operator
+  // Treat letters followed by numbers like two seperate queries, but also keeps original query as well
+  // ie. "Software Developer IT03" would be: "Software*" AND "Developer*" AND ("IT03*" OR ("IT*" AND "03*"))
+  private formatUserInput(query: string): string {
     const words = query.split(' ').filter(w => w.length > 0);
     const result: string[] = [];
 
     words.forEach(word => {
+
       // Treat a dash like a space
       const dashParts = word.split('-').filter(p => p.length > 0);
       dashParts.forEach(dashPart => {
+
         // Split letters from numbers
         const splitLettersFromNums = dashPart.split(/(?<=\D)(?=\d)|(?<=\d)(?=\D)/);
         const orGroup: string[] = [];
@@ -190,11 +198,11 @@ export class AdvancedSearchQueryModifier extends BaseQueryModifier<IAdvancedSear
           orGroup.push(`"${cleaned}*"`);
         });
 
-        // If we actually split into multiple parts, wrap as OR group
-        if (splitLettersFromNums.length > 1) {
-            result.push(`(${orGroup.join(' OR ')})`);
+        // If we split into exactly 2 parts (ie. IT01, SPARTAN117 etc.)
+        if (splitLettersFromNums.length === 2) {
+          result.push(`(${orGroup[0]} OR ("${splitLettersFromNums[0]}*" AND "${splitLettersFromNums[1]}*"))`);
         } else {
-            result.push(orGroup[0]);
+          result.push(orGroup[0]);
         }
       });
     });
