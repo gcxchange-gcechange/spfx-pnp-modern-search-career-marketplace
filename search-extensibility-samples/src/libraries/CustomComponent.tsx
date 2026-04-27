@@ -35,10 +35,6 @@ export interface ICustomComponentProps {
     applyEmail?: string;
 }
 
-interface ISearchMatch {
-    startIndex: number;
-}
-
 const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
     const theme = useTheme();
@@ -46,8 +42,6 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const lang = Globals.getLanguage();
     const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
     const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
-    let hightlightMatchesTitle: ISearchMatch[] = [];
-    let hightlightMatchesDesc: ISearchMatch[] = [];
 
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
@@ -244,7 +238,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle.text) }} />
                     </h3>
                     <div className="sub">
-                        { Globals.searchQuery && Globals.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
+                        { Globals.searchQuery && Globals.searchQuery.trim().length > 0 &&
                             <div className="searchTermFound">
                                 <mark><b>{strings.searchTermFound}</b></mark>
                             </div>
