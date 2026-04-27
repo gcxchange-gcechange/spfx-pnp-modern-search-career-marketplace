@@ -42,7 +42,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     const lang = Globals.getLanguage();
     const jobId = props.path && props.path.split('ID=').length == 2  ? props.path.split('ID=')[1] : 'null';
     const jobUrl = `${Globals.jobOpportunityPageUrl}${jobId}`;
-
+    let searchMatchTitleDesc = 0;
+    
     // Translate the JobType terms
     const jobTypeIds = getTermIds(props.jobType);
     if (jobTypeIds && Globals.getJobTypes()) {
@@ -194,6 +195,8 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
             console.error(e);
         }
 
+        searchMatchTitleDesc += retVal.startIndicies.length;
+        
         return retVal;
     }
 
