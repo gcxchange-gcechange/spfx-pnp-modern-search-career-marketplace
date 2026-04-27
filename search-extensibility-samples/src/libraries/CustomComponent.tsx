@@ -32,7 +32,6 @@ export interface ICustomComponentProps {
     jobType?: string;
     durationQuantity?: string;
     jobTypeTermSetGuid?: string;
-    searchQuery?: string;
     applyEmail?: string;
 }
 
@@ -71,12 +70,11 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
     };
 
     const getApplicationDeadlineDate = () => {
-        if (props.applicationDeadlineDate) {
-            const utcDate = new Date(`${props.applicationDeadlineDate.toString()} UTC`);
-            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; 
-            return utcDate.toLocaleString('en-US', { timeZone: userTimeZone });
-        }
-        return 'N/A';
+        if (!props.applicationDeadlineDate) return 'N/A';
+        
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        return props.applicationDeadlineDate.toLocaleString('en-US', { timeZone: userTimeZone });
     }
 
     // Fallback to default language incase we can't get the translations
@@ -144,7 +142,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         let retVal: IHighlightText = { text: origText, startIndicies: [] };
 
         try {
-            const searchhWords = props.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).filter(Boolean);
+            const searchhWords = Globals.searchQuery.split('path:')[0].replace(/[*]/g, "").trim().split(/\s+/).map(w => w.replace(/^["']|["']$/g, "")).filter(Boolean);
 
             if (searchhWords.length === 0)
                 return retVal;
@@ -165,7 +163,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
 
                     // Only match when it starts with the word, since that's how our pnp search works.
                     if (isWordStart) {
-                        matchIndices.push({ start: index, end: index + word.length });
+                        matchIndices.push({ start: index, end: index + lowerWord.length });
                         retVal.startIndicies.push(index);
                     }
 
@@ -173,10 +171,28 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                 }
             });
 
-            // Insert tags from right to left to avoid index shift
-            matchIndices.sort((a, b) => b.start - a.start);
+            const uniqueMap = new Map<string, { start: number; end: number }>();
+            matchIndices.forEach(m => {
+                uniqueMap.set(`${m.start}-${m.end}`, m);
+            });
 
-            matchIndices.forEach(({ start, end }) => {
+            const deduped: Array<{ start: number; end: number }> = [];
+            uniqueMap.forEach(v => deduped.push(v));
+
+            // Sort and remove overlapping matches
+            deduped.sort((a, b) => a.start - b.start);
+
+            const filtered: Array<{ start: number; end: number }> = [];
+            for (const match of deduped) {
+                const last = filtered[filtered.length - 1];
+                if (!last || match.start >= last.end)
+                    filtered.push(match);
+            }
+
+            // Insert tags from right to left to avoid index shift
+            filtered.sort((a, b) => b.start - a.start);
+
+            filtered.forEach(({ start, end }) => {
                 retVal.text = retVal.text.slice(0, end) + '</mark>' + retVal.text.slice(end);
                 retVal.text = retVal.text.slice(0, start) + '<mark>' + retVal.text.slice(start);
             });
@@ -187,15 +203,10 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
         return retVal;
     }
 
-    const isExpired = ():boolean => {
-        if (props.applicationDeadlineDate) {
-            if (new Date() >= new Date(`${props.applicationDeadlineDate.toString()} UTC`))
-                return true;
-            else
-                return false;
-        }
-        return true;
-    }
+    const isExpired = (): boolean => {
+    if (!props.applicationDeadlineDate) return true;
+     return new Date() >= props.applicationDeadlineDate;
+    };
 
     const expired = isExpired();
 
@@ -233,7 +244,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle.text) }} />
                     </h3>
                     <div className="sub">
-                        { props.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
+                        { Globals.searchQuery && Globals.searchQuery.indexOf('* path:') !== 0 && hightlightMatchesTitle.length === 0 && hightlightMatchesDesc.length === 0 &&
                             <div className="searchTermFound">
                                 <mark><b>{strings.searchTermFound}</b></mark>
                             </div>
@@ -283,8 +294,36 @@ export class MyCustomComponentWebComponent extends BaseWebComponent {
     }
 
     public async connectedCallback() {
+        let props = {} as any;
 
-        let props = this.resolveAttributes();
+        const getAttr = (name: string) => this.getAttribute(name) ?? undefined;
+
+        props.path = getAttr("path") || "";
+        props.applicationDeadlineDate = getAttr("application-deadline-date");
+        props.cityEn = getAttr("city-en");
+        props.cityFr = getAttr("city-fr");
+        props.classificationLevel = getAttr("classification-level");
+        props.classificationCodeEn = getAttr("classification-code-en");
+        props.classificationCodeFr = getAttr("classification-code-fr");
+        props.contactEmail = getAttr("contact-email");
+        props.contactName = getAttr("contact-name");
+        props.contactObjectId = getAttr("contact-object-id");
+        props.durationEn = getAttr("duration-en");
+        props.durationFr = getAttr("duration-fr");
+        props.jobDescriptionEn = getAttr("job-description-en");
+        props.jobDescriptionFr = getAttr("job-description-fr");
+        props.jobTitleEn = getAttr("job-title-en");
+        props.jobTitleFr = getAttr("job-title-fr");
+        props.jobType = getAttr("job-type");
+        props.durationQuantity = getAttr("duration-quantity");
+        props.jobTypeTermSetGuid = getAttr("job-type-term-set-guid");
+        props.applyEmail = getAttr("apply-email");
+
+        if (props.applicationDeadlineDate) {
+            const d = new Date(props.applicationDeadlineDate + ' UTC');
+            props.applicationDeadlineDate = isNaN(d.getTime()) ? undefined : d;
+        }
+
         const JobCard = <JobCardComponent {...props} />;
         ReactDOM.render(JobCard, this);
     }    
