@@ -241,7 +241,7 @@ const JobCardComponent: React.FC<ICustomComponentProps> = (props) => {
                         <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(transformedTitle.text) }} />
                     </h3>
                     <div className="sub">
-                        { Globals.searchQuery && Globals.searchQuery.trim().length > 0 &&
+                        { Globals.searchQuery && Globals.searchQuery.trim().length > 0 && searchMatchTitleDesc === 0 &&
                             <div className="searchTermFound">
                                 <mark><b>{strings.searchTermFound}</b></mark>
                             </div>
