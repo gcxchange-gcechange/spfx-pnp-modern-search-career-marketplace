@@ -7,6 +7,7 @@ export class Globals {
     public static jobOpportunityPageUrl: string;
     public static userDisplayName: string;
     public static userEmail: string;
+    public static searchQuery: string;
     private static _language: Language;
     private static _jobTypes: string[];
 
