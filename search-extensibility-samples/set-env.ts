@@ -73,26 +73,25 @@ interface PackageJson {
 // ============================================================================
  
 const ENV_CONFIG: Record<Environment, EnvConfig> = {
-  // BASE resets everything back to base values and uses the BASE GUIDs
   BASE: {
     suffix:     '',
-    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d195',  // ← Replace with your BASE solution GUID
-    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d015',  // ← Replace with your BASE manifest GUID
+    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d195',
+    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d015',
   },
   DEV: {
-    suffix:     'DEV',
-    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d196',  // ← Replace with your DEV solution GUID
-    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d016',  // ← Replace with your DEV manifest GUID
+    suffix:     'dev',
+    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d196',
+    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d016',
   },
   UAT: {
-    suffix:     'UAT',
-    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d197',  // ← Replace with your UAT solution GUID
-    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d017',  // ← Replace with your UAT manifest GUID
+    suffix:     'uat',
+    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d197',
+    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d017',
   },
   PROD: {
-    suffix:     'PROD',
-    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d198',  // ← Replace with your PROD solution GUID
-    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d018',  // ← Replace with your PROD manifest GUID
+    suffix:     'prod',
+    solutionId: '4896309f-54bc-48f2-a7ee-0785e019d198',
+    manifestId: 'dc4f961b-dbe0-44b4-982d-5776bf99d018',
   },
 };
  
@@ -110,7 +109,12 @@ const SRC_DIR:     string = path.join(ROOT, 'src');
 // KNOWN ENVIRONMENT SUFFIXES — used for stripping before re-applying
 // ============================================================================
  
-const KNOWN_SUFFIXES: string[] = ['BASE', 'DEV', 'UAT', 'PROD'];
+const KNOWN_SUFFIXES: string[] = [
+  ENV_CONFIG.BASE.suffix, 
+  ENV_CONFIG.DEV.suffix, 
+  ENV_CONFIG.UAT.suffix, 
+  ENV_CONFIG.PROD.suffix
+];
  
 // ============================================================================
 // LOGGING
@@ -132,8 +136,9 @@ function header(msg: string): void {
 // ============================================================================
  
 /** Append a suffix to a base string with a separator. Returns base unchanged if no suffix. */
-function applyEnvSuffix(base: string, suffix: string, separator: string = '-'): string {
-  return suffix ? `${base}${separator}${suffix}` : base;
+function applyEnvSuffix(base: string, suffix: string, separator: string = '-', firstCharCapitalized: boolean = false): string {
+  const suff = !firstCharCapitalized ? suffix : `${suffix.charAt(0).toUpperCase()}${suffix.slice(1, suffix.length)}`;
+  return suffix ? `${base}${separator}${suff}` : base;
 }
  
 /**
@@ -141,14 +146,30 @@ function applyEnvSuffix(base: string, suffix: string, separator: string = '-'): 
  * @param value     The full value that may have a suffix applied
  * @param separator The separator used before the suffix (e.g. '-', ' - ', '')
  */
-function stripEnvSuffix(value: string, separator: string): string {
-  for (const s of KNOWN_SUFFIXES) {
-    const tail = `${separator}${s}`;
-    if (value.endsWith(tail)) {
-      return value.slice(0, value.length - tail.length);
+function stripEnvSuffix(value: string, separator: string, firstCharCapitalized: boolean = false): string {
+  let result = value;
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+
+    for (const s of KNOWN_SUFFIXES) {
+      if (!s) continue; // skip BASE (empty string)
+
+      const suff = firstCharCapitalized
+        ? `${s.charAt(0).toUpperCase()}${s.slice(1)}`
+        : s;
+
+      const tail = `${separator}${suff}`;
+
+      if (result.endsWith(tail)) {
+        result = result.slice(0, result.length - tail.length);
+        changed = true;
+      }
     }
   }
-  return value;
+
+  return result;
 }
  
 /** Return a path relative to the project root (for display purposes). */
@@ -330,8 +351,8 @@ function updateManifestFiles(suffix: string, manifestId: string): void {
  
     // — alias
     if (typeof data.alias === 'string') {
-      const stripped = stripEnvSuffix(data.alias, '');
-      const newAlias = applyEnvSuffix(stripped, suffix, '');
+      const stripped = stripEnvSuffix(data.alias, '', true);
+      const newAlias = applyEnvSuffix(stripped, suffix, '', true);
       ok(`${relPath(filePath)} alias: "${data.alias}" → "${newAlias}"`);
       data.alias = newAlias;
     } else {
@@ -400,11 +421,11 @@ function updateExtensibilityFiles(suffix: string): void {
  
     // ── ServiceKey.create(...) ──────────────────────────────────────────────
     // Strips any existing env suffix then re-applies the new one.
-    const serviceKeyRegex = /ServiceKey\.create<[^>]+>\('([^']+?)(?:DEV|UAT|PROD|BASE)?'/g;
+    const serviceKeyRegex = /ServiceKey\.create<[^>]+>\('([^']+?)(?:dev|uat|prod|base)?'/g;
  
     content = content.replace(serviceKeyRegex, (match: string, baseKey: string) => {
-      const strippedKey = stripEnvSuffix(baseKey, '');
-      const newKey      = applyEnvSuffix(strippedKey, suffix, '');
+      const strippedKey = stripEnvSuffix(baseKey, '', true);
+      const newKey      = applyEnvSuffix(strippedKey, suffix, '', true);
       const updated     = match.replace(`'${baseKey}`, `'${newKey}`);
       if (updated !== match) {
         ok(`${relPath(filePath)} ServiceKey: "${baseKey}" → "${newKey}"`);
@@ -444,7 +465,7 @@ function updateExtensibilityFiles(suffix: string): void {
  
     // Matches name: 'Some Name (UAT)' or name: 'Some Name' — strips any
     // existing env suffix in parens before re-applying.
-    const nameRegex = /(\bname:\s*)(['"])(.+?)(?:\s*\((?:DEV|UAT|PROD|BASE)\))?\2/g;
+    const nameRegex = /(\bname:\s*)(['"])(.+?)(?:\s*\((?:dev|uat|prod|base)\))?\2/g;
  
     const newLines: string[] = lines.map((line: string, idx: number) => {
       if (!inDefinitionBlock.has(idx)) return line;
