@@ -1,29 +1,9 @@
 //#!/usr/bin/env node
  
-/**
- * set-env.ts
- * ---------------------------------------------------------------------------
- * Configures SPFx / PnP Modern Search extensibility project files for a
- * specific deployment environment (BASE | DEV | UAT | PROD).
- *
- * Usage:
- *   node set-env.js --env UAT
- *
- * Add to package.json scripts:
- *   "set-env:base": "tsc -p set-env.tsconfig.json && node set-env.js --env BASE",
- *   "set-env:dev":  "tsc -p set-env.tsconfig.json && node set-env.js --env DEV",
- *   "set-env:uat":  "tsc -p set-env.tsconfig.json && node set-env.js --env UAT",
- *   "set-env:prod": "tsc -p set-env.tsconfig.json && node set-env.js --env PROD"
- * ---------------------------------------------------------------------------
- */
- 
 import * as fs from 'fs';
 import * as path from 'path';
  
-// ============================================================================
 // TYPES
-// ============================================================================
- 
 type Environment = 'BASE' | 'DEV' | 'UAT' | 'PROD';
  
 interface EnvConfig {
@@ -68,10 +48,7 @@ interface PackageJson {
   [key: string]: unknown;
 }
  
-// ============================================================================
-// CONFIG — Fill in your real GUIDs and base values here
-// ============================================================================
- 
+// CONFIG 
 const ENV_CONFIG: Record<Environment, EnvConfig> = {
   BASE: {
     suffix:     '',
@@ -95,20 +72,14 @@ const ENV_CONFIG: Record<Environment, EnvConfig> = {
   },
 };
  
-// ============================================================================
-// FILE PATHS — Relative to the project root (where this script lives)
-// ============================================================================
+// FILE PATHS 
+const ROOT = path.resolve(__dirname, '..'); // runs from dist
+const CONFIG_JSON = path.join(ROOT, 'config', 'config.json');
+const PKG_SOL = path.join(ROOT, 'config', 'package-solution.json');
+const PKG_JSON = path.join(ROOT, 'package.json');
+const SRC_DIR = path.join(ROOT, 'src');
  
-const ROOT:        string = path.resolve(__dirname, '..');
-const CONFIG_JSON: string = path.join(ROOT, 'config', 'config.json');
-const PKG_SOL:     string = path.join(ROOT, 'config', 'package-solution.json');
-const PKG_JSON:    string = path.join(ROOT, 'package.json');
-const SRC_DIR:     string = path.join(ROOT, 'src');
- 
-// ============================================================================
-// KNOWN ENVIRONMENT SUFFIXES — used for stripping before re-applying
-// ============================================================================
- 
+
 const KNOWN_SUFFIXES: string[] = [
   ENV_CONFIG.BASE.suffix, 
   ENV_CONFIG.DEV.suffix, 
@@ -131,21 +102,13 @@ function header(msg: string): void {
   console.log('═'.repeat(60));
 }
  
-// ============================================================================
 // HELPERS
-// ============================================================================
- 
-/** Append a suffix to a base string with a separator. Returns base unchanged if no suffix. */
+
 function applyEnvSuffix(base: string, suffix: string, separator: string = '-', firstCharCapitalized: boolean = false): string {
   const suff = !firstCharCapitalized ? suffix : `${suffix.charAt(0).toUpperCase()}${suffix.slice(1, suffix.length)}`;
   return suffix ? `${base}${separator}${suff}` : base;
 }
  
-/**
- * Strip a known environment suffix from the end of a string.
- * @param value     The full value that may have a suffix applied
- * @param separator The separator used before the suffix (e.g. '-', ' - ', '')
- */
 function stripEnvSuffix(value: string, separator: string, firstCharCapitalized: boolean = false): string {
   let result = value;
   let changed = true;
@@ -172,12 +135,10 @@ function stripEnvSuffix(value: string, separator: string, firstCharCapitalized: 
   return result;
 }
  
-/** Return a path relative to the project root (for display purposes). */
 function relPath(p: string): string {
   return path.relative(ROOT, p);
 }
  
-/** Read and parse a JSON file. Returns null and warns on failure. */
 function readJson<T>(filePath: string): T | null {
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
@@ -187,7 +148,6 @@ function readJson<T>(filePath: string): T | null {
   }
 }
  
-/** Write a JSON file with 2-space indentation. Returns false and warns on failure. */
 function writeJson(filePath: string, data: unknown): boolean {
   try {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf8');
@@ -198,7 +158,6 @@ function writeJson(filePath: string, data: unknown): boolean {
   }
 }
  
-/** Read a text file. Returns null and warns on failure. */
 function readText(filePath: string): string | null {
   try {
     return fs.readFileSync(filePath, 'utf8');
@@ -208,7 +167,6 @@ function readText(filePath: string): string | null {
   }
 }
  
-/** Write a text file. Returns false and warns on failure. */
 function writeText(filePath: string, content: string): boolean {
   try {
     fs.writeFileSync(filePath, content, 'utf8');
@@ -219,7 +177,6 @@ function writeText(filePath: string, content: string): boolean {
   }
 }
  
-/** Recursively find files under a directory matching a predicate. */
 function findFiles(
   dir: string,
   predicate: (name: string, fullPath: string) => boolean,
@@ -236,11 +193,8 @@ function findFiles(
   }
   return results;
 }
- 
-// ============================================================================
+
 // STEP 1 — config/config.json
-// ============================================================================
- 
 function updateConfigJson(suffix: string): void {
   info('Step 1 — config/config.json (bundle name)');
  
@@ -284,10 +238,7 @@ function updateConfigJson(suffix: string): void {
   }
 }
  
-// ============================================================================
 // STEP 2 — config/package-solution.json
-// ============================================================================
- 
 function updatePackageSolution(suffix: string, solutionId: string): void {
   info('Step 2 — config/package-solution.json (solution name, id, zippedPackage)');
  
@@ -331,10 +282,7 @@ function updatePackageSolution(suffix: string, solutionId: string): void {
   }
 }
  
-// ============================================================================
 // STEP 3 — {projectName}.manifest.json (auto-discovered under src/)
-// ============================================================================
- 
 function updateManifestFiles(suffix: string, manifestId: string): void {
   info('Step 3 — *.manifest.json files (alias, id)');
  
@@ -369,10 +317,7 @@ function updateManifestFiles(suffix: string, manifestId: string): void {
   }
 }
  
-// ============================================================================
 // STEP 4 — package.json (name)
-// ============================================================================
- 
 function updatePackageJson(suffix: string): void {
   info('Step 4 — package.json (name)');
  
@@ -392,10 +337,7 @@ function updatePackageJson(suffix: string): void {
   }
 }
  
-// ============================================================================
 // STEP 5 — IExtensibilityLibrary files (ServiceKey, definition names)
-// ============================================================================
- 
 function updateExtensibilityFiles(suffix: string): void {
   info('Step 5 — IExtensibilityLibrary files (ServiceKey, definition names)');
  
@@ -419,8 +361,8 @@ function updateExtensibilityFiles(suffix: string): void {
  
     let fileChanged = false;
  
-    // ── ServiceKey.create(...) ──────────────────────────────────────────────
-    // Strips any existing env suffix then re-applies the new one.
+    // ServiceKey.create(...)
+    // Strips any existing env suffix then apply the new one.
     const serviceKeyRegex = /ServiceKey\.create<[^>]+>\('([^']+?)(?:dev|uat|prod|base)?'/g;
  
     content = content.replace(serviceKeyRegex, (match: string, baseKey: string) => {
@@ -433,10 +375,6 @@ function updateExtensibilityFiles(suffix: string): void {
       }
       return updated;
     });
- 
-    // ── ILayoutDefinition / IQueryModifierDefinition / IDataSourceDefinition ──
-    // Track brace depth to identify lines inside these definition blocks,
-    // then update any name: '...' properties found within them.
  
     const lines: string[] = content.split('\n');
  
@@ -463,8 +401,8 @@ function updateExtensibilityFiles(suffix: string): void {
       }
     }
  
-    // Matches name: 'Some Name (UAT)' or name: 'Some Name' — strips any
-    // existing env suffix in parens before re-applying.
+    // Matches name: 'Some Name (UAT)' or name: 'Some Name'
+    // Strips any existing env suffix before re-applying.
     const nameRegex = /(\bname:\s*)(['"])(.+?)(?:\s*\((?:dev|uat|prod|base)\))?\2/g;
  
     const newLines: string[] = lines.map((line: string, idx: number) => {
@@ -490,10 +428,8 @@ function updateExtensibilityFiles(suffix: string): void {
     }
   }
 }
- 
-// ============================================================================
+
 // CLI ENTRY POINT
-// ============================================================================
  
 function parseArgs(): Environment {
   const args   = process.argv.slice(2);
