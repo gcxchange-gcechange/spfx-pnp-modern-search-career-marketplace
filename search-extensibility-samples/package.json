@@ -1,5 +1,5 @@
 {
-    "name": "@pnp/modern-search-extensibility-demo",
+    "name": "@pnp/modern-search-extensibility-demo-test",
     "version": "1.0.0",
     "private": false,
     "main": "lib/index.js",

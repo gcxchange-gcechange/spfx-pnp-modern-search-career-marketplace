@@ -26,12 +26,13 @@ import { Globals, Language } from "../Globals";
 import { MyOpportunitiesQueryModifier } from "../MyOpportunitiesQueryModifier";
 import { NewsArticleWebComponent } from "../NewsArticle/NewsArticle";
 import { NewsArticleLayout } from "../NewsArticle/NewsArticleLayout";
+import { TestQueryModifier } from "../TestQueryModifier";
 
 export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   
 
   public static readonly serviceKey: ServiceKey<MyCompanyLibraryLibrary> =
-  ServiceKey.create<MyCompanyLibraryLibrary>('SPFx:MyCustomLibraryComponent', MyCompanyLibraryLibrary);
+  ServiceKey.create<MyCompanyLibraryLibrary>('SPFx:MyCustomLibraryComponentUAT', MyCompanyLibraryLibrary);
 
   private _spHttpClient: SPHttpClient;
   private _pageContext: PageContext;
@@ -53,7 +54,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   public getCustomLayouts(): ILayoutDefinition[] {
     return [
       {
-        name: 'Job Opportunity',
+        name: 'Job Opportunity (UAT))',
         iconName: 'Suitcase',
         key: 'CustomLayoutHandlebars',
         type: LayoutType.Results,
@@ -71,7 +72,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
         serviceKey: ServiceKey.create<ILayout>('PnP:CustomLayoutAdaptive', CustomLayout),
       },
       {
-        name: 'News Article',
+        name: 'News Article (UAT)',
         iconName: 'News',
         key: 'CustomLayoutNewsArticle',
         type: LayoutType.Results,
@@ -343,17 +344,23 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   {
     return [
       {
-        name: 'Advanced Search',
+        name: 'Advanced Search (UAT)',
         key: 'AdvancedSearch',
         description: 'A query modifier for career marketplace advanced search.',
         serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:CustomQueryModifier', AdvancedSearchQueryModifier)
 
       },
       {
-        name: 'Owner Opportunities',
+        name: 'Owner Opportunities (UAT)',
         key: 'MyOpportunities',
         description: 'A query modifier for career marketplace which returns the logged in user\'s job opportunities that they have posted to the system.',
         serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:MyOpportunitiesQueryModifier', MyOpportunitiesQueryModifier)
+      },
+      {
+        name: 'Test Query Modifier',
+        key: 'TestQueryModifier',
+        description: 'A test query modifier',
+        serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:TestQueryModifier', TestQueryModifier)
       }
     ];
   }
@@ -361,7 +368,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
   public getCustomDataSources(): IDataSourceDefinition[] {
     return [
       {
-          name: 'NPM Search',
+          name: 'NPM Search (UAT)',
           iconName: 'Database',
           key: 'CustomDataSource',
           serviceKey: ServiceKey.create<IDataSource>('MyCompany:CustomDataSource', CustomDataSource)

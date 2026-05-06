@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "Career Marketplace - PnP Modern Searh Library Component",
-    "id": "4896309f-54bc-48f2-a7ee-0785e019d195",
+    "name": "Career Marketplace - Test",
+    "id": "4896309f-54bc-48f2-a7ee-0785e019d194",
     "version": "4.1.0.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
@@ -22,7 +22,7 @@
     ]
   },
   "paths": {
-    "zippedPackage": "solution/pnp-modern-search-extensibility-demo.sppkg"
+    "zippedPackage": "solution/pnp-modern-search-extensibility-demo-uat.sppkg"
   }
 }
 
