@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "types": ["node"],
+    "strict": false,
+    "skipLibCheck": true,
+    "outDir": "./dist"
+  },
+  "include": ["set-env.ts"]
+}
