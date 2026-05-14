@@ -429,6 +429,160 @@ function updateExtensibilityFiles(suffix: string): void {
   }
 }
 
+// STEP 6
+function updateDummyQueryModifier(suffix: string): void {
+
+  info('Step 6 — Add/Remove DummyQueryModifier');
+
+  const librariesDir = path.join(SRC_DIR, 'libraries');
+  const dummyQueryModifierPath = path.join(librariesDir, 'DummyQueryModifier.ts');
+
+  const importStatement = `import { DummyQueryModifier } from "../DummyQueryModifier";\n`;
+
+  // Create DummyQueryModifier.ts
+  if (!fs.existsSync(librariesDir)) {
+    fs.mkdirSync(librariesDir, { recursive: true });
+  }
+
+  if (suffix !== ENV_CONFIG.BASE.suffix && !fs.existsSync(dummyQueryModifierPath)) {
+
+    const dummyQueryModifierContent = 
+`import { BaseQueryModifier } from "@pnp/modern-search-extensibility";
+
+export interface IDummyQueryModifierProperties {
+  dummy: string;
+}
+
+export class DummyQueryModifier extends BaseQueryModifier<IDummyQueryModifierProperties> {
+  
+  public async onInit(): Promise<void> {
+
+  }
+
+  public async modifyQuery(queryText: string): Promise<string> {
+    console.log(queryText);
+
+    return queryText;
+  }
+}
+`;
+
+    if (writeText(dummyQueryModifierPath, dummyQueryModifierContent)) {
+      ok(`Created ${relPath(dummyQueryModifierPath)}`);
+    }
+
+  } else {
+    ok(`${relPath(dummyQueryModifierPath)} already exists`);
+
+    if (suffix === ENV_CONFIG.BASE.suffix && fs.existsSync(dummyQueryModifierPath)) {
+      ok(`Deleting ${relPath(dummyQueryModifierPath)}`);
+      fs.unlinkSync(dummyQueryModifierPath);
+    }
+  }
+
+  // Find extensibility library file
+  const extensibilityFiles = findFiles(SRC_DIR, (name: string, fullPath: string) => {
+
+    if (!name.endsWith('.ts')) {
+      return false;
+    }
+
+    try {
+      return fs.readFileSync(fullPath, 'utf8').includes('implements IExtensibilityLibrary');
+    } catch {
+      return false;
+    }
+  });
+
+  if (extensibilityFiles.length === 0) {
+    warn('Unable to find IExtensibilityLibrary file');
+    return;
+  }
+
+  const libraryFilePath = extensibilityFiles[0];
+
+  let content = readText(libraryFilePath);
+
+  if (!content) {
+    warn(`Unable to read ${relPath(libraryFilePath)}`);
+    return;
+  }
+
+  let changed = false;
+
+  // Add import
+  if (suffix !== ENV_CONFIG.BASE.suffix && !content.includes(importStatement)) {
+
+    const importRegex = /import .*?;\n/g;
+
+    let lastImportMatch: RegExpExecArray | null = null;
+    let match: RegExpExecArray | null;
+
+    while ((match = importRegex.exec(content)) !== null) {
+      lastImportMatch = match;
+    }
+
+    if (lastImportMatch) {
+      const insertIndex = lastImportMatch.index + lastImportMatch[0].length;
+
+      content =
+        content.slice(0, insertIndex) +
+        importStatement +
+        content.slice(insertIndex);
+
+      ok(`Added DummyQueryModifier import to ${relPath(libraryFilePath)}`);
+      changed = true;
+    }
+  } else {
+    ok(`DummyQueryModifier import already exists`);
+
+    if (suffix === ENV_CONFIG.BASE.suffix) {
+      ok(`Removing DummyQueryModifier import`);
+      content = content.replace(importStatement, '');
+    }
+  }
+
+  const queryModifierBlock =
+`
+      {
+        name: 'DummyQuery Modifier',
+        key: 'DummyQueryModifier',
+        description: 'A test query modifier',
+        serviceKey: ServiceKey.create<IQueryModifier>('MyCompany:DummyQueryModifier', DummyQueryModifier)
+      },\n`;
+
+  // Add getCustomQueryModifiers entry
+  if (suffix !== ENV_CONFIG.BASE.suffix && !content.includes(`key: 'DummyQueryModifier'`)) {
+    const regex = /(getCustomQueryModifiers\s*\(\)\s*:\s*IQueryModifierDefinition\[\]\s*{[\s\S]*?return\s*\[\s*)/;
+
+    if (regex.test(content)) {
+
+      content = content.replace(regex, `$1${queryModifierBlock}`);
+
+      ok(`Added DummyQueryModifier to getCustomQueryModifiers`);
+      changed = true;
+
+    } else {
+      warn(`Unable to find getCustomQueryModifiers return block`);
+    }
+  } else {
+    ok(`DummyQueryModifier already exists in getCustomQueryModifiers`);
+
+    if (suffix === ENV_CONFIG.BASE.suffix) {
+      ok(`Removing DummyQueryModifier in getCustomQueryModifiers`);
+      content = content.replace(queryModifierBlock, '');
+      changed = true;
+    }
+  }
+
+  if (changed) {
+
+    if (writeText(libraryFilePath, content)) {
+      ok(`Saved ${relPath(libraryFilePath)}`);
+    }
+  }
+}
+
 // CLI ENTRY POINT
  
 function parseArgs(): Environment {
@@ -466,6 +620,7 @@ function main(): void {
   updateManifestFiles(suffix, manifestId);
   updatePackageJson(suffix);
   updateExtensibilityFiles(suffix);
+  updateDummyQueryModifier(suffix);
  
   console.log('\n' + '═'.repeat(60));
   if (warnings === 0) {
