@@ -8,6 +8,7 @@ export class Globals {
     public static userDisplayName: string;
     public static userEmail: string;
     public static searchQuery: string;
+    public static tenant: string;
     private static _language: Language;
     private static _jobTypes: string[];
 

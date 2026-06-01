@@ -71,7 +71,7 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
                 </p>
 
                 <div className='newsArticle-cardAuthor'>
-                    <img className='news-article-profile' src={String.prototype.concat("https://devgcx.sharepoint.com/_layouts/15/userphoto.aspx?size=S&accountname=", email)} />
+                    <img className='news-article-profile' src={`${Globals.tenant}/_layouts/15/userphoto.aspx?size=S&accountname=${encodeURIComponent(email)}`} />
                     <p>{props.author}&nbsp;{props.friendlyLastModifiedTime} <br/>
                     {props.viewCount ? props.viewCount : "0"} {strings.views}</p>
                 </div>
