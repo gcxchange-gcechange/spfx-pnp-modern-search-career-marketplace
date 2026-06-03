@@ -45,6 +45,7 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
 
       Globals.userDisplayName = this._pageContext.user.displayName;
       Globals.userEmail = this._pageContext.user.email;
+      Globals.tenant = new URL(this._pageContext.web.absoluteUrl).origin;
     });
 
     this.insertCustomStyles();
