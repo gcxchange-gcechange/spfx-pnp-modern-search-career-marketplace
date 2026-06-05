@@ -1,0 +1,14 @@
+@microsoft/sp-adaptive-card-extension-base
+@microsoft/sp-component-base
+@microsoft/sp-http
+@microsoft/sp-http-msgraph
+@microsoft/sp-image-helper
+@microsoft/sp-loader
+@microsoft/sp-property-pane
+@microsoft/sp-webpart-base
+@pnp/modern-search-extensibility
+adaptivecards
+handlebars
+requirejs
+swiper
+validator
