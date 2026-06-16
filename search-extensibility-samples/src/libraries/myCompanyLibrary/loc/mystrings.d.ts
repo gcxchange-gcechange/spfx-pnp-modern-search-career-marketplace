@@ -32,6 +32,7 @@ declare interface IMyCompanyLibraryLibraryStrings {
   opportunities: string;
   searchTermFound: string;
   articlesTitle: string;
+  articlesSearchTitle: string;
   views: string;
   remote: string;
 }

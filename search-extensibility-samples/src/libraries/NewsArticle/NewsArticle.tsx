@@ -4,8 +4,7 @@ import { BaseWebComponent } from '@pnp/modern-search-extensibility';
 import * as ReactDOM from 'react-dom';
 import './NewsArticle.css';
 import { Link } from '@fluentui/react';
-import { Globals } from "../Globals";
-import { SelectLanguage } from "./../SelectLanguage";
+import { Globals, Language } from "../Globals";
 
 export interface INewsArticleProps {
     path?: string;                      // Link to the news post
@@ -27,8 +26,9 @@ export interface INewsArticleProps {
 }
 
 const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
-    const strings = SelectLanguage(Globals.getLanguage());
-    const email = props.authorOwsuser.substring(0, props.authorOwsuser.indexOf('|')).trim();
+    const split = props.authorOwsuser.split(' | ');
+    const email = split[0];
+    const author = split[1];
 
     // console.log("props.pictureURL: ", props.pictureURL);
     // console.log("props.author: ", props.author);
@@ -47,24 +47,63 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
 
     const truncateText = (text: string, maxLength: number) => {
         const cleanText = stripHtml(text);
-        if (cleanText.length <= maxLength) return cleanText;
+        if (cleanText.length <= maxLength) 
+            return cleanText;
         const trimmed = cleanText.substring(0, maxLength);
         return trimmed.substring(0, trimmed.lastIndexOf(' '));
     };
+
+    const formatCreatedDate= (): string => {
+        const date = new Date(props.created);
+        const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+
+        const intervals = [
+            { labelEn: 'year', labelFr: 'année', seconds: 31536000 },
+            { labelEn: 'month', labelFr: 'mois', seconds: 2592000 },
+            { labelEn: 'week', labelFr: 'semaine', seconds: 604800 },
+            { labelEn: 'day', labelFr: 'jour', seconds: 86400 },
+            { labelEn: 'hour', labelFr: 'heure', seconds: 3600 },
+            { labelEn: 'minute', labelFr: 'minute', seconds: 60 }
+        ];
+
+        for (const interval of intervals) {
+            const count = Math.floor(seconds / interval.seconds);
+
+            if (count >= 1) {
+
+                if (Globals.getLanguage() === Language.French)
+                    return `a publié il y a ${count} ${interval.labelFr}${count > 1 ? (interval.labelEn !== 'month' ? 's' : '') : ''}`;
+
+                return `posted ${count} ${interval.labelEn}${count > 1 ? 's' : ''} ago`;
+            }
+        }
+
+        if (Globals.getLanguage() === Language.French)
+            return `Publié à l'instant`;
+
+        return `posted just now`;
+    }
 
     return ( 
         <div className='gcx-news-card'>
             <div className='newsArticle-cardImage'>
                 {props.pictureThumbnailUrl ? (
-                    <img src={props.pictureThumbnailUrl} alt="thumbnail" />
+                    <Link href={props.path}>
+                        <img src={props.pictureThumbnailUrl} alt="thumbnail" />
+                    </Link>
                     ) : (
-                <div className="newsArticle-cardImage-Default" />
+                <Link href={props.path}>
+                    <div className="newsArticle-cardImage-Default" />
+                </Link>
                 )}
             </div>
             <div className='newsArticle-cardContent'>
                 <div className='newsArticle-cardTitle'>
-                    <Link style={{fontSize: 'smaller', fontWeight: '500' }} href={props.siteUrl}>{props.siteTitle}</Link>
-                    <h3><Link style={{color: 'black'}}  href={props.path}>{props.title}</Link></h3>
+                    <h3>
+                        <Link style={{color: 'black'}} href={props.path}>
+                            {props.title}
+                        </Link>
+                    </h3>
                 </div>
                 <p >
                     {truncateText(props.hitHighlightedSummary,266)} ...
@@ -72,8 +111,9 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
 
                 <div className='newsArticle-cardAuthor'>
                     <img className='news-article-profile' src={`${Globals.tenant}/_layouts/15/userphoto.aspx?size=S&accountname=${encodeURIComponent(email)}`} />
-                    <p>{props.author}&nbsp;{props.friendlyLastModifiedTime} <br/>
-                    {props.viewCount ? props.viewCount : "0"} {strings.views}</p>
+                    <p>
+                        {author}&nbsp;{formatCreatedDate()}
+                    </p>
                 </div>
             </div>
         </div>

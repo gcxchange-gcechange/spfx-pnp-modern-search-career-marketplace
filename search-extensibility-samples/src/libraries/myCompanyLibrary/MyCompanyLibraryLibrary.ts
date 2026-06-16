@@ -189,7 +189,11 @@ export class MyCompanyLibraryLibrary implements IExtensibilityLibrary {
     namespace.registerHelper('newsArticlesLabel', () => {
       try {
         const strings = SelectLanguage(Globals.getLanguage());
-        return strings.articlesTitle;
+        if (Globals.getNewsSearchLayout()) {
+          return strings.articlesSearchTitle;
+        } else {
+          return strings.articlesTitle;
+        }
       } catch (e) {
         console.log(e);
         return '';

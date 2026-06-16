@@ -11,6 +11,7 @@ export class Globals {
     public static tenant: string;
     private static _language: Language;
     private static _jobTypes: string[];
+    private static _newsSearchLayout: boolean;
 
     public static getLanguage(): Language {
         return this._language;
@@ -38,5 +39,13 @@ export class Globals {
     public static setJobTypes(jobTypes: string[]): void {
         if (jobTypes)
             this._jobTypes = jobTypes;
+    }
+
+    public static getNewsSearchLayout(): boolean {
+        return this._newsSearchLayout;
+    }
+
+    public static setNewsSearchLayout(state: boolean): void {
+        this._newsSearchLayout = state;
     }
 }
