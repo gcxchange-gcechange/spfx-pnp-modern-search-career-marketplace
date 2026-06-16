@@ -32,7 +32,8 @@ define([], function() {
         "undetermined": "Indéterminé",
         "opportunities": "Opportunités",
         "searchTermFound": "Mots-clés trouvés dans l'opportunité complete",
-        "articlesTitle": "Actualités et articles",
+        "articlesTitle": "Dernières actualités et articles",
+        "articlesSearchTitle": "Parcourir les actualités et articles",
         "views": "vues",
         "remote": "À distance"
     }
