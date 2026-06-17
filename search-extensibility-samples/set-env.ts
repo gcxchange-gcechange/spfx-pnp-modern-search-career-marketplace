@@ -512,8 +512,7 @@ export class DummyQueryModifier extends BaseQueryModifier<IDummyQueryModifierPro
 
   // Add import
   if (suffix !== ENV_CONFIG.BASE.suffix && !content.includes(importStatement)) {
-
-    const importRegex = /import .*?;\n/g;
+    const importRegex = /import .*?;\r?\n/g;
 
     let lastImportMatch: RegExpExecArray | null = null;
     let match: RegExpExecArray | null;
