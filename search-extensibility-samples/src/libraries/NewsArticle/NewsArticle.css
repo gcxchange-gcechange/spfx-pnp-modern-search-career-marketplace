@@ -117,19 +117,19 @@
 .newsArticle-cardContent {
     display: flex;
     flex-direction: column;
-    padding: 0px 10px;
+    padding: 0 10px 10px 10px;
     flex: 1;
 }
 .newsArticle-cardImage {
-    width: 180px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     border-radius: 8px;
     padding: 10px 10px 10px 0px;
 }
 
 .newsArticle-cardImage img {
-    width: 180px;
+    width: 150px;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
