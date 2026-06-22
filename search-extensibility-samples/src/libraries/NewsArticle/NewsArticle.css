@@ -121,7 +121,7 @@
     flex: 1;
 }
 .newsArticle-cardImage {
-    width: 180px;
+    width: 150px;
     height: 160px;
     object-fit: cover;
     border-radius: 8px;
@@ -129,7 +129,7 @@
 }
 
 .newsArticle-cardImage img {
-    width: 180px;
+    width: 150px;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;

@@ -101,12 +101,12 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
                 <div className='newsArticle-cardTitle'>
                     <h3>
                         <Link style={{color: 'black'}} href={props.path}>
-                            {props.title}
+                            {truncateText(props.title, 75)}
                         </Link>
                     </h3>
                 </div>
                 <p >
-                    {truncateText(props.hitHighlightedSummary,266)} ...
+                    {truncateText(props.hitHighlightedSummary, 75)} ...
                 </p>
 
                 <div className='newsArticle-cardAuthor'>
