@@ -148,8 +148,9 @@
     border-radius: 8px;
 }
 
-.nesArticle-cardImage-Default {
-    background: #99d2e8;
+.newsArticle-cardImage-Default {
+    height: 100%;
+    width: 100%;
     background: linear-gradient(161deg,rgba(153, 210, 232, 1) 0%, rgba(209, 231, 237, 1) 51%, rgba(80, 165, 199, 1) 100%);
 
 }

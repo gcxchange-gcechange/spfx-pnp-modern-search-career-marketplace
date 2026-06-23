@@ -23,6 +23,7 @@ export interface INewsArticleProps {
     author?: string;                    // News article author
     authorOwsuser?: string              // New article author account information
     friendlyLastModifiedTime?: string;
+    description?: string;
 }
 
 const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
@@ -106,7 +107,7 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
                     </h3>
                 </div>
                 <div className='newsArticle-cardDescription'>
-                    <div>{props.hitHighlightedSummary}</div>
+                    <div>{props.description || truncateText(props.hitHighlightedSummary, 8675309)}</div>
                 </div>
 
                 <div className='newsArticle-cardAuthor'>
