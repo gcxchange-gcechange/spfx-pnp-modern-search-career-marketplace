@@ -106,7 +106,7 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
                     </h3>
                 </div>
                 <div className='newsArticle-cardDescription'>
-                    <div>{props.hitHighlightedSummary}</div>
+                    <div>{stripHtml(props.hitHighlightedSummary)}</div>
                 </div>
 
                 <div className='newsArticle-cardAuthor'>
