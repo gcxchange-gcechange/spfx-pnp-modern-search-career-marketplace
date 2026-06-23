@@ -120,6 +120,19 @@
     padding: 0 10px 10px 10px;
     flex: 1;
 }
+.newsArticle-cardDescription {
+    flex: 1;
+    padding: 1em 0;
+    overflow: hidden;
+}
+.newsArticle-cardDescription div {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .newsArticle-cardImage {
     width: 150px;
     height: 150px;

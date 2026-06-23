@@ -101,13 +101,13 @@ const NewsArticleComponent: React.FC<INewsArticleProps> = (props) => {
                 <div className='newsArticle-cardTitle'>
                     <h3>
                         <Link style={{color: 'black'}} href={props.path}>
-                            {truncateText(props.title, 75)}
+                            {truncateText(props.title, 100)}
                         </Link>
                     </h3>
                 </div>
-                <p >
-                    {truncateText(props.hitHighlightedSummary, 75)} ...
-                </p>
+                <div className='newsArticle-cardDescription'>
+                    <div>{props.hitHighlightedSummary}</div>
+                </div>
 
                 <div className='newsArticle-cardAuthor'>
                     <img className='news-article-profile' src={`${Globals.tenant}/_layouts/15/userphoto.aspx?size=S&accountname=${encodeURIComponent(email)}`} />
